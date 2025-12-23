@@ -1,0 +1,50 @@
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import TipsCard from "../components/TipsCard";
+
+type DurationType = "1D" | "1W" | "1M";
+
+export default function Options({ duration }: { duration: DurationType }) {
+
+  const optionsData: Record<DurationType, any[]> = {
+    "1D": [
+      { symbol: "ACC-DEC", t1: 2310, t2: 2340, t3: 2390 },
+    ],
+
+    "1W": [
+      { symbol: "ACC-DEC", t1: 2350, t2: 2400, t3: 2460 },
+    ],
+
+    "1M": [
+      { symbol: "ACC-DEC", t1: 2480, t2: 2550, t3: 2620 },
+      { symbol: "RELIANCE-DEC", t1: 2450, t2: 2490, t3: 2550 },
+    ],
+  };
+
+  const data = optionsData[duration];
+
+  return (
+    <View>
+      <Text style={styles.title}>Options ({duration})</Text>
+
+      {data.map((item, index) => (
+        <TipsCard
+          key={index}
+          symbol={item.symbol}
+          t1={item.t1}
+          t2={item.t2}
+          t3={item.t3}
+          isBuy
+        />
+      ))}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  title: {
+    fontSize: 16,
+    fontWeight: "700",
+    marginBottom: 10,
+  },
+});
