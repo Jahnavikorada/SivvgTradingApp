@@ -10,13 +10,7 @@ interface Props {
   isBuy?: boolean;
 }
 
-export default function TipsCard({
-  symbol,
-  t1,
-  t2,
-  t3,
-  isBuy = true,
-}: Props) {
+export default function TipsCard({ symbol, t1, t2, t3, isBuy = true }: Props) {
   return (
     <View style={styles.card}>
       {/* TOP ROW */}

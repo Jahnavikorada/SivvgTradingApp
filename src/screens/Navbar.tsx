@@ -5,7 +5,7 @@ import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/Ionicons";
 
 import Home from "./tabs/Home";
-import Portfolio from "./tabs/portfolio";
+import Portfolio from "./tabs/Portfolio";
 import Performance from "./tabs/Performance";
 import Sectoral from "./tabs/Sectoral";
 

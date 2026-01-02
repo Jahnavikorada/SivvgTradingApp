@@ -6,7 +6,7 @@ import CommonHeader from "../components/CommonHeader";
 
 const { height } = Dimensions.get("window");
 
-export default function Home({ navigation }: any) {
+export default function Portfolio({ navigation }: any) {
   return (
     <LinearGradient
       colors={["#FF2E4C", "#1E2A78"]}
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
-    marginTop: 10,        // ✅ small visible gradient gap only
+    marginTop: 30,        // ✅ small visible gradient gap only
     paddingTop: 15,
     paddingHorizontal: 10,
   },

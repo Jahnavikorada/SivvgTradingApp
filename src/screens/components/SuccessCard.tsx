@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 20,
     width: "82%",
     alignSelf: "center",
-    marginTop: 10,
+    marginTop: 20,
     borderWidth: 0.7,
     borderColor: "#7fa3ff",
     overflow: "hidden",

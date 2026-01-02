@@ -5,7 +5,7 @@ import CommonHeader from "../components/CommonHeader";
 import SectoralPanel from "../components/SectoralPanel";
 const { height } = Dimensions.get("window");
 
-export default function Home({ navigation }: any) {
+export default function Sectoral({ navigation }: any) {
   return (
     <LinearGradient
       colors={["#FF2E4C", "#1E2A78"]}
@@ -19,10 +19,7 @@ export default function Home({ navigation }: any) {
 
         {/* ✅ WHITE PARENT CARD (UNCHANGED) */}
         <View style={styles.card}>
-          
-          {/* ✅ ONLY BLUE + RIGHT SECTOR CARDS HERE */}
-          <SectoralPanel />
-
+            <SectoralPanel />
         </View>
       </View>
     </LinearGradient>
@@ -43,7 +40,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
-    marginTop: 10,
+    marginTop: 30,
     paddingTop: 15,
     paddingHorizontal: 10,
   },
