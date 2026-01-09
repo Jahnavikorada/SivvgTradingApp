@@ -28,8 +28,6 @@ export default function Holiday({ navigation }: any) {
                     <Text style={styles.header}>The market is closed today</Text>
                    
            </View>
-        
-       
       </View>
     </LinearGradient>
   );

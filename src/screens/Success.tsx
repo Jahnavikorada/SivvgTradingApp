@@ -10,7 +10,7 @@ import LinearGradient from "react-native-linear-gradient";
 export default function SuccessScreen({ navigation }: any) {
     useEffect(() => {
   const timer = setTimeout(() => {
-    navigation?.replace("Tabs");
+    navigation?.replace("Login");
   }, 2000);
 
   return () => clearTimeout(timer);

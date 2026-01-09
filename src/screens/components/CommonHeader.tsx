@@ -101,11 +101,14 @@ export default function CommonHeader({ title}: any) {
         <Text style={styles.header}>{title}</Text>
 
         {/* ✅ NOTIFICATION ICON */}
-        <TouchableOpacity 
-        style={styles.iconCircle}
-        >
-          <Ionicons name="notifications" size={24} color="#1E2A78" />
-        </TouchableOpacity>
+       <TouchableOpacity
+  style={styles.iconCircle}
+  activeOpacity={0.8}
+  onPress={() => navigation.navigate("Notifications")}
+>
+  <Ionicons name="notifications" size={24} color="#1E2A78" />
+</TouchableOpacity>
+
       </SafeAreaView>
     //</LinearGradient>
   );

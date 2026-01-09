@@ -5,7 +5,8 @@ import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/Ionicons";
 
 import Home from "./tabs/Home";
-import Portfolio from "./tabs/Portfolio";
+import Portfolio from "./tabs/portfolio";
+
 import Performance from "./tabs/Performance";
 import Sectoral from "./tabs/Sectoral";
 
@@ -24,6 +25,7 @@ export default function Navbar() {
       < Tab.Screen name="Past Performance" component={Performance} options={{ icon: "trending-up" } as any} />
       < Tab.Screen name="Sectoral Indices" component={Sectoral} options={{ icon: "pie-chart" } as any} />
     </Tab.Navigator>
+    
   );
 }
 

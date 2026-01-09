@@ -112,7 +112,7 @@ export default function About({ navigation }: any) {
     headerRow: {
       flexDirection: "row",    
       alignItems: "center",     // ⬅️ VERTICAL CENTER
-      paddingTop: 40,           
+      paddingTop: 60,           
       paddingHorizontal: 20,
       gap: 10,                  
     },

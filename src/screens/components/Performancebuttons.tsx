@@ -1,6 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 type DurationType = "1D" | "1W" | "1M";
 type TabType = "Equity" | "Futures" | "Options";
@@ -18,6 +25,20 @@ export default function Performancebuttons({
   const [selectedDuration, setSelectedDuration] =
     useState<DurationType>("1D");
 
+  // 📅 DATE STATES
+  const [fromDate, setFromDate] = useState<Date | null>(null);
+  const [toDate, setToDate] = useState<Date | null>(null);
+  const [showFromPicker, setShowFromPicker] = useState(false);
+  const [showToPicker, setShowToPicker] = useState(false);
+
+  // 📅 FORMAT DATE (DD/MM/YYYY)
+  const formatDate = (date: Date) => {
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   const handleTab = (tab: TabType) => {
     setSelectedTab(tab);
     onTabChange(tab);
@@ -30,7 +51,7 @@ export default function Performancebuttons({
 
   return (
     <View>
-      {/* ✅ EQUITY / FUTURES / OPTIONS BUTTONS */}
+      {/* ================= TABS ================= */}
       <View style={styles.tabRow}>
         {["Equity", "Futures", "Options"].map((tab) => (
           <TouchableOpacity
@@ -53,9 +74,9 @@ export default function Performancebuttons({
         ))}
       </View>
 
-      {/* ✅ 1D / 1W / 1M + DATE FILTER */}
+      {/* ================= FILTER ROW ================= */}
       <View style={styles.filterRow}>
-        {/* LEFT */}
+        {/* LEFT : DURATION */}
         <View style={styles.leftRow}>
           {["1D", "1W", "1M"].map((d) => (
             <TouchableOpacity
@@ -78,33 +99,74 @@ export default function Performancebuttons({
           ))}
         </View>
 
-        {/* RIGHT */}
+        {/* RIGHT : DATE FILTER */}
         <View style={styles.rightRow}>
-          <TouchableOpacity style={styles.dateBtn}>
-            <Text style={styles.dateText}>From</Text>
+          {/* FROM DATE */}
+          <TouchableOpacity
+            style={styles.dateBtn}
+            onPress={() => setShowFromPicker(true)}
+          >
+            <Text style={styles.dateText}>
+              {fromDate ? formatDate(fromDate) : "From"}
+            </Text>
             <Ionicons name="calendar" size={16} color="#1E2A78" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.dateBtn}>
-            <Text style={styles.dateText}>To</Text>
+          {/* TO DATE */}
+          <TouchableOpacity
+            style={styles.dateBtn}
+            onPress={() => setShowToPicker(true)}
+          >
+            <Text style={styles.dateText}>
+              {toDate ? formatDate(toDate) : "To"}
+            </Text>
             <Ionicons name="calendar" size={16} color="#1E2A78" />
           </TouchableOpacity>
 
+          {/* FILTER ICON */}
           <TouchableOpacity>
             <Ionicons name="funnel" size={20} color="#1E2A78" />
           </TouchableOpacity>
         </View>
       </View>
+
+      {/* ================= FROM DATE PICKER ================= */}
+      {showFromPicker && (
+        <DateTimePicker
+          value={fromDate || new Date()}
+          mode="date"
+          display={Platform.OS === "ios" ? "spinner" : "default"}
+          onChange={(event, date) => {
+            setShowFromPicker(false);
+            if (date) setFromDate(date);
+          }}
+        />
+      )}
+
+      {/* ================= TO DATE PICKER ================= */}
+      {showToPicker && (
+        <DateTimePicker
+          value={toDate || new Date()}
+          mode="date"
+          minimumDate={fromDate || undefined}
+          display={Platform.OS === "ios" ? "spinner" : "default"}
+          onChange={(event, date) => {
+            setShowToPicker(false);
+            if (date) setToDate(date);
+          }}
+        />
+      )}
     </View>
   );
 }
 
+/* ================= STYLES ================= */
 const styles = StyleSheet.create({
   tabRow: {
     flexDirection: "row",
     justifyContent: "space-around",
-    marginBottom: 15,
     marginTop: 15,
+    marginBottom: 15,
   },
 
   tabBtn: {
@@ -115,13 +177,13 @@ const styles = StyleSheet.create({
   },
 
   tabActive: {
-    backgroundColor: "white",
+    backgroundColor: "#FFF",
     borderWidth: 2,
     borderColor: "#1E2A78",
   },
 
   tabText: {
-    color: "white",
+    color: "#FFF",
     fontWeight: "600",
   },
 
@@ -138,8 +200,9 @@ const styles = StyleSheet.create({
 
   leftRow: {
     flexDirection: "row",
-    gap: 8,
-    marginLeft: 4,
+    gap: 6,
+    marginLeft: 8,
+    paddingRight:6
   },
 
   durationBtn: {
@@ -152,13 +215,13 @@ const styles = StyleSheet.create({
   },
 
   durationActive: {
-    backgroundColor: "white",
+    backgroundColor: "#FFF",
     borderWidth: 2,
     borderColor: "#1E2A78",
   },
 
   durationText: {
-    color: "white",
+    color: "#FFF",
     fontWeight: "600",
   },
 
@@ -170,19 +233,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-     marginRight: 4,
+    marginRight: 6,
+   
   },
 
   dateBtn: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
+    width: 120,
+    height: 36,
+    paddingHorizontal: 10,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: "#1E2A78",
-    borderRadius: 20,
-    paddingHorizontal: 10,
-    height: 36,
-    width: 100, 
-    justifyContent: "space-between",
   },
 
   dateText: {

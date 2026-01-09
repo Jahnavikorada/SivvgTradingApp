@@ -1,73 +1,128 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Linking } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import Feather from "react-native-vector-icons/Feather";
 
 interface Props {
   symbol: string;
   t1: number;
   t2: number;
   t3: number;
+  achievedCount?: number; // 🔥 0 | 1 | 2 | 3
   isBuy?: boolean;
 }
 
-export default function TipsCard({ symbol, t1, t2, t3, isBuy = true }: Props) {
+export default function TipsCard({
+  symbol,
+  t1,
+  t2,
+  t3,
+  achievedCount = 1,
+  isBuy = true,
+}: Props) {
+  const targets = [t1, t2, t3];
+
+  /* 📊 PROGRESS % */
+  const progressPercent = Math.min(
+    (achievedCount / targets.length) * 100,
+    100
+  );
+
+  const openYahoo = () =>
+    Linking.openURL(`https://finance.yahoo.com/quote/${symbol}.NS`);
+
+  const openNSE = () =>
+    Linking.openURL(
+      `https://www.nseindia.com/get-quotes/equity?symbol=${symbol}`
+    );
+
   return (
     <View style={styles.card}>
-      {/* TOP ROW */}
+      {/* 🔷 HEADER */}
       <View style={styles.topRow}>
-        <View style={styles.symbolBox}>
+        <View style={styles.symbolStrip}>
           <Text style={styles.symbolText}>{symbol}</Text>
-          <Ionicons name="trending-up" size={18} color="white" />
+          <View style={styles.graphIcon}>
+            <Ionicons name="trending-up" size={18} color="#fff" />
+          </View>
         </View>
 
         <TouchableOpacity
           style={[
             styles.buyBtn,
-            { backgroundColor: isBuy ? "#1FA463" : "#E53935" },
+            { backgroundColor: isBuy ? "#3E8E5B" : "#E53935" },
           ]}
         >
           <Text style={styles.buyText}>{isBuy ? "BUY" : "SELL"}</Text>
         </TouchableOpacity>
       </View>
 
-      {/* T1 T2 T3 */}
-      <View style={styles.tRow}>
-        <View style={styles.tBox}>
-          <Text style={styles.tLabel}>T1</Text>
-          <Text style={styles.tValue}>{t1}</Text>
-        </View>
-
-        <View style={styles.tBox}>
-          <Text style={styles.tLabel}>T2</Text>
-          <Text style={styles.tValue}>{t2}</Text>
-        </View>
-
-        <View style={styles.tBox}>
-          <Text style={styles.tLabel}>T3</Text>
-          <Text style={styles.tValue}>{t3}</Text>
-        </View>
+      {/* 🎯 TARGET LABELS */}
+      <View style={styles.targetsRow}>
+        {["T1", "T2", "T3"].map((label, index) => (
+          <View
+            key={label}
+            style={[
+              styles.targetBox,
+              achievedCount > index && styles.targetBoxActive,
+            ]}
+          >
+            <Text style={styles.targetLabel}>{label}</Text>
+          </View>
+        ))}
       </View>
 
-      {/* PROGRESS */}
+      {/* 🎯 TARGET VALUES */}
+      <View style={styles.valuesRow}>
+        {targets.map((value, index) => (
+          <Text key={index} style={styles.targetValue}>
+            {value}
+          </Text>
+        ))}
+      </View>
+
+      {/* 📊 PROGRESS BAR */}
       <View style={styles.progressContainer}>
-        <View style={styles.progressBar} />
+        <View
+          style={[
+            styles.progressFill,
+            { width: `${progressPercent}%` },
+          ]}
+        />
+
+        {progressPercent > 0 && (
+          <View
+            style={[
+              styles.progressThumb,
+              { left: `${progressPercent}%` },
+            ]}
+          >
+            <Feather name="check" size={16} color="#2E7D32" />
+          </View>
+        )}
       </View>
 
-      {/* FOOTER */}
+      {/* 🔗 FOOTER */}
       <View style={styles.footer}>
-        <Text style={styles.yahoo}>Yahoo!</Text>
-        <Text style={styles.nse}>NSE</Text>
+        <Text style={styles.yahoo} onPress={openYahoo}>
+          Yahoo!
+        </Text>
+        <Text style={styles.divider}> | </Text>
+        <Text style={styles.nse} onPress={openNSE}>
+          NSE
+        </Text>
       </View>
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#F3F4F8",
+    backgroundColor: "#EEF0F6",
     borderRadius: 16,
-    padding: 12,
-    marginBottom: 12,
+    marginBottom: 16,
+    borderWidth: 1.5,
+    borderColor: "#1E2A78",
+    paddingBottom: 14,
   },
 
   topRow: {
@@ -76,85 +131,135 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  symbolBox: {
+  symbolStrip: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#1E2A78",
-    paddingHorizontal: 14,
+    borderTopLeftRadius: 14,
+    borderTopRightRadius: 14,
+    paddingHorizontal: 24,
     paddingVertical: 6,
-    borderRadius: 10,
-    gap: 6,
   },
 
   symbolText: {
-    color: "white",
+    color: "#fff",
+    fontSize: 16,
     fontWeight: "700",
+    marginRight: 10,
+  },
+
+  graphIcon: {
+    backgroundColor: "#6B74A6",
+    padding: 6,
+    borderRadius: 8,
   },
 
   buyBtn: {
-    paddingHorizontal: 18,
+    borderRadius: 22,
+    marginRight: 14,
+    marginTop: 4,
+    paddingHorizontal: 20,
     paddingVertical: 6,
-    borderRadius: 16,
   },
 
   buyText: {
-    color: "white",
+    color: "#fff",
     fontWeight: "700",
   },
 
-  tRow: {
+  targetsRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 10,
+    marginTop: 18,
+    marginHorizontal: 10,
   },
 
-  tBox: {
+  targetBox: {
     width: "32%",
-    backgroundColor: "#3E4A99",
-    borderRadius: 10,
-    paddingVertical: 8,
+    backgroundColor: "#565E92",
+    paddingVertical: 10,
     alignItems: "center",
   },
 
-  tLabel: {
-    color: "white",
-    fontSize: 12,
+  targetBoxActive: {
+    backgroundColor: "#1E2A78",
   },
 
-  tValue: {
-    color: "white",
+  targetLabel: {
+    color: "#fff",
     fontWeight: "700",
-    marginTop: 2,
+  },
+
+  valuesRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+    paddingHorizontal: 6,
+  },
+
+  targetValue: {
+    width: "32%",
+    textAlign: "center",
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#1E2A78",
   },
 
   progressContainer: {
-    height: 8,
-    backgroundColor: "#E0E0E0",
-    borderRadius: 6,
-    marginTop: 10,
+    height: 26,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    marginTop: 18,
+    marginHorizontal: 14,
+    borderWidth: 2,
+    borderColor: "#B0B0B0",
+    position: "relative",
     overflow: "hidden",
   },
 
-  progressBar: {
-    width: "60%", // you can control this later
+  progressFill: {
     height: "100%",
-    backgroundColor: "#1FA463",
+    backgroundColor: "#3E8E5B",
+    borderRadius: 20,
+  },
+
+  progressThumb: {
+    position: "absolute",
+    top: -2,
+    marginLeft: -14,
+    width: 24,
+    height: 24,
+    backgroundColor: "#fff",
+    borderRadius: 14,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 3,
+    borderColor: "#3E8E5B",
+    elevation: 4,
   },
 
   footer: {
     flexDirection: "row",
     justifyContent: "flex-end",
-    marginTop: 6,
-    gap: 10,
+    alignItems: "center",
+    marginTop: 10,
+    marginRight: 12,
   },
 
   yahoo: {
-    color: "#6A1B9A",
-    fontWeight: "600",
+    color: "#6A0DAD",
+    fontWeight: "700",
+    textDecorationLine: "underline",
   },
 
   nse: {
-    color: "#E65100",
-    fontWeight: "600",
+    color: "#FF7A00",
+    fontWeight: "700",
+    textDecorationLine: "underline",
+  },
+
+  divider: {
+    marginHorizontal: 6,
+    fontWeight: "700",
   },
 });

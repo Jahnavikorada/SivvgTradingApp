@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
 
   leftBar: {
     marginTop: 20,
-    width: "30%",
+    width: "20%",
     height: "85%",
     backgroundColor: "#1E3A8A",
     borderRadius: 40,
@@ -145,8 +145,8 @@ const styles = StyleSheet.create({
 
   /* ACTIVE ICON */
   activeCircle: {
-    height: 90,
-    width: 90,
+    height: 70,
+    width: 70,
     borderRadius: 60,
     backgroundColor: "#fff",
     justifyContent: "center",
@@ -156,8 +156,8 @@ const styles = StyleSheet.create({
 
   /* INACTIVE ICON */
   inactiveCircle: {
-    height: 85,
-    width: 85,
+    height: 70,
+    width: 70,
     borderRadius: 50,
     backgroundColor: "rgba(255,255,255,0.15)",
     justifyContent: "center",
@@ -168,8 +168,8 @@ const styles = StyleSheet.create({
   },
 
   activeIcon: {
-    height: 55,
-    width: 55,
+    height: 50,
+    width: 50,
     resizeMode: "contain",
     opacity: 1,
   },
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   },
   rightCard: {
     marginTop: 20,
-    width: "65%",
+    width: "75%",
     height: "85%",
     borderRadius: 40,
     borderWidth: 1.5,
@@ -231,7 +231,7 @@ bankWhiteCard: {
 
 
 bankLogo: {
-  width: 35,
+  width: 30,
   height: 35,
   resizeMode: "contain",
   marginRight: 12,

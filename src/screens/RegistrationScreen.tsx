@@ -6,11 +6,11 @@ import {
   TouchableOpacity,
   StyleSheet,
   ImageBackground,
-  Alert,
+  Platform,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Ionicons from "react-native-vector-icons/Ionicons";
-//import DateTimePicker from "@react-native-community/datetimepicker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 export default function RegisterScreen({ navigation }: any) {
   const [username, setUsername] = useState("");
@@ -18,6 +18,9 @@ export default function RegisterScreen({ navigation }: any) {
   const [phone, setPhone] = useState("");
   const [dob, setDob] = useState("");
   const [gender, setGender] = useState("");
+
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const [errors, setErrors] = useState({
     username: "",
@@ -28,119 +31,100 @@ export default function RegisterScreen({ navigation }: any) {
   });
 
   const [valid, setValid] = useState({
-  username: false,
-  email: false,
-  phone: false,
-  dob: false,
-  gender: false,
-});
+    username: false,
+    email: false,
+    phone: false,
+    dob: false,
+    gender: false,
+  });
 
+ // ---------------- DATE FORMAT ----------------
+const formatDate = (date: Date) => {
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear();
 
-  // const [showDatePicker, setShowDatePicker] = useState(false);
-  // const [selectedDate, setSelectedDate] = useState(new Date());
-
-  // // ---------------- Format date ----------------
-  // const formatDate = (date: any) => {
-  //   let d = new Date(date);
-  //   let day = d.getDate().toString().padStart(2, "0");
-  //   let month = (d.getMonth() + 1).toString().padStart(2, "0");
-  //   let year = d.getFullYear();
-  //   return `${day}/${month}/${year}`;
-  // };
-
-  // ---------------- VALIDATION FUNCTION ----------------
-  const validate = () => {
-  let validForm = true;
-  let newErrors: any = {};
-  let newValid: any = {};
-
-  // USERNAME
-  if (!username.trim()) {
-    newErrors.username = "Username is required";
-    newValid.username = false;
-    validForm = false;
-  } else {
-    newValid.username = true;
-  }
-
-  // EMAIL
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!email.trim()) {
-    newErrors.email = "Email is required";
-    newValid.email = false;
-    validForm = false;
-  } else if (!emailRegex.test(email)) {
-    newErrors.email = "Enter a valid email format";
-    newValid.email = false;
-    validForm = false;
-  } else {
-    newValid.email = true;
-  }
-
-  // PHONE
-  const cleanedPhone = phone.replace(/\s+/g, "");
-  const phoneRegex = /^(\+91)?[6-9][0-9]{9}$/;
-
-  if (!cleanedPhone.trim()) {
-    newErrors.phone = "Phone number is required";
-    newValid.phone = false;
-    validForm = false;
-  } else if (!phoneRegex.test(cleanedPhone)) {
-    newErrors.phone = "Enter a valid Indian mobile number";
-    newValid.phone = false;
-    validForm = false;
-  } else {
-    newValid.phone = true;
-  }
-
-  //DOB
-// if (!dob.trim()) {
-//   newErrors.dob = "DOB is required";
-//   newValid.dob = false;
-//   validForm = false;
-// } else {
-//   newValid.dob = true;
-// }
-
-
-  // GENDER
-  if (!gender.trim()) {
-    newErrors.gender = "Please select gender";
-    newValid.gender = false;
-    validForm = false;
-  } else {
-    newValid.gender = true;
-  }
-
-  setErrors(newErrors);
-  setValid(newValid);
-
-  return validForm;
+  return `${day}/${month}/${year}`; // ✅ use backticks
 };
 
 
+  // ---------------- AGE VALIDATION (>=18) ----------------
+  const isAge18OrAbove = (date: Date) => {
+    const today = new Date();
+    let age = today.getFullYear() - date.getFullYear();
 
+    const monthDiff = today.getMonth() - date.getMonth();
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < date.getDate())
+    ) {
+      age--;
+    }
+
+    return age >= 18;
+  };
+
+  // ---------------- FORM VALIDATION ----------------
+  const validate = () => {
+    let validForm = true;
+    let newErrors: any = {};
+    let newValid: any = {};
+
+    if (!username.trim()) {
+      newErrors.username = "Username is required";
+      validForm = false;
+    } else newValid.username = true;
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+      validForm = false;
+    } else if (!emailRegex.test(email)) {
+      newErrors.email = "Enter valid email";
+      validForm = false;
+    } else newValid.email = true;
+
+    const phoneRegex = /^(\+91)?[6-9][0-9]{9}$/;
+    if (!phone.trim()) {
+      newErrors.phone = "Phone number is required";
+      validForm = false;
+    } else if (!phoneRegex.test(phone)) {
+      newErrors.phone = "Enter valid Indian number";
+      validForm = false;
+    } else newValid.phone = true;
+
+    if (!dob.trim() || !selectedDate || !isAge18OrAbove(selectedDate)) {
+      newErrors.dob = "Age must be 18 years or above";
+      validForm = false;
+    } else newValid.dob = true;
+
+    if (!gender.trim()) {
+      newErrors.gender = "Select gender";
+      validForm = false;
+    } else newValid.gender = true;
+
+    setErrors(newErrors);
+    setValid(newValid);
+    return validForm;
+  };
+
+  // ---------------- REGISTER ----------------
   const handleRegister = () => {
     if (validate()) {
-      //Alert.alert("Success", "Account created successfully!");
-       navigation.navigate("Login");   // <-- Navigate ONLY after validation
+      navigation.navigate("Login");
     }
   };
-  const getBorderColor = (
-  field: "username" | "email" | "phone" | "dob" | "gender"
-) => {
-  if (errors[field]) return "#e66868ff";
-  if (valid[field]) return "green";
-  return "#ccc";
-};
 
-
+  const getBorderColor = (field: keyof typeof errors) => {
+    if (errors[field]) return "#e66868";
+    if (valid[field]) return "green";
+    return "#ccc";
+  };
 
   return (
     <ImageBackground
       source={require("../../assets/images/register.png")}
       style={{ flex: 1 }}
-      resizeMode="cover"
     >
       <LinearGradient
         colors={["rgba(255,46,76,0.8)", "rgba(30,42,120,0.8)"]}
@@ -150,142 +134,96 @@ export default function RegisterScreen({ navigation }: any) {
           <Text style={styles.title}>Create a New Account</Text>
 
           {/* USERNAME */}
-          <View style={[styles.inputBox,
-            { borderColor: getBorderColor("username") }]
-          }>
+          <View style={[styles.inputBox, { borderColor: getBorderColor("username") }]}>
             <Ionicons name="person" size={22} color="#162F7A" />
             <TextInput
               placeholder="Username"
-              placeholderTextColor="#1E2A78"
               style={styles.input}
               value={username}
-              onChangeText={(text) => {
-                setUsername(text);
-                 if (text.trim()) {
-      setErrors({ ...errors, username: "" });
-      setValid({ ...valid, username: true });
-    } else {
-      setValid({ ...valid, username: false });
-    }
-                //setErrors({ ...errors, username: "" });
-              }}
+              onChangeText={setUsername}
             />
           </View>
-          {errors.username ? (
-            <Text style={styles.errorText}>{errors.username}</Text>
-          ) : null}
+          {errors.username && <Text style={styles.errorText}>{errors.username}</Text>}
 
           {/* EMAIL */}
-          <View style={[styles.inputBox,
-            { borderColor: getBorderColor("email") }]
-          }>
+          <View style={[styles.inputBox, { borderColor: getBorderColor("email") }]}>
             <Ionicons name="mail" size={22} color="#162F7A" />
             <TextInput
               placeholder="Email"
-              placeholderTextColor="#1E2A78"
               keyboardType="email-address"
               style={styles.input}
               value={email}
-              onChangeText={(text) => {
-                setEmail(text);
-                setErrors({ ...errors, email: "" });
-              }}
+              onChangeText={setEmail}
             />
           </View>
-          {errors.email ? (
-            <Text style={styles.errorText}>{errors.email}</Text>
-          ) : null}
-
-
+          {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
 
           {/* PHONE */}
-          <View style={[styles.inputBox,
-            { borderColor: getBorderColor("phone") }]
-          }>
+          <View style={[styles.inputBox, { borderColor: getBorderColor("phone") }]}>
             <Ionicons name="call" size={22} color="#162F7A" />
             <TextInput
               placeholder="Phone Number"
-              placeholderTextColor="#1E2A78"
               keyboardType="phone-pad"
               style={styles.input}
               value={phone}
-              onChangeText={(text) => {
-                setPhone(text);
-                setErrors({ ...errors, phone: "" });
-              }}
+              onChangeText={setPhone}
             />
           </View>
-          {errors.phone ? (
-            <Text style={styles.errorText}>{errors.phone}</Text>
-          ) : null}
-
-
+          {errors.phone && <Text style={styles.errorText}>{errors.phone}</Text>}
 
           {/* DOB */}
-          <View style={[styles.inputBox,
-            { borderColor: getBorderColor("dob") }]
-          }>
+          <View style={[styles.inputBox, { borderColor: getBorderColor("dob") }]}>
             <TextInput
               placeholder="DOB (DD/MM/YYYY)"
-              placeholderTextColor="#1E2A78"
               style={styles.input}
-             // value={dob}
-             // editable={false}
-              onChangeText={(text) => {
-    setDob(text);
-
-    if (text.trim()) {
-      setErrors({ ...errors, dob: "" });
-      setValid({ ...valid, dob: true });
-    } else {
-      setValid({ ...valid, dob: false });
-    }
-  }}
+              value={dob}
+              editable={false}
             />
-            {/* <TouchableOpacity onPress={() => setShowDatePicker(true)}> */}
-            <TouchableOpacity >
+            <TouchableOpacity onPress={() => setShowDatePicker(true)}>
               <Ionicons name="calendar" size={22} color="#162F7A" />
             </TouchableOpacity>
           </View>
-          {errors.dob ? (
-            <Text style={styles.errorText}>{errors.dob}</Text>
-          ) : null}
+          {errors.dob && <Text style={styles.errorText}>{errors.dob}</Text>}
 
-          {/* DATE PICKER */}
-          {/* {showDatePicker && (
+          {showDatePicker && (
             <DateTimePicker
-              value={selectedDate}
+              value={selectedDate || new Date()}
               mode="date"
-              display=""
-              onChange={(event, selected) => {
+              display={Platform.OS === "ios" ? "spinner" : "default"}
+              maximumDate={
+                new Date(
+                  new Date().setFullYear(new Date().getFullYear() - 18)
+                )
+              }
+              onChange={(event, date) => {
                 setShowDatePicker(false);
+                if (!date) return;
 
-                if (selected) {
-                  setSelectedDate(selected);
-                  setDob(formatDate(selected));
-                  setErrors({ ...errors, dob: "" });
+                if (!isAge18OrAbove(date)) {
+                  setDob("");
+                  setErrors({ ...errors, dob: "Age must be 18 years or above" });
+                  setValid({ ...valid, dob: false });
+                  return;
                 }
+
+                setSelectedDate(date);
+                setDob(formatDate(date));
+                setErrors({ ...errors, dob: "" });
+                setValid({ ...valid, dob: true });
               }}
             />
-          )} */}
-
-
-
+          )}
 
           {/* GENDER */}
-          <View style={[styles.genderBox,
-            { borderColor: getBorderColor("gender"), borderWidth: 2 },
-            ]
-          }>
+          <View style={[styles.genderBox, { borderColor: getBorderColor("gender"), borderWidth: 2 }]}>
             <Text style={styles.genderLabel}>Gender</Text>
-
             <View style={styles.genderRow}>
               {["Male", "Female", "Others"].map((g) => (
                 <TouchableOpacity
                   key={g}
                   onPress={() => {
                     setGender(g);
-                    setErrors({ ...errors, gender: "" });
+                    setValid({ ...valid, gender: true });
                   }}
                   style={styles.radioRow}
                 >
@@ -299,26 +237,10 @@ export default function RegisterScreen({ navigation }: any) {
               ))}
             </View>
           </View>
-          {errors.gender ? (
-            <Text style={styles.errorText}>{errors.gender}</Text>
-          ) : null}
+          {errors.gender && <Text style={styles.errorText}>{errors.gender}</Text>}
 
-          {/* Already have an account? */}
-          <Text style={styles.footerText}>
-            Already have an account?{" "}
-            <Text
-              style={styles.loginText}
-              onPress={() => navigation.navigate("Login")}
-            >
-              Login
-            </Text>
-          </Text>
-
-          {/* SIGNUP BUTTON */}
           <TouchableOpacity style={styles.loginBtn} onPress={handleRegister}>
-            <Text style={styles.loginBtnText}>
-              Sign up
-            </Text>
+            <Text style={styles.loginBtnText}>Sign Up</Text>
           </TouchableOpacity>
         </View>
       </LinearGradient>
@@ -329,110 +251,47 @@ export default function RegisterScreen({ navigation }: any) {
 // ---------------- STYLES ----------------
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: "center" },
-
   card: {
     marginHorizontal: 25,
     padding: 25,
     borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.4)",
     backgroundColor: "rgba(255,255,255,0.15)",
   },
-
   title: {
     fontSize: 24,
-    //fontWeight: "700",
-    fontFamily: "Lato-Bold",
+    fontWeight: "700",
     color: "#FFF",
     textAlign: "center",
     marginBottom: 20,
   },
-
   inputBox: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#FFF",
     borderRadius: 30,
     paddingHorizontal: 15,
-    marginBottom: 18,
+    marginBottom: 12,
     height: 50,
-     borderWidth: 2, 
+    borderWidth: 2,
   },
-
-  input: {
-    flex: 1,
-    marginLeft: 10,
-    color: "#1E2A78",
-    fontFamily: "Lato-Medium",
-  },
-
+  input: { flex: 1, marginLeft: 10, color: "#1E2A78" },
   genderBox: {
     backgroundColor: "#FFF",
     padding: 15,
     borderRadius: 20,
-    marginTop: 15,
+    marginTop: 10,
   },
-
-  genderLabel: {
-    fontSize: 16,
-    color: "#162F7A",
-    fontWeight: "700",
-    marginBottom: 10,
-  },
-
-  genderRow: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-  },
-
-  radioRow: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-
-  radioText: {
-    marginLeft: 5,
-    color: "#162F7A",
-  },
-
-  errorText: {
-    //color: "#FFBABA",
-    // color: "#e66868ff",
-    // marginLeft: 10,
-    // marginBottom: 15,
-    // fontSize: 13,
-     color: "yellow",
-     //fontSize: 12, 
-      fontSize: 13,
-     marginBottom: 12,
-      marginLeft: 10, 
-  },
-
-  footerText: {
-    textAlign: "center",
-    color: "#FFF",
-    marginVertical: 10,
-    fontFamily: "Lato-Semibold",
-  },
-
-  loginText: {
-    color: "#00BFFF",
-    //fontWeight: "600",
-    fontFamily: "Lato-Bold",
-  },
-
+  genderLabel: { fontWeight: "700", color: "#162F7A", marginBottom: 8 },
+  genderRow: { flexDirection: "row", justifyContent: "space-around" },
+  radioRow: { flexDirection: "row", alignItems: "center" },
+  radioText: { marginLeft: 5, color: "#162F7A" },
+  errorText: { color: "yellow", marginLeft: 10, marginBottom: 8 },
   loginBtn: {
     backgroundColor: "#FFF",
     paddingVertical: 12,
     borderRadius: 25,
     alignItems: "center",
-    marginTop: 5,
+    marginTop: 15,
   },
-
-  loginBtnText: {
-    color: "#162F7A",
-    fontSize: 18,
-    //fontWeight: "700",
-    fontFamily: "Lato-Bold",
-  },
+  loginBtnText: { color: "#162F7A", fontSize: 18, fontWeight: "700" },
 });

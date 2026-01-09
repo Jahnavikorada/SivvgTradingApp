@@ -86,7 +86,7 @@ export default function CustomDrawer(props: any) {
 
                     <DrawerItem
                         icon="call"
-                        label="Contact Us"
+                        label="ContactUs"
                         onPress={() => navigation.navigate("ContactUs")}
                    />
 

@@ -2,13 +2,13 @@ import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import CustomDrawer from "../screens/components/CustomDrawer";
+import MainStackNavigator from "./MainStackNavigator";
 
-import Navbar from "../screens/Navbar";
 import Profile from "../menu/Profile";
 import AppPreference from "../menu/AppPreference";
 import About from "../menu/About";
 import Logout from "../menu/Logout";
-
+import ContactUs from "../menu/Contact";
 
 const Drawer = createDrawerNavigator();
 
@@ -18,23 +18,24 @@ export default function DrawerNavigator() {
       drawerContent={(props) => <CustomDrawer {...props} />}
       screenOptions={{
         headerShown: false,
-
-        // remove rounded corners
         drawerStyle: {
           borderTopRightRadius: 0,
           borderBottomRightRadius: 0,
         },
       }}
     >
+      {/* ✅ IMPORTANT */}
+      <Drawer.Screen
+        name="Dashboard"
+        component={MainStackNavigator}
+      />
 
-       <Drawer.Screen name="Dashboard" component={Navbar} />
-       
-     
+      {/* Drawer menu screens */}
       <Drawer.Screen name="Profile" component={Profile} />
       <Drawer.Screen name="AppPreference" component={AppPreference} />
       <Drawer.Screen name="About" component={About} />
-     <Drawer.Screen name="Logout" component={Logout} />
-     
+      <Drawer.Screen name="ContactUs" component={ContactUs} />
+      <Drawer.Screen name="Logout" component={Logout} />
     </Drawer.Navigator>
   );
 }

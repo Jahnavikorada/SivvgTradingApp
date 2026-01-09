@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   headerRow: {
   flexDirection: "row",    // ⬅️ PUT THEM IN SAME LINE
   alignItems: "center",     // ⬅️ VERTICAL CENTER
-  paddingTop: 40,           // For status bar spacing
+  paddingTop: 60,           // For status bar spacing
   paddingHorizontal: 20,
   gap: 10,                  // Space between icon & text
 },

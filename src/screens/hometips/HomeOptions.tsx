@@ -3,7 +3,7 @@ import TipsCard from "../components/TipsCard";
 
 export default function HomeOptions() {
   const data = [
-    { symbol: "ACC-DEC", t1: 2310, t2: 2340, t3: 2390 },
+    { symbol: "ACC-2300-CE", t1: 2310, t2: 2340, t3: 2390, type:"BUY"},
   ];
 
   return (
@@ -15,7 +15,7 @@ export default function HomeOptions() {
           t1={item.t1}
           t2={item.t2}
           t3={item.t3}
-          isBuy
+          isBuy={item.type === "BUY"} 
         />
       ))}
     </View>

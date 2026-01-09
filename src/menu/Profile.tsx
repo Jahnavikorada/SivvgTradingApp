@@ -120,6 +120,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    paddingTop: 40,  
+    paddingHorizontal: 20,
+    gap: 10,   
   },
 
   headerTitle: {
