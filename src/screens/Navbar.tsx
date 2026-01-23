@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import LinearGradient from "react-native-linear-gradient";
@@ -6,41 +6,73 @@ import Icon from "react-native-vector-icons/Ionicons";
 
 import Home from "./tabs/Home";
 import Portfolio from "./tabs/portfolio";
-
 import Performance from "./tabs/Performance";
 import Sectoral from "./tabs/Sectoral";
+
+import i18n from "../i18n";
+import { LanguageContext } from "../context/LanguageContext";
 
 const Tab = createBottomTabNavigator();
 
 export default function Navbar() {
+  const { reloadKey } = useContext(LanguageContext); // ✅ refresh tabs text
+
   return (
-    <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-      tabBar={(props) => <CustomTabBar {...props} />}
-    >
-      < Tab.Screen name="Home" component={Home} options={{ icon: "home" } as any} />
-      < Tab.Screen name="Portfolio" component={Portfolio} options={{ icon: "speedometer" } as any} />
-      < Tab.Screen name="Past Performance" component={Performance} options={{ icon: "trending-up" } as any} />
-      < Tab.Screen name="Sectoral Indices" component={Sectoral} options={{ icon: "pie-chart" } as any} />
-    </Tab.Navigator>
-    
+    <View key={reloadKey} style={{ flex: 1 }}>
+      <Tab.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+        tabBar={(props) => <CustomTabBar {...props} />}
+      >
+        <Tab.Screen
+          name="Home"
+          component={Home}
+          options={{ icon: "home", tabBarLabelKey: "tab_home" } as any}
+        />
+
+        <Tab.Screen
+          name="Portfolio"
+          component={Portfolio}
+          options={{ icon: "speedometer", tabBarLabelKey: "tab_portfolio" } as any}
+        />
+
+        <Tab.Screen
+          name="Past Performance"
+          component={Performance}
+          options={{
+            icon: "trending-up",
+            tabBarLabelKey: "tab_performance",
+          } as any}
+        />
+
+        <Tab.Screen
+          name="Sectoral Indices"
+          component={Sectoral}
+          options={{
+            icon: "pie-chart",
+            tabBarLabelKey: "tab_sectoral",
+          } as any}
+        />
+      </Tab.Navigator>
+    </View>
   );
 }
 
 // ------------------------------------------------------------
 // CUSTOM TAB BAR UI
 // ------------------------------------------------------------
-
 function CustomTabBar({ state, descriptors, navigation }: any) {
   return (
     <View style={styles.outerPinkCard}>
-     <View style={styles.tabContainer}>
-      {/* <LinearGradient colors={["#122A7C", "#122A7C"]} style={styles.tabContainer}> */}
+      <View style={styles.tabContainer}>
         {state.routes.map((route: any, index: number) => {
           const { options } = descriptors[route.key];
-          const label = route.name;
+
+          // ✅ Translated Label (But keep route.name same)
+          const labelKey = options.tabBarLabelKey;
+          const label = labelKey ? i18n.t(labelKey) : route.name;
+
           const icon = options.icon;
           const isFocused = state.index === index;
 
@@ -54,7 +86,6 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
                 <View style={styles.activeTab}>
                   <Icon name={icon} size={20} color="#1E2A78" />
 
-                  {/* ⭐ This forces exactly 2-line text */}
                   <Text numberOfLines={2} style={styles.activeText}>
                     {label}
                   </Text>
@@ -70,7 +101,6 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
             </TouchableOpacity>
           );
         })}
-      {/* </LinearGradient> */}
       </View>
     </View>
   );
@@ -83,14 +113,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     alignItems: "center",
   },
-
-  // card: {
-
-  //   // backgroundColor: "#ffffff",
-  // padding: 4,
-  // //borderRadius: 50,
-    
-  // },
 
   tabContainer: {
     flexDirection: "row",
@@ -105,14 +127,11 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
 
-  // Each tab has a fixed width slot
   tabButton: {
-    //width: 90,
     alignItems: "center",
     justifyContent: "center",
   },
 
-  // ACTIVE pill design
   activeTab: {
     flexDirection: "row",
     backgroundColor: "#ffffff",
@@ -121,21 +140,18 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: "center",
     justifyContent: "center",
-    minWidth: 100, //  fixes 2-line wrap
+    minWidth: 100,
     gap: 6,
   },
 
-  // ACTIVE label (2 lines)
   activeText: {
     color: "#1E2A78",
     fontWeight: "700",
     fontSize: 13,
     textAlign: "center",
     lineHeight: 17,
-    //width: 90, //  prevents 3-line wrapping
   },
 
-  // INACTIVE icon button
   inactiveCircle: {
     width: 50,
     height: 50,
@@ -144,5 +160,3 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-
-

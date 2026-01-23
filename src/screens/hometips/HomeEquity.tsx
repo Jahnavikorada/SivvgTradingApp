@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View,  StyleSheet, ScrollView } from "react-native";
 import TipsCard from "../components/TipsCard";
 
 export default function HomeEquity() {

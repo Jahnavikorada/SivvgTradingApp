@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -6,34 +6,35 @@ import {
   TouchableOpacity,
   StyleSheet,
   ImageBackground,
-  Alert,
+  
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import i18n from "../i18n";
+import { LanguageContext } from "../context/LanguageContext";
 
 export default function ForgotPasswordScreen({ navigation }: any) {
+  const { reloadKey } = useContext(LanguageContext); // ✅ refresh text on language change
+
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
   const [isTouched, setIsTouched] = useState(false);
-
-
 
   // ---------- Validation Function ----------
   const validateInput = () => {
     setIsTouched(true);
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const cleanedValue = value.replace(/\s+/g, "");      // Remove spaces from phone number
-    const indianPhoneRegex = /^(\+91)?[6-9][0-9]{9}$/;    // Indian phone number → starts with 6-9, 10 digits, allows +91 prefix
+    const cleanedValue = value.replace(/\s+/g, "");
+    const indianPhoneRegex = /^(\+91)?[6-9][0-9]{9}$/;
 
     if (!cleanedValue.trim()) {
-      setError("Email or Phone number is required");
+      setError(i18n.t("err_email_or_phone_required"));
       return false;
     }
 
-    // Not valid email AND not valid Indian phone number
     if (!emailRegex.test(cleanedValue) && !indianPhoneRegex.test(cleanedValue)) {
-      setError("Enter valid phone number: +91 XXXXXXXXXX");
+      setError(i18n.t("err_enter_valid_phone"));
       return false;
     }
 
@@ -43,81 +44,73 @@ export default function ForgotPasswordScreen({ navigation }: any) {
 
   const handleSendOtp = () => {
     if (validateInput()) {
-      //Alert.alert("Success", "OTP Sent Successfully!");
       navigation.navigate("OtpVerification");
     }
   };
 
   return (
-    <ImageBackground
-      source={require("../../assets/images/forgot.png")}
-      style={{ flex: 1 }}
-      resizeMode="cover"
-    >
-      <LinearGradient
-        colors={["rgba(255,46,76,0.8)", "rgba(30,42,120,0.8)"]}
-        style={styles.container}
+    <View key={reloadKey} style={{ flex: 1 }}>
+      <ImageBackground
+        source={require("../../assets/images/forgot.png")}
+        style={{ flex: 1 }}
+        resizeMode="cover"
       >
-        {/* Back Button */}
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
+        <LinearGradient
+          colors={["rgba(255,46,76,0.8)", "rgba(30,42,120,0.8)"]}
+          style={styles.container}
         >
-          <Ionicons name="chevron-back" size={28} color="#FFF" />
-        </TouchableOpacity>
-
-        {/* CARD */}
-        <View style={styles.card}>
-          <Text style={styles.title}>Forgot Password</Text>
-
-          <Text style={styles.subtitle}>
-            Enter your Email or Phone number
-          </Text>
-
-          
-
-          {/* Input Box */}
-          <View style={[styles.inputBox,
-          isTouched && {
-      borderWidth: 2,
-      borderColor: error ? "#e66868ff" : "green",
-    },
-           
-     ]}
-     >
-            <Ionicons name="mail" size={22} color="#162F7A" />
-            <TextInput
-              placeholder="Email / Phone Number"
-              placeholderTextColor="#1E2A78"
-              style={styles.input}
-              keyboardType="email-address"
-              value={value}
-              onChangeText={(text) => {
-                setValue(text);
-                setError("");
-                setIsTouched(false);
-              }}
-            />
-          </View>
-
-          {/* Error Text */}
-          {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
-          {/* Send OTP */}
+          {/* Back Button */}
           <TouchableOpacity
-            // style={[styles.sendOtpBtn, { opacity: value ? 1 : 0.5 }]}
-            // disabled={!value}
-            // onPress={handleSendOtp}
-
-             style={[styles.sendOtpBtn]}
-            //disabled={!value}
-            onPress={handleSendOtp}
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
           >
-            <Text style={styles.sendOtpText}>Send OTP</Text>
+            <Ionicons name="chevron-back" size={28} color="#FFF" />
           </TouchableOpacity>
-        </View>
-      </LinearGradient>
-    </ImageBackground>
+
+          {/* CARD */}
+          <View style={styles.card}>
+            <Text style={styles.title}>{i18n.t("forgot_password_title")}</Text>
+
+            <Text style={styles.subtitle}>
+              {i18n.t("forgot_password_subtitle")}
+            </Text>
+
+            {/* Input Box */}
+            <View
+              style={[
+                styles.inputBox,
+                isTouched && {
+                  borderWidth: 2,
+                  borderColor: error ? "#e66868ff" : "green",
+                },
+              ]}
+            >
+              <Ionicons name="mail" size={22} color="#162F7A" />
+              <TextInput
+                placeholder={i18n.t("email_or_phone_placeholder")}
+                placeholderTextColor="#1E2A78"
+                style={styles.input}
+                keyboardType="email-address"
+                value={value}
+                onChangeText={(text) => {
+                  setValue(text);
+                  setError("");
+                  setIsTouched(false);
+                }}
+              />
+            </View>
+
+            {/* Error Text */}
+            {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+            {/* Send OTP */}
+            <TouchableOpacity style={[styles.sendOtpBtn]} onPress={handleSendOtp}>
+              <Text style={styles.sendOtpText}>{i18n.t("send_otp")}</Text>
+            </TouchableOpacity>
+          </View>
+        </LinearGradient>
+      </ImageBackground>
+    </View>
   );
 }
 
@@ -146,11 +139,9 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: 26,
-    //fontWeight: "700",
     color: "#FFF",
     textAlign: "center",
-     fontFamily: "Lato-Bold"
-
+    fontFamily: "Lato-Bold",
   },
 
   subtitle: {
@@ -171,7 +162,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     height: 50,
   },
-  
 
   input: {
     flex: 1,
@@ -181,14 +171,10 @@ const styles = StyleSheet.create({
   },
 
   errorText: {
-    // color: "#FFCCCC",
-    // fontSize: 13,
-    // marginBottom: 10,
-    // marginLeft: 5,
-    color: "yellow", 
-      fontSize: 13,
-     marginBottom: 12,
-      marginLeft: 10,
+    color: "yellow",
+    fontSize: 13,
+    marginBottom: 12,
+    marginLeft: 10,
   },
 
   sendOtpBtn: {
@@ -202,7 +188,6 @@ const styles = StyleSheet.create({
   sendOtpText: {
     color: "#162F7A",
     fontSize: 18,
-    //fontWeight: "700",
     fontFamily: "Lato-Bold",
   },
 });

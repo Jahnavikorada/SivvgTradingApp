@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
   Image,
-  Text
+  Text,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 
@@ -17,19 +17,23 @@ import { metalData } from "../sectoraldata/metalData";
 import { autoData } from "../sectoraldata/autoData";
 import { fmcgData } from "../sectoraldata/fmcData";
 
+import i18n from "../../i18n";
+import { LanguageContext } from "../../context/LanguageContext";
+
 export default function SectoralPanel() {
+  const { reloadKey } = useContext(LanguageContext); // ✅ refresh heading on language change
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  // ✅ Heading translation keys (ONLY TEXT CHANGED)
   const sectorHeadingMap: any = {
-  bank: "Nifty Bank",
-  pharma: "Nifty Pharma",
-  it: "Nifty IT",
-  money: "Nifty Financial",
-  metal: "Nifty Metal",
-  auto: "Nifty Auto",
-  fmcg: "Nifty FMCG"
-};
-
+    bank: "nifty_bank",
+    pharma: "nifty_pharma",
+    it: "nifty_it",
+    money: "nifty_financial",
+    metal: "nifty_metal",
+    auto: "nifty_auto",
+    fmcg: "nifty_fmcg",
+  };
 
   const icons = [
     { key: "bank", img: require("../../../assets/images/bank.png") },
@@ -39,7 +43,6 @@ export default function SectoralPanel() {
     { key: "metal", img: require("../../../assets/images/metal.png") },
     { key: "auto", img: require("../../../assets/images/auto.png") },
     { key: "fmcg", img: require("../../../assets/images/fmcg.png") },
-    
   ];
 
   const sectorMap: any = {
@@ -47,17 +50,16 @@ export default function SectoralPanel() {
     pharma: pharmaData,
     it: itData,
     money: moneyData,
-     metal: metalData,
-     auto: autoData,
-     fmcg: fmcgData,
+    metal: metalData,
+    auto: autoData,
+    fmcg: fmcgData,
   };
 
   const activeKey = icons[selectedIndex].key;
   const activeData = sectorMap[activeKey];
 
   return (
-    <View style={styles.row}>
-
+    <View key={reloadKey} style={styles.row}>
       {/* ✅ LEFT BLUE CARD */}
       <View style={styles.leftBar}>
         <ScrollView
@@ -88,37 +90,18 @@ export default function SectoralPanel() {
         colors={["rgba(255,46,76,0.30)", "rgba(30,42,120,0.30)"]}
         style={styles.rightCard}
       >
-         {/* <Text style={styles.heading}>Nifty Bank</Text> */}
-         {/* <Text style={styles.heading}>
-              {icons[selectedIndex].key.toUpperCase()}
-         </Text> */}
-
-             <Text style={styles.heading}>
-                 {sectorHeadingMap[activeKey]}
-             </Text>
-
-
-
-        {/* <ScrollView showsVerticalScrollIndicator={false}>
-          {activeData.map((item: any, index: number) => (
-            <View key={index} style={styles.bankRow}>
-              <Image source={item.img} style={styles.bankLogo} />
-            </View>
-          ))}
-        </ScrollView> */}
+        {/* ✅ Translated Sector Heading */}
+        <Text style={styles.heading}>{i18n.t(sectorHeadingMap[activeKey])}</Text>
 
         <ScrollView showsVerticalScrollIndicator={false}>
-    {activeData.map((item: any, index: number) => (
-      <View key={index} style={styles.bankWhiteCard}>
-        <Image source={item.img} style={styles.bankLogo} />
-        <Text style={styles.bankText}>{item.name}</Text>
-      </View>
-    ))}
-  </ScrollView>
-
-
+          {activeData.map((item: any, index: number) => (
+            <View key={index} style={styles.bankWhiteCard}>
+              <Image source={item.img} style={styles.bankLogo} />
+              <Text style={styles.bankText}>{item.name}</Text>
+            </View>
+          ))}
+        </ScrollView>
       </LinearGradient>
-
     </View>
   );
 }
@@ -140,8 +123,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "hidden",
   },
-
-  
 
   /* ACTIVE ICON */
   activeCircle: {
@@ -180,6 +161,7 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     opacity: 0.9,
   },
+
   rightCard: {
     marginTop: 20,
     width: "75%",
@@ -191,55 +173,39 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
     overflow: "hidden",
   },
+
   heading: {
-  fontSize: 22  ,
-  fontWeight: "700",
-  color: "#1E2A78",
- //textAlign: "center",
- marginTop: 10,
-  marginBottom: 20,
-  marginLeft: 20,
-  letterSpacing: 0.5,
-},
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#1E2A78",
+    marginTop: 10,
+    marginBottom: 20,
+    marginLeft: 20,
+    letterSpacing: 0.5,
+  },
 
-//   bankRow: {
-//     alignItems: "center",
-//     marginBottom: 18,
-//     borderRadius: 20,
-//     padding: 8,
-//     backgroundColor: "rgba(255,255,255,0.6)",
-//   },
+  bankWhiteCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#ffffff",
+    borderRadius: 30,
+    paddingVertical: 20,
+    paddingHorizontal: 18,
+    marginBottom: 16,
+    borderWidth: 1.2,
+    borderColor: "#1E2A78",
+  },
 
-//   bankLogo: {
-//     width: 30,
-//     height: 30,
-//     resizeMode: "contain",
-//   },
+  bankLogo: {
+    width: 30,
+    height: 35,
+    resizeMode: "contain",
+    marginRight: 12,
+  },
 
-  
-bankWhiteCard: {
-  flexDirection: "row",
-  alignItems: "center",
-  backgroundColor: "#ffffff",     // ✅ WHITE CARD
-  borderRadius: 30,
-  paddingVertical: 20,
-  paddingHorizontal: 18,
-  marginBottom: 16,
-  borderWidth: 1.2,
-  borderColor: "#1E2A78",
-},
-
-
-bankLogo: {
-  width: 30,
-  height: 35,
-  resizeMode: "contain",
-  marginRight: 12,
-},
-
-bankText: {
-  fontSize: 20,
-  fontWeight: "600",
-  color: "#1E2A78",               // ✅ BLUE TEXT
-},
+  bankText: {
+    fontSize: 20,
+    fontWeight: "600",
+    color: "#1E2A78",
+  },
 });

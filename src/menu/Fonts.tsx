@@ -221,15 +221,23 @@
 
 
 
-import React, { useState } from "react";
-import { View, Text, StyleSheet, Pressable, TouchableOpacity } from "react-native";
+import React, { useState, useContext } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useFont } from "../context/FontContext";
 import { getFontFamily } from "../context/fontHelper";
 
+import i18n from "../i18n";
+import { LanguageContext } from "../context/LanguageContext";
 
-const FONT_STYLES = ["Lato", "Poppins", "Arial"] ;
+const FONT_STYLES = ["Lato", "Poppins", "Arial"];
 const FONT_SIZES = ["Small", "Medium", "Large"];
 
 const FONT_SIZE_MAP: any = {
@@ -238,19 +246,30 @@ const FONT_SIZE_MAP: any = {
   Large: 18,
 };
 
-
 export default function Fonts({ navigation }: any) {
+  const { reloadKey } = useContext(LanguageContext); // ✅ refresh texts
 
-  
   const [openStyle, setOpenStyle] = useState(false);
   const [openSize, setOpenSize] = useState(false);
 
-  // const [selectedStyle, setSelectedStyle] = useState("Lato");
-  // const [selectedSize, setSelectedSize] = useState("Medium");
-
-    // ✅ GLOBAL FONT STATE
+  // ✅ GLOBAL FONT STATE
   const { fontFamily, fontSize, setFontFamily, setFontSize } = useFont();
 
+  // ✅ Translate Font Size labels
+  const getTranslatedSizeLabel = (sizeKey: string) => {
+    if (sizeKey === "Small") return i18n.t("font_small");
+    if (sizeKey === "Medium") return i18n.t("font_medium");
+    if (sizeKey === "Large") return i18n.t("font_large");
+    return sizeKey;
+  };
+
+  // ✅ Translate Font Style labels
+  const getTranslatedFontStyleLabel = (styleKey: string) => {
+    if (styleKey === "Lato") return i18n.t("font_lato");
+    if (styleKey === "Poppins") return i18n.t("font_poppins");
+    if (styleKey === "Arial") return i18n.t("font_arial");
+    return styleKey;
+  };
 
   const renderDropdown = (
     title: string,
@@ -258,16 +277,23 @@ export default function Fonts({ navigation }: any) {
     setOpen: any,
     data: string[],
     selected: string,
-    //setSelected: any
-    onSelect: (item: string) => void
+    onSelect: (item: string) => void,
+    type: "style" | "size" // ✅ add type for translation
   ) => (
     <View style={styles.dropdownWrapper}>
-      <Pressable
-        style={styles.dropdownHeader}
-       // activeOpacity={1}
-        onPress={() => setOpen(!open)}
-      >
-        <Text style={[styles.dropdownHeaderText, { fontFamily: getFontFamily(fontFamily, "medium"), fontSize: fontSize + 2 }]}>{title}</Text>
+      <Pressable style={styles.dropdownHeader} onPress={() => setOpen(!open)}>
+        <Text
+          style={[
+            styles.dropdownHeaderText,
+            {
+              fontFamily: getFontFamily(fontFamily, "medium"),
+              fontSize: fontSize + 2,
+            },
+          ]}
+        >
+          {title}
+        </Text>
+
         <Icon
           name={open ? "chevron-up" : "chevron-down"}
           size={20}
@@ -276,94 +302,122 @@ export default function Fonts({ navigation }: any) {
       </Pressable>
 
       <View
-  style={[
-    styles.dropdownBody,
-    !open && styles.dropdownHidden,
-  ]}
-  pointerEvents={open ? "auto" : "none"}
->
-  {data.map((item) => (
-    <Pressable
-      key={item}
-      style={[
-        styles.option, 
-        item === selected && styles.selectedOption,
-        item === data[data.length - 1] && styles.lastOption, // ✅ remove line
-        item === selected && 
-        item === data[data.length - 1] && styles.lastSelectedOption,
-      ]}
-      onPress={() => {
-        onSelect(item);
-        setOpen(false);
-      }}
-    >
-      <Text
-        style={[
-          styles.optionText,
-          
-          {
-            // fontFamily: getFontFamily(item as any, "regular"),
-            // fontSize: FONT_SIZE_MAP[item] || fontSize,
-            fontFamily: getFontFamily(fontFamily, "bold"),
-            fontSize,
-            color: item === selected ? "#fff" : "#1E2A78",
-          },
-        ]}
+        style={[styles.dropdownBody, !open && styles.dropdownHidden]}
+        pointerEvents={open ? "auto" : "none"}
       >
-        {item}
-      </Text>
-    </Pressable>
-  ))}
-</View>
+        {data.map((item) => {
+          // ✅ Only translate shown text (not stored value)
+          const displayText =
+            type === "size"
+              ? getTranslatedSizeLabel(item)
+              : type === "style"
+              ? getTranslatedFontStyleLabel(item)
+              : item;
 
-
+          return (
+            <Pressable
+              key={item}
+              style={[
+                styles.option,
+                item === selected && styles.selectedOption,
+                item === data[data.length - 1] && styles.lastOption,
+                item === selected &&
+                  item === data[data.length - 1] &&
+                  styles.lastSelectedOption,
+              ]}
+              onPress={() => {
+                onSelect(item); // ✅ still stores actual values like "Lato"
+                setOpen(false);
+              }}
+            >
+              <Text
+                style={[
+                  styles.optionText,
+                  {
+                    fontFamily: getFontFamily(fontFamily, "bold"),
+                    fontSize,
+                    color: item === selected ? "#fff" : "#1E2A78",
+                  },
+                ]}
+              >
+                {displayText}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
     </View>
   );
 
   return (
-    <LinearGradient
-      colors={["#FF2E4C", "#1E2A78"]}
-      style={styles.gradient}
-      start={{ x: 0, y: 0.5 }}
-      end={{ x: 1, y: 0.5 }}
-    >
-      {/* Header */}
-      <View style={styles.headerRow}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back" size={26} color="#fff" />
-        </TouchableOpacity>
-        <Text style={[styles.headerTitle, { fontFamily: getFontFamily(fontFamily, "bold"), fontSize: fontSize + 6 } ]}>Fonts</Text>
-      </View>
+    <View key={reloadKey} style={{ flex: 1 }}>
+      <LinearGradient
+        colors={["#FF2E4C", "#1E2A78"]}
+        style={styles.gradient}
+        start={{ x: 0, y: 0.5 }}
+        end={{ x: 1, y: 0.5 }}
+      >
+        {/* Header */}
+        <View style={styles.headerRow}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon name="arrow-back" size={26} color="#fff" />
+          </TouchableOpacity>
 
-      {/* Card */}
-      <View style={styles.card}>
-        <Text style={[styles.title, { fontFamily: getFontFamily(fontFamily, "semibold"), fontSize: fontSize + 2 }]}>Font Style and Size</Text>
+          <Text
+            style={[
+              styles.headerTitle,
+              {
+                fontFamily: getFontFamily(fontFamily, "bold"),
+                fontSize: fontSize + 6,
+              },
+            ]}
+          >
+            {i18n.t("fonts")}
+          </Text>
+        </View>
 
-        {renderDropdown(
-          "Font Style",
-          openStyle,
-          setOpenStyle,
-          FONT_STYLES,
-          fontFamily,
-          (item) => setFontFamily( item as "Lato" | "Poppins" | "Arial" )
+        {/* Card */}
+        <View style={styles.card}>
+          <Text
+            style={[
+              styles.title,
+              {
+                fontFamily: getFontFamily(fontFamily, "semibold"),
+                fontSize: fontSize + 2,
+              },
+            ]}
+          >
+            {i18n.t("font_style_and_size")}
+          </Text>
 
-        )}
+          {/* ✅ FONT STYLE DROPDOWN */}
+          {renderDropdown(
+            i18n.t("font_style"),
+            openStyle,
+            setOpenStyle,
+            FONT_STYLES,
+            fontFamily,
+            (item) => setFontFamily(item as "Lato" | "Poppins" | "Arial"),
+            "style"
+          )}
 
-        {renderDropdown(
-          "Font Size",
-          openSize,
-          setOpenSize,
-          FONT_SIZES,
-           Object.keys(FONT_SIZE_MAP).find(
-            key => FONT_SIZE_MAP[key] === fontSize
-          ) || "Medium",
-          (item) => setFontSize(FONT_SIZE_MAP[item])
-        )}
-      </View>
-    </LinearGradient>
+          {/* ✅ FONT SIZE DROPDOWN */}
+          {renderDropdown(
+            i18n.t("font_size"),
+            openSize,
+            setOpenSize,
+            FONT_SIZES,
+            Object.keys(FONT_SIZE_MAP).find(
+              (key) => FONT_SIZE_MAP[key] === fontSize
+            ) || "Medium",
+            (item) => setFontSize(FONT_SIZE_MAP[item]),
+            "size"
+          )}
+        </View>
+      </LinearGradient>
+    </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   gradient: {
@@ -394,8 +448,6 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    //fontSize: 20,
-    //fontWeight: "bold",
     color: "#1E2A78",
     textAlign: "center",
     marginBottom: 25,
@@ -409,29 +461,25 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: "#1E2A78",
     borderRadius: 10,
-    width: "95%",          // ✅ reduces both left & right sides
-    alignSelf: "center", 
+    width: "95%",
+    alignSelf: "center",
     paddingHorizontal: 26,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-
-      zIndex: 2,          // ✅ HEADER ON TOP
-  //elevation: 2,       // ✅ ANDROID
+    zIndex: 2,
   },
 
   dropdownHeaderText: {
     color: "#fff",
-   // fontSize: 18,
-    //fontWeight: "bold",
-    flex: 1,            // ✅ allow centering
-    textAlign: "center"
+    flex: 1,
+    textAlign: "center",
   },
 
   dropdownHidden: {
-   height: 0,
-   overflow: "hidden",
-},
+    height: 0,
+    overflow: "hidden",
+  },
 
   dropdownBody: {
     marginTop: -2,
@@ -442,9 +490,7 @@ const styles = StyleSheet.create({
     borderColor: "#1E2A78",
     borderBottomLeftRadius: 12,
     borderBottomRightRadius: 12,
-   // overflow: "hidden",
-
-   zIndex: 1,
+    zIndex: 1,
   },
 
   option: {
@@ -454,18 +500,17 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#000",
   },
- 
-  lastOption: {
-  borderBottomWidth: 0,
-},
 
-lastSelectedOption: {
-   borderBottomLeftRadius: 12,
-  borderBottomRightRadius: 12,
-},
+  lastOption: {
+    borderBottomWidth: 0,
+  },
+
+  lastSelectedOption: {
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+  },
 
   optionText: {
-    //fontSize: 16,
     color: "#1E2A78",
     textAlign: "center",
   },
@@ -473,17 +518,4 @@ lastSelectedOption: {
   selectedOption: {
     backgroundColor: "rgba(30,42,120,0.54)",
   },
-
-  // selectedOptionText: {
-  //   color: "#fff",
-  //   fontWeight: "600",
-  //   textAlign: "center"
-  // },
 });
-
-
-
-
-
-
-

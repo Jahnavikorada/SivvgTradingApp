@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import i18n from "../i18n"; // ✅ ADD THIS
 
 export default function LoginScreen({ navigation }: any) {
   const [showPassword, setShowPassword] = useState(false);
@@ -30,15 +31,15 @@ export default function LoginScreen({ navigation }: any) {
 
     // USER ID VALIDATION
     if (!userId.trim()) {
-      newErrors.userId = "User ID is required";
+      newErrors.userId = i18n.t("err_userid_required");
       valid = false;
       setIsUserIdValid(false);
     } else if (userId.includes(" ")) {
-      newErrors.userId = "User ID must not contain spaces";
+      newErrors.userId = i18n.t("err_userid_no_spaces");
       valid = false;
       setIsUserIdValid(false);
     } else if (userId.length < 5) {
-      newErrors.userId = "User ID must be at least 5 characters";
+      newErrors.userId = i18n.t("err_userid_min_5");
       valid = false;
       setIsUserIdValid(false);
     } else {
@@ -55,31 +56,31 @@ export default function LoginScreen({ navigation }: any) {
     };
 
     if (!password.trim()) {
-      newErrors.password = "Password is required";
+      newErrors.password = i18n.t("err_password_required");
       valid = false;
       setIsPasswordValid(false);
     } else if (password.length < 5) {
-      newErrors.password = "Password must be at least 5 characters";
+      newErrors.password = i18n.t("err_password_min_5");
       valid = false;
       setIsPasswordValid(false);
     } else if (regex.whitespace.test(password)) {
-      newErrors.password = "Whitespace not allowed";
+      newErrors.password = i18n.t("err_whitespace_not_allowed");
       valid = false;
       setIsPasswordValid(false);
     } else if (!regex.uppercase.test(password)) {
-      newErrors.password = "Must contain an uppercase letter";
+      newErrors.password = i18n.t("err_uppercase_required");
       valid = false;
       setIsPasswordValid(false);
     } else if (!regex.lowercase.test(password)) {
-      newErrors.password = "Must contain a lowercase letter";
+      newErrors.password = i18n.t("err_lowercase_required");
       valid = false;
       setIsPasswordValid(false);
     } else if (!regex.number.test(password)) {
-      newErrors.password = "Must contain a number";
+      newErrors.password = i18n.t("err_number_required");
       valid = false;
       setIsPasswordValid(false);
     } else if (!regex.special.test(password)) {
-      newErrors.password = "Must contain a special character";
+      newErrors.password = i18n.t("err_special_required");
       valid = false;
       setIsPasswordValid(false);
     } else {
@@ -89,7 +90,6 @@ export default function LoginScreen({ navigation }: any) {
     setErrors(newErrors);
 
     if (valid) {
-      //console.log("Login Success");
       navigation.navigate("OtpVerification1");
     }
   };
@@ -107,10 +107,10 @@ export default function LoginScreen({ navigation }: any) {
         <View style={styles.card}>
           {/* Title Section */}
           <Text style={styles.title}>
-            Welcome to <Text style={styles.brand}>SIVVG</Text>
+            {i18n.t("welcome_to")} <Text style={styles.brand}>SIVVG</Text>
           </Text>
 
-          <Text style={styles.subtitle}>Enter your credentials to login</Text>
+          <Text style={styles.subtitle}>{i18n.t("login_subtitle")}</Text>
 
           {/* USER ID */}
           <View
@@ -122,7 +122,7 @@ export default function LoginScreen({ navigation }: any) {
           >
             <Ionicons name="person" size={22} color="#162F7A" />
             <TextInput
-              placeholder="User ID"
+              placeholder={i18n.t("user_id")}
               placeholderTextColor="#1E2A78"
               style={styles.input}
               value={userId}
@@ -147,7 +147,7 @@ export default function LoginScreen({ navigation }: any) {
           >
             <Ionicons name="lock-closed" size={22} color="#162F7A" />
             <TextInput
-              placeholder="Password"
+              placeholder={i18n.t("password")}
               placeholderTextColor="#1E2A78"
               secureTextEntry={!showPassword}
               style={styles.input}
@@ -173,32 +173,30 @@ export default function LoginScreen({ navigation }: any) {
           ) : null}
 
           {/* FORGOT PASSWORD */}
-          {/* <TouchableOpacity style={styles.forgotWrapper}>
-            <Text style={styles.forgot}>Forgot Password ?</Text>
-          </TouchableOpacity> */}
-
           <TouchableOpacity style={{ alignSelf: "flex-end" }}>
-  <Text
-    style={styles.forgot}
-    onPress={() => navigation.navigate("ForgotPassword")}
-  >
-    Forgot Password ?
-  </Text>
-</TouchableOpacity>
+            <Text
+              style={styles.forgot}
+              onPress={() => navigation.navigate("ForgotPassword")}
+            >
+              {i18n.t("forgot_password")}
+            </Text>
+          </TouchableOpacity>
 
           {/* LOGIN BUTTON */}
           <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
-            <Text style={styles.loginText}>Login</Text>
+            <Text style={styles.loginText}>{i18n.t("login")}</Text>
           </TouchableOpacity>
 
           {/* FOOTER */}
-         <Text style={styles.footerText}>
-  Don't have an account?{" "}
-  <Text style={styles.signup} onPress={() => navigation.navigate("Register")}>
-    Signup
-  </Text>
-</Text>
-
+          <Text style={styles.footerText}>
+            {i18n.t("dont_have_account")}{" "}
+            <Text
+              style={styles.signup}
+              onPress={() => navigation.navigate("Register")}
+            >
+              {i18n.t("signup")}
+            </Text>
+          </Text>
         </View>
       </LinearGradient>
     </ImageBackground>
@@ -218,16 +216,15 @@ const styles = StyleSheet.create({
   },
 
   title: {
-     fontSize: 25, 
-     //fontWeight: "700",
-      color: "#FFF", 
-      textAlign: "center",
-      fontFamily: "Lato-Bold"
-    },
-  brand: { 
+    fontSize: 25,
+    color: "#FFF",
+    textAlign: "center",
+    fontFamily: "Lato-Bold",
+  },
+
+  brand: {
     fontSize: 32,
-     //fontWeight: "900",
-      color: "#FFF" ,
+    color: "#FFF",
     fontFamily: "Lemon-Regular",
   },
 
@@ -241,7 +238,7 @@ const styles = StyleSheet.create({
   },
 
   inputBox: {
-     flexDirection: "row",
+    flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#FFF",
     borderRadius: 30,
@@ -249,36 +246,35 @@ const styles = StyleSheet.create({
     height: 50,
     marginBottom: 8,
     borderWidth: 2,
-     borderColor: "transparent",
+    borderColor: "transparent",
   },
 
   errorBorder: { borderColor: "#e66868ff" },
   successBorder: { borderColor: "#28A745" },
 
-  input: { 
-    flex: 1, 
-    marginLeft: 10, 
+  input: {
+    flex: 1,
+    marginLeft: 10,
     color: "#1E2A78",
-     fontFamily: "Lato-Medium"
-    },
+    fontFamily: "Lato-Medium",
+  },
 
   errorText: {
-    //  color: "#FF2E2E", 
-     color: "yellow",
-     //fontSize: 12, 
-      fontSize: 13,
-     marginBottom: 12,
-      marginLeft: 10, 
-    },
+    color: "yellow",
+    fontSize: 13,
+    marginBottom: 12,
+    marginLeft: 10,
+  },
 
   forgotWrapper: {
     alignSelf: "flex-end",
     marginBottom: 15,
   },
+
   forgot: {
     fontSize: 14,
     color: "#01D5FF",
-     fontFamily: "Lato-Bold"
+    fontFamily: "Lato-Bold",
   },
 
   loginBtn: {
@@ -289,22 +285,21 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
 
-  loginText: { 
-    fontSize: 20, 
-    //fontWeight: "700", 
+  loginText: {
+    fontSize: 20,
     color: "#162F7A",
-    //fontWeight: "bold",
-    fontFamily: "Lato-Bold"
- },
+    fontFamily: "Lato-Bold",
+  },
 
-  footerText: { 
-    marginTop: 15, 
-    color: "#FFF", 
+  footerText: {
+    marginTop: 15,
+    color: "#FFF",
     textAlign: "center",
     fontFamily: "Lato-Semibold",
-   },
+  },
+
   signup: {
-     color: "#01D5FF" ,
-     fontFamily: "Lato-Bold",
-    },
+    color: "#01D5FF",
+    fontFamily: "Lato-Bold",
+  },
 });

@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, StyleSheet, Dimensions } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import CommonHeader from "../components/CommonHeader";
 import SectoralPanel from "../components/SectoralPanel";
+
+import i18n from "../../i18n";
+import { LanguageContext } from "../../context/LanguageContext";
+
 const { height } = Dimensions.get("window");
 
 export default function Sectoral({ navigation }: any) {
+  const { reloadKey } = useContext(LanguageContext); // ✅ refresh title translation
+
   return (
     <LinearGradient
       colors={["#FF2E4C", "#1E2A78"]}
@@ -13,13 +19,13 @@ export default function Sectoral({ navigation }: any) {
       start={{ x: 0, y: 0.5 }}
       end={{ x: 1, y: 0.5 }}
     >
-      <View style={styles.container}>
-        {/* ✅ TOP HEADER (UNCHANGED) */}
-        <CommonHeader title="Sectoral Indices" navigation={navigation} />
+      <View key={reloadKey} style={styles.container}>
+        {/* ✅ TOP HEADER (UNCHANGED UI) */}
+        <CommonHeader title={i18n.t("sectoral_indices")} navigation={navigation} />
 
-        {/* ✅ WHITE PARENT CARD (UNCHANGED) */}
+        {/* ✅ WHITE PARENT CARD (UNCHANGED UI) */}
         <View style={styles.card}>
-            <SectoralPanel />
+          <SectoralPanel />
         </View>
       </View>
     </LinearGradient>
@@ -28,7 +34,7 @@ export default function Sectoral({ navigation }: any) {
 
 const styles = StyleSheet.create({
   gradient: {
-    flex: 1,   // ✅ FULL SCREEN
+    flex: 1, // ✅ FULL SCREEN
   },
 
   container: {

@@ -1,15 +1,13 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import TipsCard from "../components/TipsCard";
+import i18n from "../../i18n";
 
 type DurationType = "1D" | "1W" | "1M";
 
 export default function Futures({ duration }: { duration: DurationType }) {
-
   const futuresData: Record<DurationType, any[]> = {
-    "1D": [
-      { symbol: "BANKNIFTY", t1: 47850, t2: 47980, t3: 48120 },
-    ],
+    "1D": [{ symbol: "BANKNIFTY", t1: 47850, t2: 47980, t3: 48120 }],
 
     "1W": [
       { symbol: "BANKNIFTY", t1: 48200, t2: 48500, t3: 48850 },
@@ -26,7 +24,9 @@ export default function Futures({ duration }: { duration: DurationType }) {
 
   return (
     <View>
-      <Text style={styles.title}>Futures ({duration})</Text>
+      <Text style={styles.title}>
+        {i18n.t("futures")} ({duration})
+      </Text>
 
       {data.map((item, index) => (
         <TipsCard

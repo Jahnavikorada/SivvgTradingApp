@@ -1,5 +1,6 @@
 import React from "react";
 import SuccessCard from "../components/SuccessCard";
+import i18n from "../../i18n";
 
 export default function Optionsrate() {
   const tipsData = {
@@ -10,7 +11,7 @@ export default function Optionsrate() {
 
   return (
     <SuccessCard
-      title="Options Success Rate"
+      title={i18n.t("options_success_rate")}
       tipsData={tipsData}
     />
   );

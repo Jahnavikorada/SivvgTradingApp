@@ -1,17 +1,14 @@
-import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import React, { useContext } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 import LinearGradient from "react-native-linear-gradient";
 import Ionicons from "react-native-vector-icons/Ionicons";
-
+import i18n from "../../i18n";
+import { LanguageContext } from "../../context/LanguageContext";
 
 export default function CustomDrawer(props: any) {
   const { navigation } = props;
+  const { reloadKey } = useContext(LanguageContext); // ✅ to refresh text
 
   const DrawerItem = ({
     icon,
@@ -31,140 +28,106 @@ export default function CustomDrawer(props: any) {
     </TouchableOpacity>
   );
 
-    function alert(arg0: string): void {
-        throw new Error("Function not implemented.");
-    }
-
   return (
-    <View style={{ flex: 1 }}>
+    <View key={reloadKey} style={{ flex: 1 }}>
+      <LinearGradient
+        colors={["#FF2E4C", "#1E2A78"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.gradientOverlay}
+        pointerEvents="none"
+      >
+        <View style={styles.profileContainer}>
+          <View style={styles.avatar}>
+            <Ionicons name="person" size={34} color="#1E2A78" />
+          </View>
+          <Text style={styles.username}>{i18n.t("drawer_username")}</Text>
 
-        <LinearGradient
-          colors={["#FF2E4C", "#1E2A78"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.gradientOverlay}
-          pointerEvents="none"   // 🔥 IMPORTANT (so clicks pass through)
+        </View>
+      </LinearGradient>
+
+      {/* ⚪ WHITE CARD */}
+      <View style={styles.menucard}>
+        <DrawerContentScrollView
+          {...props}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 20 }}
         >
-            <View style={styles.profileContainer}>
-              <View style={styles.avatar}>
-                <Ionicons name="person" size={34} color="#1E2A78" />
-              </View>
-              <Text style={styles.username}>John_ID77</Text>
-            </View>
-        </LinearGradient>
-
-        {/* ⚪ WHITE CARD */}
-     <View style={styles.menucard}>
-
-        {/* <DrawerContentScrollView {...props} contentContainerStyle={{  paddingBottom: 20}}
-        showsVerticalScrollIndicator={false}> */}
-      
-      <DrawerContentScrollView
-    {...props}
-    showsVerticalScrollIndicator={false}
-    contentContainerStyle={{ paddingBottom: 20 }}
-  >
           {/* ⚪ MENU */}
-           <View style={styles.menu}>
-                <DrawerItem
-                   icon="person"
-                   label="My Profile"
-                   onPress={() => navigation.navigate("Profile")}
-               />
-               
-                    <DrawerItem
-                       icon="settings"
-                       label="App Preferences"
-                       onPress={() => navigation.navigate("AppPreference")}
-                   />
+          <View style={styles.menu}>
+            <DrawerItem
+              icon="person"
+              label={i18n.t("drawer_my_profile")}
+              onPress={() => navigation.navigate("Profile")}
+            />
 
-                    <DrawerItem
-                        icon="information-circle"
-                        label="About"
-                        onPress={() => navigation.navigate("About")}
-                   />
+            <DrawerItem
+              icon="settings"
+              label={i18n.t("drawer_app_preferences")}
+              onPress={() => navigation.navigate("AppPreference")}
+            />
 
-                    <DrawerItem
-                        icon="call"
-                        label="ContactUs"
-                        onPress={() => navigation.navigate("ContactUs")}
-                   />
+            <DrawerItem
+              icon="information-circle"
+              label={i18n.t("drawer_about")}
+              onPress={() => navigation.navigate("About")}
+            />
 
-                    <DrawerItem
-                        icon="log-out"
-                        label="Logout"
-                        onPress={() => navigation.navigate("Logout")}
-                   />
-              
+            <DrawerItem
+              icon="call"
+              label={i18n.t("drawer_contact_us")}
+              onPress={() => navigation.navigate("ContactUs")}
+            />
 
-               {/* 🔽 FOOTER */}
-                <View style={styles.footer}>
-                    <View style={styles.links}>
-                        <Text style={styles.link}>Privacy Policy</Text>
-                        <Text style={styles.link}>Terms & Conditions</Text>
-                    </View>
-                    
-               </View>
-               <Text style={styles.version}>Android Version 0.1.0</Text>
-           </View>
-       </DrawerContentScrollView>
+            <DrawerItem
+              icon="log-out"
+              label={i18n.t("drawer_logout")}
+              onPress={() => navigation.navigate("Logout")}
+            />
+
+            {/* 🔽 FOOTER */}
+            <View style={styles.footer}>
+              <View style={styles.links}>
+                <Text style={styles.link}>{i18n.t("privacy_policy")}</Text>
+                <Text style={styles.link}>{i18n.t("terms_conditions")}</Text>
+              </View>
+            </View>
+
+            <Text style={styles.version}>{i18n.t("android_version")}</Text>
+          </View>
+        </DrawerContentScrollView>
+      </View>
     </View>
-    </View>
-    
   );
 }
 
-
-
-
-
-
-
-
 const styles = StyleSheet.create({
+  gradientOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: "25%",
+    zIndex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 
-    gradientOverlay: {
-  position: "absolute",
-  top: 0,
-  left: 0,
-  right: 0,
+  profileContainer: {
+    alignItems: "center",
+  },
 
-  // 🔥 HALF OF THE SCREEN HEIGHT
-  height: "25%",
+  menucard: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    marginTop: "60%",
+    elevation: 12,
+  },
 
-  zIndex: 1, 
-  justifyContent: "center",
-  alignItems: "center"         // above white background
-},
-
-profileContainer: {
-  alignItems: "center",
-},
-
-menucard: {
-  flex: 1,
-  backgroundColor: "#FFFFFF",
-
-  // 🔥 card look
-  //marginHorizontal: 12,
-  marginTop: "60%",            // overlap gradient card
- // borderRadius: 24,
-
-  elevation: 12,
-},
-
-
-
-  /* 🔴 HEADER */
   header: {
-    // height: 180,
-    // justifyContent: "center",
-    // alignItems: "center",
-    // paddingTop: 20,
     height: 220,
     justifyContent: "center",
     alignItems: "center",
-
   },
 
   avatar: {
@@ -185,11 +148,9 @@ menucard: {
     marginTop: 4,
   },
 
-  /* ⚪ MENU */
   menu: {
     paddingTop: 20,
     paddingHorizontal: 16,
-    //flex: 1,
   },
 
   item: {
@@ -214,20 +175,18 @@ menucard: {
     color: "#1E2A78",
   },
 
-  /* 🔽 FOOTER */
   footer: {
     marginTop: 30,
-    //paddingBottom: 20,
     paddingHorizontal: 16,
   },
 
   version: {
-  marginTop: "70%",
-  textAlign: "center",   // 🔥 key
-  alignSelf: "center",   // 🔥 key
-  fontSize: 11,
-  color: "#999",
-},
+    marginTop: "70%",
+    textAlign: "center",
+    alignSelf: "center",
+    fontSize: 11,
+    color: "#999",
+  },
 
   links: {
     flexDirection: "row",
@@ -240,11 +199,4 @@ menucard: {
     color: "#1E2A78",
     fontWeight: "600",
   },
-
-//   version: {
-//     textAlign: "center",
-//     fontSize: 11,
-//     color: "#999",
-//     marginTop: 4,
-//   },
 });

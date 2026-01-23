@@ -71,8 +71,8 @@
 
 
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import LinearGradient from "react-native-linear-gradient";
+import { Text, StyleSheet, TouchableOpacity } from "react-native";
+//import LinearGradient from "react-native-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation, DrawerActions } from "@react-navigation/native";

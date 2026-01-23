@@ -1,5 +1,6 @@
 import React from "react";
 import SuccessCard from "../components/SuccessCard";
+import i18n from "../../i18n";
 
 export default function Equityrate() {
   const tipsData = {
@@ -10,7 +11,7 @@ export default function Equityrate() {
 
   return (
     <SuccessCard
-      title="Equity Success Rate"
+      title={i18n.t("equity_success_rate")}
       tipsData={tipsData}
     />
   );

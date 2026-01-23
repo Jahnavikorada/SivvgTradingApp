@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   View,
   Text,
@@ -9,70 +9,67 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/Feather";
+import i18n from "../../i18n";
+import { LanguageContext } from "../../context/LanguageContext";
 
 const notifications = [
   {
     id: "1",
     symbol: "GODREJCP",
-    message: "Target 1 reached successfully",
-    time: "1 min ago",
+    message: "notification_target_reached",
+    time: "notification_1_min_ago",
   },
   {
     id: "2",
     symbol: "ADANIENT",
-    message: "Target 1 reached successfully",
-    time: "7 mins ago",
+    message: "notification_target_reached",
+    time: "notification_7_mins_ago",
   },
   {
     id: "3",
     symbol: "COLPAL",
-    message: "Target 1 reached successfully",
-    time: "45 mins ago",
+    message: "notification_target_reached",
+    time: "notification_45_mins_ago",
   },
   {
     id: "4",
     symbol: "ANGELONE",
-    message: "Target 1 reached successfully",
-    time: "1 hr ago",
+    message: "notification_target_reached",
+    time: "notification_1_hr_ago",
   },
-  
 ];
 
 const NotificationScreen = ({ navigation }: any) => {
+  const { reloadKey } = useContext(LanguageContext); // ✅ refresh texts
 
   const renderItem = ({ item }: any) => (
     <View style={styles.card}>
       <View style={styles.cardContent}>
         <Text style={styles.symbol}>{item.symbol} - </Text>
-        <Text style={styles.message}>{item.message}</Text>
+        <Text style={styles.message}>{i18n.t(item.message)}</Text>
       </View>
 
-      <Text style={styles.time}>{item.time}</Text>
+      <Text style={styles.time}>{i18n.t(item.time)}</Text>
     </View>
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      
-     <LinearGradient
-  colors={["#E73C4E", "#3A4B8F"]}
-  start={{ x: 0, y: 0 }}
-  end={{ x: 1, y: 0 }}
-  style={styles.header}
->
+    <SafeAreaView key={reloadKey} style={styles.container}>
+      <LinearGradient
+        colors={["#E73C4E", "#3A4B8F"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={styles.header}
+      >
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon name="chevron-left" size={28} color="#FFFFFF" />
+        </TouchableOpacity>
 
-     <TouchableOpacity onPress={() => navigation.goBack()}>
-  <Icon name="chevron-left" size={28} color="#FFFFFF" />
-</TouchableOpacity>
+        <Text style={styles.headerTitle}>{i18n.t("notifications")}</Text>
 
-
-        <Text style={styles.headerTitle}>Notifications</Text>
-
-        
         <View style={{ width: 28 }} />
       </LinearGradient>
 
-      
       <View style={styles.body}>
         <FlatList
           data={notifications}
@@ -100,14 +97,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    
   },
 
   headerTitle: {
     color: "#FFFFFF",
     fontSize: 20,
     fontWeight: "500",
-    marginRight:110,
+    marginRight: 110,
   },
 
   body: {
@@ -127,11 +123,8 @@ const styles = StyleSheet.create({
     padding: 18,
     borderWidth: 1.5,
     borderColor: "#1E2A78",
-
-    
     elevation: 4,
 
-    
     shadowColor: "#000",
     shadowOpacity: 0.15,
     shadowRadius: 6,

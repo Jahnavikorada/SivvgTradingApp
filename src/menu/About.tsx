@@ -1,9 +1,18 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import React, { useState, useContext } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useFont } from "../context/FontContext";
 import { getFontFamily } from "../context/fontHelper";
+
+import i18n from "../i18n";
+import { LanguageContext } from "../context/LanguageContext";
 
 /* Reusable Box Component */
 const InfoBox = ({
@@ -15,115 +24,154 @@ const InfoBox = ({
   title: string;
   desc: string;
 }) => {
-    const { fontFamily, fontSize } = useFont();
+  const { fontFamily, fontSize } = useFont();
 
   return (
     <View style={styles.box}>
-        <View style={styles.row}>
-            <Icon name={icon} size={28} color="#fff" />
-            <View style={styles.textContainer}>
-                <Text style={[styles.boxTitle, {fontFamily: getFontFamily(fontFamily, "semibold"), fontSize: fontSize + 2}]}>
-                    {title}
-                </Text>
+      <View style={styles.row}>
+        <Icon name={icon} size={28} color="#fff" />
+        <View style={styles.textContainer}>
+          <Text
+            style={[
+              styles.boxTitle,
+              {
+                fontFamily: getFontFamily(fontFamily, "semibold"),
+                fontSize: fontSize + 2,
+              },
+            ]}
+          >
+            {title}
+          </Text>
 
-                <Text style={[styles.boxText, {fontFamily: getFontFamily(fontFamily, "regular"), fontSize}]}>
-                    {desc}
-                </Text>
-            </View>
+          <Text
+            style={[
+              styles.boxText,
+              {
+                fontFamily: getFontFamily(fontFamily, "regular"),
+                fontSize,
+              },
+            ]}
+          >
+            {desc}
+          </Text>
         </View>
+      </View>
     </View>
   );
 };
 
 export default function About({ navigation }: any) {
-    
-     const { fontFamily, fontSize } = useFont();
+  const { fontFamily, fontSize } = useFont();
+  const { reloadKey } = useContext(LanguageContext); // ✅ refresh texts
 
-    return(
-        <LinearGradient
-            colors={["#FF2E4C", "#1E2A78"]}
-            style={styles.gradient}      // ✅ FULL SCREEN
-            start={{ x: 0, y: 0.5 }}
-            end={{ x: 1, y: 0.5 }}
-         >
-            <View style={styles.headerRow}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Icon name="arrow-back" size={26} color="#fff" />
-                </TouchableOpacity>
+  return (
+    <View key={reloadKey} style={{ flex: 1 }}>
+      <LinearGradient
+        colors={["#FF2E4C", "#1E2A78"]}
+        style={styles.gradient}
+        start={{ x: 0, y: 0.5 }}
+        end={{ x: 1, y: 0.5 }}
+      >
+        <View style={styles.headerRow}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon name="arrow-back" size={26} color="#fff" />
+          </TouchableOpacity>
 
-                <Text style={[styles.headerTitle, { fontFamily: getFontFamily(fontFamily, "bold"), fontSize: fontSize + 6 }]}>
-                    About Us
-                </Text>
+          <Text
+            style={[
+              styles.headerTitle,
+              {
+                fontFamily: getFontFamily(fontFamily, "bold"),
+                fontSize: fontSize + 6,
+              },
+            ]}
+          >
+            {i18n.t("about_us")}
+          </Text>
+        </View>
 
-            </View>
+        <View style={styles.card}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <Text
+              style={[
+                styles.header,
+                {
+                  fontFamily: getFontFamily(fontFamily, "semibold"),
+                  fontSize: fontSize + 4,
+                },
+              ]}
+            >
+              {i18n.t("why_choose_us")}
+            </Text>
 
-            <View style={styles.card}>
-                <ScrollView showsVerticalScrollIndicator={false}>
-                    <Text style={[ styles.header, {fontFamily: getFontFamily(fontFamily, "semibold"), fontSize: fontSize + 4}]}>
-                        Why choose us?
-                    </Text>
+            <InfoBox
+              icon="checkbox"
+              title={i18n.t("precision_picks")}
+              desc={i18n.t("precision_picks_desc")}
+            />
 
-                    <InfoBox 
-                    icon="checkbox"
-                    title="Precision Picks"
-                    desc="Accurate intraday tips by experts with clear entry and exit."
-                    />
+            <InfoBox
+              icon="flash"
+              title={i18n.t("quick_trigger")}
+              desc={i18n.t("quick_trigger_desc")}
+            />
 
-                    <InfoBox 
-                    icon="flash"
-                    title="Quick Trigger"
-                    desc="Act fast and catch the right market opportunity."
-                    />
+            <InfoBox
+              icon="analytics-sharp"
+              title={i18n.t("strategic_flow")}
+              desc={i18n.t("strategic_flow_desc")}
+            />
 
-                    <InfoBox 
-                    icon="analytics-sharp"
-                    title="Strategic Flow"
-                    desc="Structured trading tips with no guesswork."
-                    />
+            <Text
+              style={[
+                styles.header,
+                {
+                  fontFamily: getFontFamily(fontFamily, "semibold"),
+                  fontSize: fontSize + 4,
+                },
+              ]}
+            >
+              {i18n.t("what_we_offer")}
+            </Text>
 
-                    <Text style={[styles.header, {fontFamily: getFontFamily(fontFamily, "semibold"), fontSize: fontSize + 4}]}>
-                        What we Offer
-                    </Text>
+            <InfoBox
+              icon="chevron-forward"
+              title={i18n.t("intraday_tips")}
+              desc={i18n.t("intraday_tips_desc")}
+            />
 
-                    <InfoBox
-                    icon="chevron-forward"
-                    title="Intraday Tips"
-                    desc="(Equity, Futures, Options)"
-                    />
-
-                    <InfoBox
-                    icon="chevron-forward"
-                    title="Market Notifications"
-                    desc="Real-time market updates"
-                    />
-
-                </ScrollView>
-            </View>
-        </LinearGradient>
-    )
+            <InfoBox
+              icon="chevron-forward"
+              title={i18n.t("market_notifications")}
+              desc={i18n.t("market_notifications_desc")}
+            />
+          </ScrollView>
+        </View>
+      </LinearGradient>
+    </View>
+  );
 }
 
- const styles = StyleSheet.create({
+const styles = StyleSheet.create({
+  gradient: {
+    flex: 1,
+  },
 
-    gradient: {
-      flex: 1,              
-    },
- 
-    headerRow: {
-      flexDirection: "row",    
-      alignItems: "center",     // ⬅️ VERTICAL CENTER
-      paddingTop: 60,           
-      paddingHorizontal: 20,
-      gap: 10,                  
-    },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingTop: 60,
+    paddingHorizontal: 20,
+    gap: 10,
+  },
 
-    headerTitle: {
-      color: "#fff",
-      fontSize: 20,
-      fontWeight: "bold",
-    },
+  headerTitle: {
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
 
-    card: {
+  card: {
     flex: 1,
     backgroundColor: "#fff",
     borderTopLeftRadius: 40,
@@ -131,8 +179,8 @@ export default function About({ navigation }: any) {
     marginTop: "10%",
     padding: 16,
   },
-     
-   box: {
+
+  box: {
     backgroundColor: "#2F3C7E",
     borderRadius: 12,
     padding: 16,
@@ -156,15 +204,13 @@ export default function About({ navigation }: any) {
     marginBottom: 4,
   },
 
-   boxText: {
-     color: "#E6E9FF",
-     //fontSize: 16,
-   },
+  boxText: {
+    color: "#E6E9FF",
+  },
 
-   header: {
+  header: {
     textAlign: "center",
     color: "#1E2A78",
     marginVertical: 16,
-   }
-
- })
+  },
+});

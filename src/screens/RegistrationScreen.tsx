@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -11,8 +11,12 @@ import {
 import LinearGradient from "react-native-linear-gradient";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import i18n from "../i18n";
+import { LanguageContext } from "../context/LanguageContext";
 
 export default function RegisterScreen({ navigation }: any) {
+  const { reloadKey } = useContext(LanguageContext); // ✅ to refresh texts on language change
+
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -38,15 +42,14 @@ export default function RegisterScreen({ navigation }: any) {
     gender: false,
   });
 
- // ---------------- DATE FORMAT ----------------
-const formatDate = (date: Date) => {
-  const day = date.getDate().toString().padStart(2, "0");
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const year = date.getFullYear();
+  // ---------------- DATE FORMAT ----------------
+  const formatDate = (date: Date) => {
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
 
-  return `${day}/${month}/${year}`; // ✅ use backticks
-};
-
+    return `${day}/${month}/${year}`;
+  };
 
   // ---------------- AGE VALIDATION (>=18) ----------------
   const isAge18OrAbove = (date: Date) => {
@@ -71,35 +74,35 @@ const formatDate = (date: Date) => {
     let newValid: any = {};
 
     if (!username.trim()) {
-      newErrors.username = "Username is required";
+      newErrors.username = i18n.t("err_username_required");
       validForm = false;
     } else newValid.username = true;
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email.trim()) {
-      newErrors.email = "Email is required";
+      newErrors.email = i18n.t("err_email_required");
       validForm = false;
     } else if (!emailRegex.test(email)) {
-      newErrors.email = "Enter valid email";
+      newErrors.email = i18n.t("err_email_invalid");
       validForm = false;
     } else newValid.email = true;
 
     const phoneRegex = /^(\+91)?[6-9][0-9]{9}$/;
     if (!phone.trim()) {
-      newErrors.phone = "Phone number is required";
+      newErrors.phone = i18n.t("err_phone_required");
       validForm = false;
     } else if (!phoneRegex.test(phone)) {
-      newErrors.phone = "Enter valid Indian number";
+      newErrors.phone = i18n.t("err_phone_invalid");
       validForm = false;
     } else newValid.phone = true;
 
     if (!dob.trim() || !selectedDate || !isAge18OrAbove(selectedDate)) {
-      newErrors.dob = "Age must be 18 years or above";
+      newErrors.dob = i18n.t("err_age_18");
       validForm = false;
     } else newValid.dob = true;
 
     if (!gender.trim()) {
-      newErrors.gender = "Select gender";
+      newErrors.gender = i18n.t("err_select_gender");
       validForm = false;
     } else newValid.gender = true;
 
@@ -122,129 +125,164 @@ const formatDate = (date: Date) => {
   };
 
   return (
-    <ImageBackground
-      source={require("../../assets/images/register.png")}
-      style={{ flex: 1 }}
-    >
-      <LinearGradient
-        colors={["rgba(255,46,76,0.8)", "rgba(30,42,120,0.8)"]}
-        style={styles.container}
+    <View key={reloadKey} style={{ flex: 1 }}>
+      <ImageBackground
+        source={require("../../assets/images/register.png")}
+        style={{ flex: 1 }}
       >
-        <View style={styles.card}>
-          <Text style={styles.title}>Create a New Account</Text>
+        <LinearGradient
+          colors={["rgba(255,46,76,0.8)", "rgba(30,42,120,0.8)"]}
+          style={styles.container}
+        >
+          <View style={styles.card}>
+            <Text style={styles.title}>{i18n.t("create_new_account")}</Text>
 
-          {/* USERNAME */}
-          <View style={[styles.inputBox, { borderColor: getBorderColor("username") }]}>
-            <Ionicons name="person" size={22} color="#162F7A" />
-            <TextInput
-              placeholder="Username"
-              style={styles.input}
-              value={username}
-              onChangeText={setUsername}
-            />
-          </View>
-          {errors.username && <Text style={styles.errorText}>{errors.username}</Text>}
+            {/* USERNAME */}
+            <View
+              style={[
+                styles.inputBox,
+                { borderColor: getBorderColor("username") },
+              ]}
+            >
+              <Ionicons name="person" size={22} color="#162F7A" />
+              <TextInput
+                placeholder={i18n.t("username")}
+                style={styles.input}
+                value={username}
+                onChangeText={setUsername}
+              />
+            </View>
+            {errors.username && (
+              <Text style={styles.errorText}>{errors.username}</Text>
+            )}
 
-          {/* EMAIL */}
-          <View style={[styles.inputBox, { borderColor: getBorderColor("email") }]}>
-            <Ionicons name="mail" size={22} color="#162F7A" />
-            <TextInput
-              placeholder="Email"
-              keyboardType="email-address"
-              style={styles.input}
-              value={email}
-              onChangeText={setEmail}
-            />
-          </View>
-          {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+            {/* EMAIL */}
+            <View
+              style={[
+                styles.inputBox,
+                { borderColor: getBorderColor("email") },
+              ]}
+            >
+              <Ionicons name="mail" size={22} color="#162F7A" />
+              <TextInput
+                placeholder={i18n.t("email")}
+                keyboardType="email-address"
+                style={styles.input}
+                value={email}
+                onChangeText={setEmail}
+              />
+            </View>
+            {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
 
-          {/* PHONE */}
-          <View style={[styles.inputBox, { borderColor: getBorderColor("phone") }]}>
-            <Ionicons name="call" size={22} color="#162F7A" />
-            <TextInput
-              placeholder="Phone Number"
-              keyboardType="phone-pad"
-              style={styles.input}
-              value={phone}
-              onChangeText={setPhone}
-            />
-          </View>
-          {errors.phone && <Text style={styles.errorText}>{errors.phone}</Text>}
+            {/* PHONE */}
+            <View
+              style={[
+                styles.inputBox,
+                { borderColor: getBorderColor("phone") },
+              ]}
+            >
+              <Ionicons name="call" size={22} color="#162F7A" />
+              <TextInput
+                placeholder={i18n.t("phone_number")}
+                keyboardType="phone-pad"
+                style={styles.input}
+                value={phone}
+                onChangeText={setPhone}
+              />
+            </View>
+            {errors.phone && <Text style={styles.errorText}>{errors.phone}</Text>}
 
-          {/* DOB */}
-          <View style={[styles.inputBox, { borderColor: getBorderColor("dob") }]}>
-            <TextInput
-              placeholder="DOB (DD/MM/YYYY)"
-              style={styles.input}
-              value={dob}
-              editable={false}
-            />
-            <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-              <Ionicons name="calendar" size={22} color="#162F7A" />
+            {/* DOB */}
+            <View
+              style={[
+                styles.inputBox,
+                { borderColor: getBorderColor("dob") },
+              ]}
+            >
+              <TextInput
+                placeholder={i18n.t("dob_placeholder")}
+                style={styles.input}
+                value={dob}
+                editable={false}
+              />
+              <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+                <Ionicons name="calendar" size={22} color="#162F7A" />
+              </TouchableOpacity>
+            </View>
+            {errors.dob && <Text style={styles.errorText}>{errors.dob}</Text>}
+
+            {showDatePicker && (
+              <DateTimePicker
+                value={selectedDate || new Date()}
+                mode="date"
+                display={Platform.OS === "ios" ? "spinner" : "default"}
+                maximumDate={
+                  new Date(new Date().setFullYear(new Date().getFullYear() - 18))
+                }
+                onChange={(event, date) => {
+                  setShowDatePicker(false);
+                  if (!date) return;
+
+                  if (!isAge18OrAbove(date)) {
+                    setDob("");
+                    setErrors({ ...errors, dob: i18n.t("err_age_18") });
+                    setValid({ ...valid, dob: false });
+                    return;
+                  }
+
+                  setSelectedDate(date);
+                  setDob(formatDate(date));
+                  setErrors({ ...errors, dob: "" });
+                  setValid({ ...valid, dob: true });
+                }}
+              />
+            )}
+
+            {/* GENDER */}
+            <View
+              style={[
+                styles.genderBox,
+                { borderColor: getBorderColor("gender"), borderWidth: 2 },
+              ]}
+            >
+              <Text style={styles.genderLabel}>{i18n.t("gender")}</Text>
+              <View style={styles.genderRow}>
+                {[i18n.t("male"), i18n.t("female"), i18n.t("others")].map(
+                  (g) => (
+                    <TouchableOpacity
+                      key={g}
+                      onPress={() => {
+                        setGender(g);
+                        setValid({ ...valid, gender: true });
+                      }}
+                      style={styles.radioRow}
+                    >
+                      <Ionicons
+                        name={
+                          gender === g
+                            ? "radio-button-on"
+                            : "radio-button-off"
+                        }
+                        size={20}
+                        color="#162F7A"
+                      />
+                      <Text style={styles.radioText}>{g}</Text>
+                    </TouchableOpacity>
+                  )
+                )}
+              </View>
+            </View>
+            {errors.gender && (
+              <Text style={styles.errorText}>{errors.gender}</Text>
+            )}
+
+            <TouchableOpacity style={styles.loginBtn} onPress={handleRegister}>
+              <Text style={styles.loginBtnText}>{i18n.t("sign_up")}</Text>
             </TouchableOpacity>
           </View>
-          {errors.dob && <Text style={styles.errorText}>{errors.dob}</Text>}
-
-          {showDatePicker && (
-            <DateTimePicker
-              value={selectedDate || new Date()}
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"}
-              maximumDate={
-                new Date(
-                  new Date().setFullYear(new Date().getFullYear() - 18)
-                )
-              }
-              onChange={(event, date) => {
-                setShowDatePicker(false);
-                if (!date) return;
-
-                if (!isAge18OrAbove(date)) {
-                  setDob("");
-                  setErrors({ ...errors, dob: "Age must be 18 years or above" });
-                  setValid({ ...valid, dob: false });
-                  return;
-                }
-
-                setSelectedDate(date);
-                setDob(formatDate(date));
-                setErrors({ ...errors, dob: "" });
-                setValid({ ...valid, dob: true });
-              }}
-            />
-          )}
-
-          {/* GENDER */}
-          <View style={[styles.genderBox, { borderColor: getBorderColor("gender"), borderWidth: 2 }]}>
-            <Text style={styles.genderLabel}>Gender</Text>
-            <View style={styles.genderRow}>
-              {["Male", "Female", "Others"].map((g) => (
-                <TouchableOpacity
-                  key={g}
-                  onPress={() => {
-                    setGender(g);
-                    setValid({ ...valid, gender: true });
-                  }}
-                  style={styles.radioRow}
-                >
-                  <Ionicons
-                    name={gender === g ? "radio-button-on" : "radio-button-off"}
-                    size={20}
-                    color="#162F7A"
-                  />
-                  <Text style={styles.radioText}>{g}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-          {errors.gender && <Text style={styles.errorText}>{errors.gender}</Text>}
-
-          <TouchableOpacity style={styles.loginBtn} onPress={handleRegister}>
-            <Text style={styles.loginBtnText}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
-      </LinearGradient>
-    </ImageBackground>
+        </LinearGradient>
+      </ImageBackground>
+    </View>
   );
 }
 

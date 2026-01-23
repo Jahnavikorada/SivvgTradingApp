@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, StyleSheet } from "react-native";
+
+import i18n from "../../i18n";
+import { LanguageContext } from "../../context/LanguageContext";
 
 type TipsObj = {
   total: number;
@@ -17,6 +20,7 @@ interface Props {
 }
 
 export default function SuccessCard({ title, tipsData }: Props) {
+  const { reloadKey } = useContext(LanguageContext); // ✅ refresh translated labels
 
   const calculateRate = (obj: TipsObj) => {
     if (!obj || obj.total === 0) return 0;
@@ -24,13 +28,25 @@ export default function SuccessCard({ title, tipsData }: Props) {
   };
 
   const chartData = [
-    { label: "1 Day", value: calculateRate(tipsData.oneDay), color: "#0052cc" },
-    { label: "1 Week", value: calculateRate(tipsData.oneWeek), color: "#198cff" },
-    { label: "1 Month", value: calculateRate(tipsData.oneMonth), color: "#3ec7d1" },
+    {
+      label: i18n.t("one_day"),
+      value: calculateRate(tipsData.oneDay),
+      color: "#0052cc",
+    },
+    {
+      label: i18n.t("one_week"),
+      value: calculateRate(tipsData.oneWeek),
+      color: "#198cff",
+    },
+    {
+      label: i18n.t("one_month"),
+      value: calculateRate(tipsData.oneMonth),
+      color: "#3ec7d1",
+    },
   ];
 
   return (
-    <View style={styles.card}>
+    <View key={reloadKey} style={styles.card}>
       {/* TITLE BAR */}
       <View style={styles.textbg}>
         <Text style={styles.title}>{title}</Text>
@@ -38,7 +54,6 @@ export default function SuccessCard({ title, tipsData }: Props) {
 
       {/* CHART + LEGEND */}
       <View style={styles.chartWrapper}>
-
         {/* CHART */}
         <View style={styles.chartRow}>
           {chartData.map((item, index) => (
@@ -70,7 +85,7 @@ export default function SuccessCard({ title, tipsData }: Props) {
         </View>
       </View>
 
-      <Text style={styles.footer}>Recommendations Growth</Text>
+      <Text style={styles.footer}>{i18n.t("recommendations_growth")}</Text>
     </View>
   );
 }

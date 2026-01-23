@@ -1,42 +1,38 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
+import i18n from "../i18n";
+import { LanguageContext } from "../context/LanguageContext";
+
 export default function LogoutScreen({ navigation }: any) {
+  const { reloadKey } = useContext(LanguageContext); // ✅ refresh texts
+
   return (
-    <View style={styles.container}>
+    <View key={reloadKey} style={styles.container}>
       <View style={styles.box}>
-        {/* <Ionicons name="log-out" size={60} color="#1E2A78" /> */}
-        < MaterialIcons name="logout" size={60} color="#1E2A78" />
+        <MaterialIcons name="logout" size={60} color="#1E2A78" />
 
-        <Text style={styles.title}>Logout</Text>
-        <Text style={styles.user}>Hi John</Text>
-
-        <Text style={styles.msg}>
-          Are you sure you want to logout?
+        <Text style={styles.title}>{i18n.t("logout")}</Text>
+        <Text style={styles.user}>
+          {i18n.t("hi")} John
         </Text>
 
+        <Text style={styles.msg}>{i18n.t("logout_confirm")}</Text>
+
         <View style={styles.row}>
-          <TouchableOpacity style={styles.yes}
-          onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.yesText}>Yes</Text>
+          <TouchableOpacity style={styles.yes} onPress={() => navigation.goBack()}>
+            <Text style={styles.yesText}>{i18n.t("yes")}</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.no}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.noText}>No</Text>
+          <TouchableOpacity style={styles.no} onPress={() => navigation.goBack()}>
+            <Text style={styles.noText}>{i18n.t("no")}</Text>
           </TouchableOpacity>
         </View>
       </View>
     </View>
   );
 }
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -48,10 +44,8 @@ const styles = StyleSheet.create({
   box: {
     width: "85%",
     padding: 30,
-    //borderWidth: 1,
-   // borderColor: "#999",
     alignItems: "center",
-    gap: 6
+    gap: 6,
   },
 
   title: {
@@ -65,7 +59,7 @@ const styles = StyleSheet.create({
     marginTop: 18,
     color: "#1E2A78",
     fontWeight: "bold",
-    fontSize: 18
+    fontSize: 18,
   },
 
   msg: {
@@ -91,7 +85,7 @@ const styles = StyleSheet.create({
   yesText: {
     color: "#fff",
     fontSize: 16,
-    fontWeight: "500"
+    fontWeight: "500",
   },
 
   no: {
@@ -104,6 +98,6 @@ const styles = StyleSheet.create({
   noText: {
     color: "#1E2A78",
     fontSize: 16,
-    fontWeight: "500"
+    fontWeight: "500",
   },
 });

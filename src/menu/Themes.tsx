@@ -1,14 +1,22 @@
-import React,  { useState } from 'react'
-import { View, StyleSheet, TouchableOpacity, Text, StatusBar, Dimensions, ScrollView } from "react-native";
+import React, { useState, useContext } from "react";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  StatusBar,
+} from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/Ionicons";
-//import ChangeLanguage from './ChangeLanguage';
+
+import i18n from "../i18n";
+import { LanguageContext } from "../context/LanguageContext";
 
 export default function Themes({ navigation }: any) {
-     // const [selected, setSelected] = useState("English");
-      const [theme, setTheme] = useState<"light" | "dark">("light");
+  const { reloadKey } = useContext(LanguageContext); // ✅ refresh texts
+  const [theme, setTheme] = useState<"light" | "dark">("light");
 
-         // Theme colors (LOCAL)
+  // Theme colors (LOCAL)
   const colors =
     theme === "light"
       ? {
@@ -24,177 +32,161 @@ export default function Themes({ navigation }: any) {
           border: "#FFFFFF",
         };
 
-
   return (
-     <View style={{ flex: 1, backgroundColor: colors.background }}>
-       <StatusBar
-         barStyle={theme === "light" ? "dark-content" : "light-content"}
-       />
-       <LinearGradient
-         colors={["#FF2E4C", "#1E2A78"]}
-         style={styles.gradient}      // ✅ FULL SCREEN
-         start={{ x: 0, y: 0.5 }}
-         end={{ x: 1, y: 0.5 }}
-        >
-          <View style={styles.headerRow}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Icon name="arrow-back" size={26} color="#fff" />
-                </TouchableOpacity>
+    <View key={reloadKey} style={{ flex: 1, backgroundColor: colors.background }}>
+      <StatusBar
+        barStyle={theme === "light" ? "dark-content" : "light-content"}
+      />
 
-                 <Text style={styles.headerTitle}>Themes</Text>
+      <LinearGradient
+        colors={["#FF2E4C", "#1E2A78"]}
+        style={styles.gradient}
+        start={{ x: 0, y: 0.5 }}
+        end={{ x: 1, y: 0.5 }}
+      >
+        <View style={styles.headerRow}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon name="arrow-back" size={26} color="#fff" />
+          </TouchableOpacity>
+
+          <Text style={styles.headerTitle}>{i18n.t("themes")}</Text>
+        </View>
+
+        <View style={[styles.card, { backgroundColor: colors.card }]}>
+          <Text style={[styles.title, { color: colors.text }]}>
+            {i18n.t("choose_theme")}
+          </Text>
+
+          <View style={styles.row}>
+            {/* LIGHT THEME */}
+            <TouchableOpacity
+              style={[
+                styles.preview,
+                {
+                  backgroundColor: "#FFFFFF",
+                  borderColor: theme === "light" ? "#1E2A78" : "#CBD5E1",
+                },
+              ]}
+              onPress={() => setTheme("light")}
+            >
+              <View style={[styles.line, { backgroundColor: "#E5E7EB" }]} />
+              <View style={[styles.line, { backgroundColor: "#CBD5E1" }]} />
+              <Text style={styles.previewText}>{i18n.t("light")}</Text>
+              {theme === "light" && <View style={styles.dot} />}
+            </TouchableOpacity>
+
+            {/* DARK THEME */}
+            <TouchableOpacity
+              style={[
+                styles.preview,
+                {
+                  backgroundColor: "#0F172A",
+                  borderColor: theme === "dark" ? "#FFFFFF" : "#334155",
+                },
+              ]}
+              onPress={() => setTheme("dark")}
+            >
+              <View style={[styles.line, { backgroundColor: "#334155" }]} />
+              <View style={[styles.line, { backgroundColor: "#475569" }]} />
+              <Text style={[styles.previewText, { color: "#FFFFFF" }]}>
+                {i18n.t("dark")}
+              </Text>
+              {theme === "dark" && (
+                <View style={[styles.dot, { backgroundColor: "#FFFFFF" }]} />
+              )}
+            </TouchableOpacity>
           </View>
-      
 
-      
-          <View style={[styles.card, { backgroundColor: colors.card }]}>
-
-                  {/* <View style={[styles.card, { backgroundColor: colors.card }]}> */}
-                    <Text style={[styles.title, { color: colors.text }]}> Choose a Theme </Text>
-
-                     <View style={styles.row}>
-                       {/* LIGHT THEME */}
-                        <TouchableOpacity
-                          style={[
-                            styles.preview,
-                           {
-                            backgroundColor: "#FFFFFF",
-                            borderColor:
-                            theme === "light" ? "#1E2A78" : "#CBD5E1",
-                           },
-                          ]}
-                            onPress={() => setTheme("light")}
-                         >
-                          <View style={[styles.line, { backgroundColor: "#E5E7EB" }]} />
-                            <View style={[styles.line, { backgroundColor: "#CBD5E1" }]} />
-                              <Text style={styles.previewText}> Light </Text>
-                              {theme === "light" && <View style={styles.dot} />}
-                        </TouchableOpacity>
-
-                         {/* DARK THEME */}
-                        <TouchableOpacity
-                          style={[
-                           styles.preview,
-                            {
-                              backgroundColor: "#0F172A",
-                              borderColor:
-                              theme === "dark" ? "#FFFFFF" : "#334155",
-                            },
-                          ]}
-                          onPress={() => setTheme("dark")}
-                         >
-                          <View style={[styles.line, { backgroundColor: "#334155" }]} />
-                            <View style={[styles.line, { backgroundColor: "#475569" }]} />
-                              <Text style={[styles.previewText, { color: "#FFFFFF" }]}> Dark </Text>
-                              {theme === "dark" && (
-                                <View style={[styles.dot, { backgroundColor: "#FFFFFF" }]} />
-                              )}
-                        </TouchableOpacity>
-                     </View>
-
-                     {/* DONE BUTTON */}
-                                      <TouchableOpacity
-                                        style={[styles.button, { borderColor: colors.border }]}
-                                        onPress={() => navigation.goBack()}
-                                            >
-                                        <Text style={[styles.buttonText, { color: colors.text }]}>
-                                            Done
-                                            </Text>
-                                        </TouchableOpacity>
-
-                 
-
-             
-             
-                   
-        
-  
-           </View>
-        
-       
-        
-        </LinearGradient>
-      </View>
-  )
+          {/* DONE BUTTON */}
+          <TouchableOpacity
+            style={[styles.button, { borderColor: colors.border }]}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={[styles.buttonText, { color: colors.text }]}>
+              {i18n.t("done")}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </LinearGradient>
+    </View>
+  );
 }
-
 
 const styles = StyleSheet.create({
   gradient: {
-    flex: 1,              // ✅ ENSURES FULL SCREEN GRADIENT
+    flex: 1,
   },
 
   headerRow: {
-  flexDirection: "row",    // ⬅️ PUT THEM IN SAME LINE
-  alignItems: "center",     // ⬅️ VERTICAL CENTER
-  paddingTop: 40,           // For status bar spacing
-  paddingHorizontal: 20,
-  gap: 10,                  // Space between icon & text
-},
-headerTitle: {
-  color: "#fff",
-  fontSize: 20,
-  fontWeight: "bold",
-},
+    flexDirection: "row",
+    alignItems: "center",
+    paddingTop: 40,
+    paddingHorizontal: 20,
+    gap: 10,
+  },
 
-  
+  headerTitle: {
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+
   container: {
     flex: 1,
   },
 
   card: {
-     alignItems: "center", 
-     justifyContent: "center", 
+    alignItems: "center",
+    justifyContent: "center",
     flex: 1,
     backgroundColor: "white",
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
-    marginTop: "10%",        // ✅ small visible gradient gap only
+    marginTop: "10%",
     paddingTop: 15,
     paddingHorizontal: 10,
   },
-row: {
-  flexDirection: "row",
-  alignItems: "center",
-  paddingVertical: 18,
-  paddingHorizontal: 15,
-  borderBottomWidth: 1,
-  borderColor: "#E5E5E5",
-},
 
-rowText: {
-  flex: 1,
-  marginLeft: 15,
-  fontSize: 16,
-  color: "#1E2A78",
-  fontWeight: "500",
-},
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 18,
+    paddingHorizontal: 15,
+    borderBottomWidth: 1,
+    borderColor: "#E5E5E5",
+  },
 
+  rowText: {
+    flex: 1,
+    marginLeft: 15,
+    fontSize: 16,
+    color: "#1E2A78",
+    fontWeight: "500",
+  },
 
-
- title: {
+  title: {
     fontSize: 20,
-     fontWeight: "bold",
-      color: "#1E2A78",
+    fontWeight: "bold",
+    color: "#1E2A78",
     marginTop: 10,
-    // textDecorationLine: "underline",
   },
 
   subtitle: {
     fontSize: 14,
-    color: "#777", 
+    color: "#777",
     marginBottom: 25,
     textAlign: "center",
   },
 
   btn: {
-    width: "70%", 
-    paddingVertical: 12, 
+    width: "70%",
+    paddingVertical: 12,
     marginVertical: 8,
-    borderRadius: 6, 
-    borderWidth: 1, 
+    borderRadius: 6,
+    borderWidth: 1,
     borderColor: "#1E2A78",
-    alignItems: "center", 
-    backgroundColor: "#fff"
+    alignItems: "center",
+    backgroundColor: "#fff",
   },
 
   activeBtn: {
@@ -202,8 +194,8 @@ rowText: {
   },
 
   btnText: {
-    color: "#1E2A78", 
-    fontSize: 16, 
+    color: "#1E2A78",
+    fontSize: 16,
     fontWeight: "600",
   },
 
@@ -211,7 +203,7 @@ rowText: {
     color: "#fff",
   },
 
-   preview: {
+  preview: {
     width: 120,
     height: 140,
     borderRadius: 14,
@@ -225,6 +217,7 @@ rowText: {
     borderRadius: 6,
     marginBottom: 8,
   },
+
   previewText: {
     textAlign: "center",
     marginTop: 12,
@@ -240,7 +233,8 @@ rowText: {
     borderRadius: 5,
     backgroundColor: "#1E2A78",
   },
-   button: {
+
+  button: {
     marginTop: 40,
     alignSelf: "center",
     borderWidth: 1.5,
@@ -248,6 +242,7 @@ rowText: {
     paddingHorizontal: 40,
     paddingVertical: 10,
   },
+
   buttonText: {
     fontWeight: "600",
     fontSize: 14,

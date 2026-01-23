@@ -1,9 +1,7 @@
 import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-
 import CustomDrawer from "../screens/components/CustomDrawer";
 import MainStackNavigator from "./MainStackNavigator";
-
 import Profile from "../menu/Profile";
 import AppPreference from "../menu/AppPreference";
 import About from "../menu/About";

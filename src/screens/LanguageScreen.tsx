@@ -1,43 +1,37 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import React, { useContext, useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import i18n from "../i18n";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LanguageContext } from "../context/LanguageContext";
 
 type Props = {
   navigation: any;
 };
 
 const LanguageScreen: React.FC<Props> = ({ navigation }) => {
-  const [selected, setSelected] = useState<string>("en");
+  const { lang, changeLang } = useContext(LanguageContext);
+
+  const [selected, setSelected] = useState<string>(lang);
+
+  useEffect(() => {
+    setSelected(lang);
+  }, [lang]);
 
   const languages = [
-    { code: "A", label: "English", value: "en" },
-    { code: "अ", label: "Hindi", value: "hi" },
-    { code: "అ", label: "Telugu", value: "te" },
+    { code: "A", label: i18n.t("lang_english"), value: "en" },
+    { code: "अ", label: i18n.t("lang_hindi"), value: "hi" },
+    { code: "అ", label: i18n.t("lang_telugu"), value: "te" },
   ];
 
-  // const selectLanguage = (lang: string) => {
-  //   setSelected(lang);
-  //   i18n.locale = lang; // ✅ CLI compatible
-  // };
-
-  const selectLanguage = async (lang: string) => {
-  setSelected(lang);
-  i18n.locale = lang;
-
-  // ✅ Save language permanently
-  await AsyncStorage.setItem("APP_LANG", lang);
-};
+  const selectLanguage = async (newLang: string) => {
+    setSelected(newLang);
+    await changeLang(newLang); // ✅ updates i18n.locale from context
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{i18n.t("title")}</Text>
-      <Text style={styles.subtitle}>{i18n.t("subtitle")}</Text>
+      <Text style={styles.title}>{i18n.t("choose_language")}</Text>
+
+      <Text style={styles.subtitle}>{i18n.t("subtitle_language")}</Text>
 
       {languages.map((item) => (
         <TouchableOpacity
@@ -47,6 +41,7 @@ const LanguageScreen: React.FC<Props> = ({ navigation }) => {
             selected === item.value && styles.selectedOption,
           ]}
           onPress={() => selectLanguage(item.value)}
+          activeOpacity={0.8}
         >
           <Text style={styles.optionCode}>{item.code}</Text>
           <Text style={styles.optionLabel}>{item.label}</Text>
@@ -56,10 +51,9 @@ const LanguageScreen: React.FC<Props> = ({ navigation }) => {
       <TouchableOpacity
         style={styles.continueBtn}
         onPress={() => navigation.navigate("Welcome")}
+        activeOpacity={0.8}
       >
-        <Text style={styles.continueText}>
-          {i18n.t("continue")}
-        </Text>
+        <Text style={styles.continueText}>{i18n.t("continue")}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -113,7 +107,6 @@ const styles = StyleSheet.create({
     color: "#162F7A",
     width: 35,
     textAlign: "center",
-    //fontFamily: "Lato-Bold",
   },
 
   optionLabel: {
@@ -134,7 +127,6 @@ const styles = StyleSheet.create({
   continueText: {
     color: "white",
     fontSize: 20,
-    //fontWeight: "600",
     fontFamily: "Lato-Semibold",
   },
 });

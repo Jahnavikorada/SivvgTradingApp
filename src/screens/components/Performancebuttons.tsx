@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,8 @@ import {
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import i18n from "../../i18n";
+import { LanguageContext } from "../../context/LanguageContext";
 
 type DurationType = "1D" | "1W" | "1M";
 type TabType = "Equity" | "Futures" | "Options";
@@ -21,6 +23,8 @@ export default function Performancebuttons({
   onTabChange,
   onDurationChange,
 }: Props) {
+  const { reloadKey } = useContext(LanguageContext); // ✅ refresh texts
+
   const [selectedTab, setSelectedTab] = useState<TabType>("Equity");
   const [selectedDuration, setSelectedDuration] =
     useState<DurationType>("1D");
@@ -50,7 +54,7 @@ export default function Performancebuttons({
   };
 
   return (
-    <View>
+    <View key={reloadKey}>
       {/* ================= TABS ================= */}
       <View style={styles.tabRow}>
         {["Equity", "Futures", "Options"].map((tab) => (
@@ -68,7 +72,11 @@ export default function Performancebuttons({
                 selectedTab === tab && styles.tabTextActive,
               ]}
             >
-              {tab}
+              {tab === "Equity"
+                ? i18n.t("equity")
+                : tab === "Futures"
+                ? i18n.t("futures")
+                : i18n.t("options")}
             </Text>
           </TouchableOpacity>
         ))}
@@ -107,7 +115,7 @@ export default function Performancebuttons({
             onPress={() => setShowFromPicker(true)}
           >
             <Text style={styles.dateText}>
-              {fromDate ? formatDate(fromDate) : "From"}
+              {fromDate ? formatDate(fromDate) : i18n.t("from")}
             </Text>
             <Ionicons name="calendar" size={16} color="#1E2A78" />
           </TouchableOpacity>
@@ -118,7 +126,7 @@ export default function Performancebuttons({
             onPress={() => setShowToPicker(true)}
           >
             <Text style={styles.dateText}>
-              {toDate ? formatDate(toDate) : "To"}
+              {toDate ? formatDate(toDate) : i18n.t("to")}
             </Text>
             <Ionicons name="calendar" size={16} color="#1E2A78" />
           </TouchableOpacity>
@@ -202,7 +210,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 6,
     marginLeft: 8,
-    paddingRight:6
+    paddingRight: 6,
   },
 
   durationBtn: {
@@ -234,7 +242,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 6,
     marginRight: 6,
-   
   },
 
   dateBtn: {

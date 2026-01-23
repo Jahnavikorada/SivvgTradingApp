@@ -50,38 +50,43 @@
 
 
 
-import React from "react";
-import { View, StyleSheet, Dimensions,  Text, Image} from "react-native";
+import React, { useContext } from "react";
+import { View, StyleSheet, Dimensions, Text, Image } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import CommonHeader from "../components/CommonHeader";
 
+import i18n from "../../i18n";
+import { LanguageContext } from "../../context/LanguageContext";
 
 const { height } = Dimensions.get("window");
 
 export default function Home({ navigation }: any) {
+  const { reloadKey } = useContext(LanguageContext); // ✅ re-render on language change
+
   return (
     <LinearGradient
       colors={["#FF2E4C", "#1E2A78"]}
-      style={styles.gradient}      // ✅ FULL SCREEN
+      style={styles.gradient}
       start={{ x: 0, y: 0.5 }}
       end={{ x: 1, y: 0.5 }}
     >
-      <View style={styles.container}>
-        <CommonHeader title="Intraday Tips" navigation={navigation} />
- 
-           <View style={styles.card}>
-                    <Image
-                      source={require("../../../assets/images/disclaimer.png")}
-                      // style={{ flex: 1 }}
-                      style={{ width: 200, height: 200 }}
-                      resizeMode="contain"
-                    >
-                    </Image>
-                    <Text style={styles.header}>DISCLAIMER</Text>
-                    <Text style={styles.text}>No trading tips are provided today</Text>
-           </View>
-        
-       
+      <View key={reloadKey} style={styles.container}>
+        {/* ✅ Header Title Translated */}
+        <CommonHeader title={i18n.t("intraday_tips")} navigation={navigation} />
+
+        <View style={styles.card}>
+          <Image
+            source={require("../../../assets/images/disclaimer.png")}
+            style={{ width: 200, height: 200 }}
+            resizeMode="contain"
+          />
+
+          {/* ✅ Disclaimer Translated */}
+          <Text style={styles.header}>{i18n.t("disclaimer")}</Text>
+
+          {/* ✅ Message Translated */}
+          <Text style={styles.text}>{i18n.t("no_tips_today")}</Text>
+        </View>
       </View>
     </LinearGradient>
   );
@@ -89,7 +94,7 @@ export default function Home({ navigation }: any) {
 
 const styles = StyleSheet.create({
   gradient: {
-    flex: 1,              // ✅ ENSURES FULL SCREEN GRADIENT
+    flex: 1,
   },
 
   container: {
@@ -101,19 +106,15 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
-    marginTop: 10,        // ✅ small visible gradient gap only
+    marginTop: 10,
     paddingTop: 15,
     paddingHorizontal: 10,
-     justifyContent: "center", // vertical center
+    justifyContent: "center",
     alignItems: "center",
   },
-  
+
   header: {
     color: "#DC3545",
-    // fontWeight: "bold",
-    // fontSize: 20,
-    // marginTop: -5
-     //marginTop: 16,              // 🔥 GAP BETWEEN IMAGE & TEXT
     fontSize: 18,
     fontWeight: "600",
     textAlign: "center",
@@ -124,11 +125,10 @@ const styles = StyleSheet.create({
     marginTop: 14,
     fontSize: 16,
     color: "#1E2A78",
-    textAlign: "center",   // ✅ center alignment
+    textAlign: "center",
     alignSelf: "center",
     maxWidth: 220,
-    //width: "70%",          // ✅ forces 2-line wrap
     lineHeight: 22,
     fontWeight: "500",
-  }
+  },
 });

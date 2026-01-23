@@ -1,112 +1,121 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Image,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
+import i18n from "../i18n";
+import { LanguageContext } from "../context/LanguageContext";
+
 export default function Profile({ navigation }: any) {
+  const { reloadKey } = useContext(LanguageContext); // ✅ refresh texts
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <LinearGradient
-      colors={["#FF2E4C", "#1E2A78"]}
-      style={styles.container}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-    >
-      {/* HEADER */}
-      <View style={styles.headerRow}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={26} color="white" />
-        </TouchableOpacity>
+    <View key={reloadKey} style={{ flex: 1 }}>
+      <LinearGradient
+        colors={["#FF2E4C", "#1E2A78"]}
+        style={styles.container}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
+        {/* HEADER */}
+        <View style={styles.headerRow}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={26} color="white" />
+          </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>My profile</Text>
+          <Text style={styles.headerTitle}>{i18n.t("my_profile")}</Text>
 
-        <TouchableOpacity
-        onPress={() => navigation.navigate("")}
-        >
-          <Ionicons name="pencil" size={22} color="white" />
-        </TouchableOpacity>
-      </View>
-
-      {/* PROFILE IMAGE */}
-      <View style={styles.imageWrapper}>
-        <Ionicons name="person-circle" size={120} color="white" />
-      </View>
-
-      {/* WHITE CARD */}
-      <View style={styles.card}>
-        {/* USER ID */}
-        <View style={styles.inputBox}>
-          <Ionicons name="person" size={20} color="#1E2A78" />
-          <TextInput
-            style={styles.input}
-            placeholder="John_ID77"
-            placeholderTextColor="#777"
-          />
+          <TouchableOpacity onPress={() => navigation.navigate("")}>
+            <Ionicons name="pencil" size={22} color="white" />
+          </TouchableOpacity>
         </View>
---
-        {/* PASSWORD */}
-        <View style={styles.inputBox}>
-          <Ionicons name="lock-closed" size={20} color="#1E2A78" />
-          <TextInput
-            style={styles.passwordInput}
-            placeholder="********"
-            placeholderTextColor="#777"
-            secureTextEntry={!showPassword}
-          />
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Ionicons
-              name={showPassword ? "eye" : "eye-off"}
-              size={20}
-              color="#1E2A78"
+
+        {/* PROFILE IMAGE */}
+        <View style={styles.imageWrapper}>
+          <Ionicons name="person-circle" size={120} color="white" />
+        </View>
+
+        {/* WHITE CARD */}
+        <View style={styles.card}>
+          {/* USER ID */}
+          <View style={styles.inputBox}>
+            <Ionicons name="person" size={20} color="#1E2A78" />
+            <TextInput
+              style={styles.input}
+              placeholder={i18n.t("user_id")}
+              placeholderTextColor="#777"
+              defaultValue="John_ID77"
             />
-          </TouchableOpacity>
-        </View>
+          </View>
 
-        {/* EMAIL */}
-        <View style={styles.inputBox}>
-          <Ionicons name="mail" size={20} color="#1E2A78" />
-          <TextInput
-            style={styles.input}
-            placeholder="john420@gmail.com"
-            placeholderTextColor="#777"
-          />
-        </View>
+          {/* PASSWORD */}
+          <View style={styles.inputBox}>
+            <Ionicons name="lock-closed" size={20} color="#1E2A78" />
+            <TextInput
+              style={styles.passwordInput}
+              placeholder={i18n.t("password")}
+              placeholderTextColor="#777"
+              secureTextEntry={!showPassword}
+              defaultValue="********"
+            />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+              <Ionicons
+                name={showPassword ? "eye" : "eye-off"}
+                size={20}
+                color="#1E2A78"
+              />
+            </TouchableOpacity>
+          </View>
 
-        {/* PHONE */}
-        <View style={styles.inputBox}>
-          <Ionicons name="call" size={20} color="#1E2A78" />
-          <TextInput
-            style={styles.input}
-            placeholder="9848321230"
-            placeholderTextColor="#777"
-            keyboardType="phone-pad"
-          />
-        </View>
+          {/* EMAIL */}
+          <View style={styles.inputBox}>
+            <Ionicons name="mail" size={20} color="#1E2A78" />
+            <TextInput
+              style={styles.input}
+              placeholder={i18n.t("email")}
+              placeholderTextColor="#777"
+              defaultValue="john420@gmail.com"
+            />
+          </View>
 
-        {/* BUTTON ROW */}
-        <View style={styles.btnRow}>
-          <TouchableOpacity style={styles.updateBtn}
-           onPress={() => navigation.navigate()}
-           >
-            <Text style={styles.updateText}>Update</Text>
-          </TouchableOpacity>
+          {/* PHONE */}
+          <View style={styles.inputBox}>
+            <Ionicons name="call" size={20} color="#1E2A78" />
+            <TextInput
+              style={styles.input}
+              placeholder={i18n.t("phone_number")}
+              placeholderTextColor="#777"
+              keyboardType="phone-pad"
+              defaultValue="9848321230"
+            />
+          </View>
 
-          <TouchableOpacity style={styles.deleteBtn}
-           onPress={() => navigation.navigate("")}
-           >
-            <Text style={styles.deleteText}>Delete</Text>
-          </TouchableOpacity>
+          {/* BUTTON ROW */}
+          <View style={styles.btnRow}>
+            <TouchableOpacity
+              style={styles.updateBtn}
+              onPress={() => navigation.navigate("")}
+            >
+              <Text style={styles.updateText}>{i18n.t("update")}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.deleteBtn}
+              onPress={() => navigation.navigate("")}
+            >
+              <Text style={styles.deleteText}>{i18n.t("delete")}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </LinearGradient>
+      </LinearGradient>
+    </View>
   );
 }
 
@@ -120,9 +129,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingTop: 40,  
+    paddingTop: 40,
     paddingHorizontal: 20,
-    gap: 10,   
+    gap: 10,
   },
 
   headerTitle: {
@@ -134,24 +143,17 @@ const styles = StyleSheet.create({
   imageWrapper: {
     marginTop: 50,
     alignSelf: "center",
-    // width: 100,
-    // height: 100,
-    // borderRadius: 50,
-   // borderWidth: 3,
-   // borderColor: "#1E2A78",
     justifyContent: "center",
     alignItems: "center",
-    //backgroundColor: "white",
   },
 
   card: {
-    //backgroundColor: "white",
     marginTop: 25,
     padding: 20,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.4)",
-    backgroundColor: "rgba(255,255,255,0.15)"
+    backgroundColor: "rgba(255,255,255,0.15)",
   },
 
   inputBox: {

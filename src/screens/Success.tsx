@@ -1,39 +1,36 @@
-import React, { useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-} from "react-native";
+import React, { useEffect, useContext } from "react";
+import { View, Text, StyleSheet, Image } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
+import i18n from "../i18n";
+import { LanguageContext } from "../context/LanguageContext";
 
 export default function SuccessScreen({ navigation }: any) {
-    useEffect(() => {
-  const timer = setTimeout(() => {
-    navigation?.replace("Login");
-  }, 2000);
+  const { reloadKey } = useContext(LanguageContext); // ✅ refresh text on language change
 
-  return () => clearTimeout(timer);
-}, []);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigation?.replace("Login");
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <LinearGradient
-      colors={["#FF2E4C", "#1E2A78"]}
-      style={styles.container}
-    >
-      <View style={styles.content}>
-        {/* Success Icon */}
-        <Image
-          source={require("../../assets/images/success.png")}
-          style={styles.icon}
-          resizeMode="contain"
-        />
+    <View key={reloadKey} style={{ flex: 1 }}>
+      <LinearGradient colors={["#FF2E4C", "#1E2A78"]} style={styles.container}>
+        <View style={styles.content}>
+          {/* Success Icon */}
+          <Image
+            source={require("../../assets/images/success.png")}
+            style={styles.icon}
+            resizeMode="contain"
+          />
 
-        {/* Success Text */}
-        <Text style={styles.message}>
-          Your password has been{"\n"}changed successfully
-        </Text>
-      </View>
-    </LinearGradient>
+          {/* Success Text */}
+          <Text style={styles.message}>{i18n.t("password_changed_success")}</Text>
+        </View>
+      </LinearGradient>
+    </View>
   );
 }
 
@@ -60,7 +57,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#FFF",
     textAlign: "center",
-    //fontWeight: "600",
     fontFamily: "Lato-Bold",
   },
 });
