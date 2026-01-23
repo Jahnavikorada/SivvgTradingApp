@@ -2,13 +2,14 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Linking } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Feather from "react-native-vector-icons/Feather";
+import { useTheme } from "../../context/ThemeContext";
 
 interface Props {
   symbol: string;
   t1: number;
   t2: number;
   t3: number;
-  achievedCount?: number; // 🔥 0 | 1 | 2 | 3
+  achievedCount?: number;
   isBuy?: boolean;
 }
 
@@ -20,9 +21,10 @@ export default function TipsCard({
   achievedCount = 1,
   isBuy = true,
 }: Props) {
+  const { isDark } = useTheme();
+
   const targets = [t1, t2, t3];
 
-  /* 📊 PROGRESS % */
   const progressPercent = Math.min(
     (achievedCount / targets.length) * 100,
     100
@@ -37,7 +39,7 @@ export default function TipsCard({
     );
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, isDark && styles.cardDark]}>
       {/* 🔷 HEADER */}
       <View style={styles.topRow}>
         <View style={styles.symbolStrip}>
@@ -65,6 +67,8 @@ export default function TipsCard({
             style={[
               styles.targetBox,
               achievedCount > index && styles.targetBoxActive,
+              isDark && styles.targetBoxDark,
+              achievedCount > index && isDark && styles.targetBoxActiveDark,
             ]}
           >
             <Text style={styles.targetLabel}>{label}</Text>
@@ -75,14 +79,25 @@ export default function TipsCard({
       {/* 🎯 TARGET VALUES */}
       <View style={styles.valuesRow}>
         {targets.map((value, index) => (
-          <Text key={index} style={styles.targetValue}>
+          <Text
+            key={index}
+            style={[
+              styles.targetValue,
+              isDark && styles.targetValueDark,
+            ]}
+          >
             {value}
           </Text>
         ))}
       </View>
 
       {/* 📊 PROGRESS BAR */}
-      <View style={styles.progressContainer}>
+      <View
+        style={[
+          styles.progressContainer,
+          isDark && styles.progressContainerDark,
+        ]}
+      >
         <View
           style={[
             styles.progressFill,
@@ -94,10 +109,11 @@ export default function TipsCard({
           <View
             style={[
               styles.progressThumb,
+              isDark && styles.progressThumbDark,
               { left: `${progressPercent}%` },
             ]}
           >
-            <Feather name="check" size={16} color="#2E7D32" />
+            <Feather name="check" size={16} color="#3E8E5B" />
           </View>
         )}
       </View>
@@ -107,7 +123,10 @@ export default function TipsCard({
         <Text style={styles.yahoo} onPress={openYahoo}>
           Yahoo!
         </Text>
-        <Text style={styles.divider}> | </Text>
+        <Text style={[styles.divider, isDark && styles.dividerDark]}>
+          {" "}
+          |{" "}
+        </Text>
         <Text style={styles.nse} onPress={openNSE}>
           NSE
         </Text>
@@ -115,7 +134,10 @@ export default function TipsCard({
     </View>
   );
 }
+
+/* 🎨 STYLES */
 const styles = StyleSheet.create({
+  /* LIGHT (UNCHANGED) */
   card: {
     backgroundColor: "#EEF0F6",
     borderRadius: 16,
@@ -123,6 +145,11 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: "#1E2A78",
     paddingBottom: 14,
+  },
+
+  cardDark: {
+    backgroundColor: "#rgba(0,0,0,0.2)",
+    borderColor: "rgba(0,0,0,0.30)",
   },
 
   topRow: {
@@ -179,10 +206,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#565E92",
     paddingVertical: 10,
     alignItems: "center",
+    borderRadius: 6,
+  },
+
+  targetBoxDark: {
+    backgroundColor: "#1a1a1a",
   },
 
   targetBoxActive: {
     backgroundColor: "#1E2A78",
+  },
+
+  targetBoxActiveDark: {
+    backgroundColor: "rgba(0,0,0,0.3)",
   },
 
   targetLabel: {
@@ -205,6 +241,10 @@ const styles = StyleSheet.create({
     color: "#1E2A78",
   },
 
+  targetValueDark: {
+    color: "#ffffff",
+  },
+
   progressContainer: {
     height: 26,
     backgroundColor: "#fff",
@@ -215,6 +255,11 @@ const styles = StyleSheet.create({
     borderColor: "#B0B0B0",
     position: "relative",
     overflow: "hidden",
+  },
+
+  progressContainerDark: {
+    backgroundColor: "#1a1a1a",
+    borderColor: "rgba(0,0,0,0.30)",
   },
 
   progressFill: {
@@ -236,6 +281,10 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: "#3E8E5B",
     elevation: 4,
+  },
+
+  progressThumbDark: {
+    backgroundColor: "#1a1a1a",
   },
 
   footer: {
@@ -261,5 +310,9 @@ const styles = StyleSheet.create({
   divider: {
     marginHorizontal: 6,
     fontWeight: "700",
+  },
+
+  dividerDark: {
+    color: "#ffffff",
   },
 });
