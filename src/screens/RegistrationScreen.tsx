@@ -47,7 +47,6 @@ export default function RegisterScreen({ navigation }: any) {
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const year = date.getFullYear();
-
     return `${day}/${month}/${year}`;
   };
 
@@ -67,7 +66,7 @@ export default function RegisterScreen({ navigation }: any) {
     return age >= 18;
   };
 
-  // ---------------- FORM VALIDATION ----------------
+  // ---------------- FORM VALIDATION (on SignUp press) ----------------
   const validate = () => {
     let validForm = true;
     let newErrors: any = {};
@@ -149,7 +148,20 @@ export default function RegisterScreen({ navigation }: any) {
                 placeholder={i18n.t("username")}
                 style={styles.input}
                 value={username}
-                onChangeText={setUsername}
+                onChangeText={(text) => {
+                  setUsername(text);
+
+                  if (!text.trim()) {
+                    setErrors((prev) => ({
+                      ...prev,
+                      username: i18n.t("err_username_required"),
+                    }));
+                    setValid((prev) => ({ ...prev, username: false }));
+                  } else {
+                    setErrors((prev) => ({ ...prev, username: "" }));
+                    setValid((prev) => ({ ...prev, username: true }));
+                  }
+                }}
               />
             </View>
             {errors.username && (
@@ -169,7 +181,28 @@ export default function RegisterScreen({ navigation }: any) {
                 keyboardType="email-address"
                 style={styles.input}
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={(text) => {
+                  setEmail(text);
+
+                  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                  if (!text.trim()) {
+                    setErrors((prev) => ({
+                      ...prev,
+                      email: i18n.t("err_email_required"),
+                    }));
+                    setValid((prev) => ({ ...prev, email: false }));
+                  } else if (!emailRegex.test(text)) {
+                    setErrors((prev) => ({
+                      ...prev,
+                      email: i18n.t("err_email_invalid"),
+                    }));
+                    setValid((prev) => ({ ...prev, email: false }));
+                  } else {
+                    setErrors((prev) => ({ ...prev, email: "" }));
+                    setValid((prev) => ({ ...prev, email: true }));
+                  }
+                }}
               />
             </View>
             {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
@@ -187,7 +220,30 @@ export default function RegisterScreen({ navigation }: any) {
                 keyboardType="phone-pad"
                 style={styles.input}
                 value={phone}
-                onChangeText={setPhone}
+                onChangeText={(text) => {
+                  // ✅ allow only numbers and + (for +91)
+                  const cleaned = text.replace(/[^0-9+]/g, "");
+                  setPhone(cleaned);
+
+                  const phoneRegex = /^(\+91)?[6-9][0-9]{9}$/;
+
+                  if (!cleaned.trim()) {
+                    setErrors((prev) => ({
+                      ...prev,
+                      phone: i18n.t("err_phone_required"),
+                    }));
+                    setValid((prev) => ({ ...prev, phone: false }));
+                  } else if (!phoneRegex.test(cleaned)) {
+                    setErrors((prev) => ({
+                      ...prev,
+                      phone: i18n.t("err_phone_invalid"),
+                    }));
+                    setValid((prev) => ({ ...prev, phone: false }));
+                  } else {
+                    setErrors((prev) => ({ ...prev, phone: "" }));
+                    setValid((prev) => ({ ...prev, phone: true }));
+                  }
+                }}
               />
             </View>
             {errors.phone && <Text style={styles.errorText}>{errors.phone}</Text>}
@@ -225,15 +281,16 @@ export default function RegisterScreen({ navigation }: any) {
 
                   if (!isAge18OrAbove(date)) {
                     setDob("");
-                    setErrors({ ...errors, dob: i18n.t("err_age_18") });
-                    setValid({ ...valid, dob: false });
+                    setSelectedDate(null);
+                    setErrors((prev) => ({ ...prev, dob: i18n.t("err_age_18") }));
+                    setValid((prev) => ({ ...prev, dob: false }));
                     return;
                   }
 
                   setSelectedDate(date);
                   setDob(formatDate(date));
-                  setErrors({ ...errors, dob: "" });
-                  setValid({ ...valid, dob: true });
+                  setErrors((prev) => ({ ...prev, dob: "" }));
+                  setValid((prev) => ({ ...prev, dob: true }));
                 }}
               />
             )}
@@ -253,7 +310,8 @@ export default function RegisterScreen({ navigation }: any) {
                       key={g}
                       onPress={() => {
                         setGender(g);
-                        setValid({ ...valid, gender: true });
+                        setErrors((prev) => ({ ...prev, gender: "" }));
+                        setValid((prev) => ({ ...prev, gender: true }));
                       }}
                       style={styles.radioRow}
                     >
