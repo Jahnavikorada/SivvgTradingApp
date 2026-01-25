@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,15 +6,14 @@ import {
   TouchableOpacity,
   StyleSheet,
   ImageBackground,
-  
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import i18n from "../i18n";
-import { LanguageContext } from "../context/LanguageContext";
+import { useTheme } from "../context/ThemeContext"; // ✅ ThemeContext
 
 export default function ForgotPasswordScreen({ navigation }: any) {
-  const { reloadKey } = useContext(LanguageContext); // ✅ refresh text on language change
+  const { theme } = useTheme();
+  const isLight = theme === "light";
 
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
@@ -25,16 +24,16 @@ export default function ForgotPasswordScreen({ navigation }: any) {
     setIsTouched(true);
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const cleanedValue = value.replace(/\s+/g, "");
+    const cleanedValue = value.replace(/\s+/g, ""); 
     const indianPhoneRegex = /^(\+91)?[6-9][0-9]{9}$/;
 
     if (!cleanedValue.trim()) {
-      setError(i18n.t("err_email_or_phone_required"));
+      setError("Email or Phone number is required");
       return false;
     }
 
     if (!emailRegex.test(cleanedValue) && !indianPhoneRegex.test(cleanedValue)) {
-      setError(i18n.t("err_enter_valid_phone"));
+      setError("Enter valid phone number: +91 XXXXXXXXXX");
       return false;
     }
 
@@ -49,68 +48,79 @@ export default function ForgotPasswordScreen({ navigation }: any) {
   };
 
   return (
-    <View key={reloadKey} style={{ flex: 1 }}>
-      <ImageBackground
-        source={require("../../assets/images/forgot.png")}
-        style={{ flex: 1 }}
-        resizeMode="cover"
+    <ImageBackground
+      source={require("../../assets/images/forgot.png")}
+      style={{ flex: 1 }}
+      resizeMode="cover"
+    >
+      <LinearGradient
+        colors={["rgba(255,46,76,0.8)", "rgba(30,42,120,0.8)"]}
+        style={styles.container}
       >
-        <LinearGradient
-          colors={["rgba(255,46,76,0.8)", "rgba(30,42,120,0.8)"]}
-          style={styles.container}
+        {/* Back Button */}
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
         >
-          {/* Back Button */}
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Ionicons name="chevron-back" size={28} color="#FFF" />
-          </TouchableOpacity>
+          <Ionicons name="chevron-back" size={28} color="#FFF" />
+        </TouchableOpacity>
 
-          {/* CARD */}
-          <View style={styles.card}>
-            <Text style={styles.title}>{i18n.t("forgot_password_title")}</Text>
+        {/* CARD */}
+        <View style={[
+          styles.card,
+          { backgroundColor: isLight ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.5)" }
+        ]}>
+          <Text style={[styles.title, { color: "#FFF" }]}>Forgot Password</Text>
 
-            <Text style={styles.subtitle}>
-              {i18n.t("forgot_password_subtitle")}
-            </Text>
+          <Text style={[styles.subtitle, { color: "#FFF", opacity: 0.8 }]}>
+            Enter your Email or Phone number
+          </Text>
 
-            {/* Input Box */}
-            <View
-              style={[
-                styles.inputBox,
-                isTouched && {
-                  borderWidth: 2,
-                  borderColor: error ? "#e66868ff" : "green",
-                },
-              ]}
-            >
-              <Ionicons name="mail" size={22} color="#162F7A" />
-              <TextInput
-                placeholder={i18n.t("email_or_phone_placeholder")}
-                placeholderTextColor="#1E2A78"
-                style={styles.input}
-                keyboardType="email-address"
-                value={value}
-                onChangeText={(text) => {
-                  setValue(text);
-                  setError("");
-                  setIsTouched(false);
-                }}
-              />
-            </View>
-
-            {/* Error Text */}
-            {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
-            {/* Send OTP */}
-            <TouchableOpacity style={[styles.sendOtpBtn]} onPress={handleSendOtp}>
-              <Text style={styles.sendOtpText}>{i18n.t("send_otp")}</Text>
-            </TouchableOpacity>
+          {/* Input Box */}
+          <View style={[
+            styles.inputBox,
+            isTouched && {
+              borderWidth: 2,
+              borderColor: error ? "#e66868ff" : "green",
+            },
+            { backgroundColor: isLight ? "#FFF" : "rgba(0,0,0,0.55)" }
+          ]}>
+            <Ionicons name="mail" size={22} color={isLight ? "#162F7A" : "#e4e8ec"} />
+            <TextInput
+              placeholder="Email / Phone Number"
+              placeholderTextColor={isLight ? "#1E2A78" : "#94A3B8"}
+              style={[styles.input, { color: isLight ? "#1E2A78" : "#F8FAFC" }]}
+              keyboardType="email-address"
+              value={value}
+              onChangeText={(text) => {
+                setValue(text);
+                setError("");
+                setIsTouched(false);
+              }}
+            />
           </View>
-        </LinearGradient>
-      </ImageBackground>
-    </View>
+
+          {/* Error Text */}
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+          {/* Send OTP */}
+          <TouchableOpacity
+            style={[
+              styles.sendOtpBtn,
+              { backgroundColor: isLight ? "#FFF" : "#1a1a1a", }
+            ]}
+            onPress={handleSendOtp}
+          >
+            <Text style={[
+              styles.sendOtpText,
+              { color: isLight ? "#162F7A" : "#F8FAFC" }
+            ]}>
+              Send OTP
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </LinearGradient>
+    </ImageBackground>
   );
 }
 
@@ -134,29 +144,24 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.4)",
-    backgroundColor: "rgba(255,255,255,0.15)",
   },
 
   title: {
     fontSize: 26,
-    color: "#FFF",
-    textAlign: "center",
     fontFamily: "Lato-Bold",
+    textAlign: "center",
   },
 
   subtitle: {
     fontSize: 14,
-    color: "#FFF",
-    opacity: 0.8,
-    textAlign: "center",
     marginVertical: 20,
+    textAlign: "center",
     fontFamily: "Lato-Semibold",
   },
 
   inputBox: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFF",
     borderRadius: 30,
     paddingHorizontal: 15,
     marginBottom: 10,
@@ -166,7 +171,6 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     marginLeft: 10,
-    color: "#1E2A78",
     fontFamily: "Lato-Medium",
   },
 
@@ -178,7 +182,6 @@ const styles = StyleSheet.create({
   },
 
   sendOtpBtn: {
-    backgroundColor: "#FFF",
     paddingVertical: 12,
     borderRadius: 25,
     alignItems: "center",
@@ -186,7 +189,6 @@ const styles = StyleSheet.create({
   },
 
   sendOtpText: {
-    color: "#162F7A",
     fontSize: 18,
     fontFamily: "Lato-Bold",
   },

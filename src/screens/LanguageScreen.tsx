@@ -1,59 +1,136 @@
-import React, { useContext, useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import i18n from "../i18n";
-import { LanguageContext } from "../context/LanguageContext";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTheme } from "../context/ThemeContext";
 
 type Props = {
   navigation: any;
 };
 
 const LanguageScreen: React.FC<Props> = ({ navigation }) => {
-  const { lang, changeLang } = useContext(LanguageContext);
+  const { theme } = useTheme();
+  const isLight = theme === "light";
 
-  const [selected, setSelected] = useState<string>(lang);
-
-  useEffect(() => {
-    setSelected(lang);
-  }, [lang]);
+  const [selected, setSelected] = useState<string>("en");
 
   const languages = [
-    { code: "A", label: i18n.t("lang_english"), value: "en" },
-    { code: "अ", label: i18n.t("lang_hindi"), value: "hi" },
-    { code: "అ", label: i18n.t("lang_telugu"), value: "te" },
+    { code: "A", label: "English", value: "en" },
+    { code: "अ", label: "Hindi", value: "hi" },
+    { code: "అ", label: "Telugu", value: "te" },
   ];
 
-  const selectLanguage = async (newLang: string) => {
-    setSelected(newLang);
-    await changeLang(newLang); // ✅ updates i18n.locale from context
+  const selectLanguage = async (lang: string) => {
+    setSelected(lang);
+    await AsyncStorage.setItem("APP_LANG", lang);
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{i18n.t("choose_language")}</Text>
-
-      <Text style={styles.subtitle}>{i18n.t("subtitle_language")}</Text>
-
-      {languages.map((item) => (
-        <TouchableOpacity
-          key={item.value}
-          style={[
-            styles.option,
-            selected === item.value && styles.selectedOption,
-          ]}
-          onPress={() => selectLanguage(item.value)}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.optionCode}>{item.code}</Text>
-          <Text style={styles.optionLabel}>{item.label}</Text>
-        </TouchableOpacity>
-      ))}
-
-      <TouchableOpacity
-        style={styles.continueBtn}
-        onPress={() => navigation.navigate("Welcome")}
-        activeOpacity={0.8}
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: isLight ? "#FFFFFF" : "#1a1a1a" },
+      ]}
+    >
+      {/* Title */}
+      <Text
+        style={[
+          styles.title,
+          { color: isLight ? "#162F7A" : "#EDEDED" },
+        ]}
       >
-        <Text style={styles.continueText}>{i18n.t("continue")}</Text>
+        Choose your language
+      </Text>
+
+      {/* Subtitle */}
+      <Text
+        style={[
+          styles.subtitle,
+          { color: isLight ? "#5A5A5A" : "#B0B0B0" },
+        ]}
+      >
+        Select a language to continue
+      </Text>
+
+      {/* Language Options */}
+      {languages.map((item) => {
+        const isSelected = selected === item.value;
+
+        return (
+          <TouchableOpacity
+            key={item.value}
+            style={[
+              styles.option,
+              {
+                backgroundColor: isLight
+                  ? isSelected
+                    ? "#E6ECFF"
+                    : "#FFFFFF"
+                  : isSelected
+                  ? "#121212"
+                  : "#2A2A2A",
+                borderColor: isLight ? "#162F7A" : "#3A3A3A",
+              },
+            ]}
+            onPress={() => selectLanguage(item.value)}
+          >
+            <Text
+              style={[
+                styles.optionCode,
+                {
+                  color: isLight
+                    ? "#162F7A"
+                    : isSelected
+                    ? "#EDEDED"
+                    : "#9CA3AF",
+                },
+              ]}
+            >
+              {item.code}
+            </Text>
+
+            <Text
+              style={[
+                styles.optionLabel,
+                {
+                  color: isLight
+                    ? "#162F7A"
+                    : isSelected
+                    ? "#EDEDED"
+                    : "#9CA3AF",
+                },
+              ]}
+            >
+              {item.label}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+
+      {/* Continue Button */}
+      <TouchableOpacity
+        style={[
+          styles.continueBtn,
+          {
+            backgroundColor: isLight ? "#162F7A" : "#121212",
+            borderColor: isLight ? "transparent" : "#3A3A3A",
+            borderWidth: isLight ? 0 : 1,
+          },
+        ]}
+        onPress={() => navigation.navigate("Welcome")}
+      >
+        <Text
+          style={[
+            styles.continueText,
+            { color: isLight ? "#FFFFFF" : "#EDEDED" },
+          ]}
+        >
+          Continue
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -66,13 +143,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     justifyContent: "center",
-    backgroundColor: "#FFFFFF",
   },
 
   title: {
     fontSize: 22,
     fontWeight: "700",
-    color: "#162F7A",
     marginBottom: 5,
     textAlign: "center",
     fontFamily: "Lato-Bold",
@@ -80,7 +155,6 @@ const styles = StyleSheet.create({
 
   subtitle: {
     fontSize: 14,
-    color: "#5A5A5A",
     marginBottom: 25,
     textAlign: "center",
     fontFamily: "Lato-Semibold",
@@ -90,42 +164,32 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1.6,
-    borderColor: "#162F7A",
     borderRadius: 10,
     paddingVertical: 12,
     paddingHorizontal: 15,
     marginBottom: 15,
   },
 
-  selectedOption: {
-    backgroundColor: "#E6ECFF",
-    borderColor: "#162F7A",
-  },
-
   optionCode: {
     fontSize: 22,
-    color: "#162F7A",
     width: 35,
     textAlign: "center",
   },
 
   optionLabel: {
     fontSize: 18,
-    color: "#162F7A",
     marginLeft: 10,
     fontFamily: "Lato-Semibold",
   },
 
   continueBtn: {
     marginTop: 20,
-    backgroundColor: "#162F7A",
     paddingVertical: 15,
     borderRadius: 25,
     alignItems: "center",
   },
 
   continueText: {
-    color: "white",
     fontSize: 20,
     fontFamily: "Lato-Semibold",
   },

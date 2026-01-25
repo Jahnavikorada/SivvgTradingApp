@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,8 +8,7 @@ import {
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import i18n from "../../i18n";
-import { LanguageContext } from "../../context/LanguageContext";
+import { useTheme } from "../../context/ThemeContext";
 
 type DurationType = "1D" | "1W" | "1M";
 type TabType = "Equity" | "Futures" | "Options";
@@ -23,19 +22,17 @@ export default function Performancebuttons({
   onTabChange,
   onDurationChange,
 }: Props) {
-  const { reloadKey } = useContext(LanguageContext); // ✅ refresh texts
+  const { isDark } = useTheme();
 
   const [selectedTab, setSelectedTab] = useState<TabType>("Equity");
   const [selectedDuration, setSelectedDuration] =
     useState<DurationType>("1D");
 
-  // 📅 DATE STATES
   const [fromDate, setFromDate] = useState<Date | null>(null);
   const [toDate, setToDate] = useState<Date | null>(null);
   const [showFromPicker, setShowFromPicker] = useState(false);
   const [showToPicker, setShowToPicker] = useState(false);
 
-  // 📅 FORMAT DATE (DD/MM/YYYY)
   const formatDate = (date: Date) => {
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -54,91 +51,144 @@ export default function Performancebuttons({
   };
 
   return (
-    <View key={reloadKey}>
+    <View>
       {/* ================= TABS ================= */}
       <View style={styles.tabRow}>
-        {["Equity", "Futures", "Options"].map((tab) => (
-          <TouchableOpacity
-            key={tab}
-            style={[
-              styles.tabBtn,
-              selectedTab === tab && styles.tabActive,
-            ]}
-            onPress={() => handleTab(tab as TabType)}
-          >
-            <Text
+        {["Equity", "Futures", "Options"].map((tab) => {
+          const isActive = selectedTab === tab;
+
+          return (
+            <TouchableOpacity
+              key={tab}
               style={[
-                styles.tabText,
-                selectedTab === tab && styles.tabTextActive,
+                styles.tabBtn,
+                isActive && styles.tabActive,
+                isActive &&
+                  isDark && {
+                    backgroundColor: "#121212",
+                    borderColor: "rgba(255,255,255,0.2)",
+                  },
               ]}
+              onPress={() => handleTab(tab as TabType)}
             >
-              {tab === "Equity"
-                ? i18n.t("equity")
-                : tab === "Futures"
-                ? i18n.t("futures")
-                : i18n.t("options")}
-            </Text>
-          </TouchableOpacity>
-        ))}
+              <Text
+                style={[
+                  styles.tabText,
+                  isActive && styles.tabTextActive,
+                  isActive &&
+                    isDark && {
+                      color: "#FFFFFF", // ✅ FIXED (Equity heading)
+                    },
+                ]}
+              >
+                {tab}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
 
       {/* ================= FILTER ROW ================= */}
       <View style={styles.filterRow}>
         {/* LEFT : DURATION */}
         <View style={styles.leftRow}>
-          {["1D", "1W", "1M"].map((d) => (
-            <TouchableOpacity
-              key={d}
-              style={[
-                styles.durationBtn,
-                selectedDuration === d && styles.durationActive,
-              ]}
-              onPress={() => handleDuration(d as DurationType)}
-            >
-              <Text
+          {["1D", "1W", "1M"].map((d) => {
+            const isActive = selectedDuration === d;
+
+            return (
+              <TouchableOpacity
+                key={d}
                 style={[
-                  styles.durationText,
-                  selectedDuration === d && styles.durationTextActive,
+                  styles.durationBtn,
+                  isActive && styles.durationActive,
+                  isActive &&
+                    isDark && {
+                      backgroundColor: "#121212",
+                      borderColor: "rgba(255,255,255,0.2)",
+                    },
                 ]}
+                onPress={() => handleDuration(d as DurationType)}
               >
-                {d}
-              </Text>
-            </TouchableOpacity>
-          ))}
+                <Text
+                  style={[
+                    styles.durationText,
+                    isActive && styles.durationTextActive,
+                    isActive &&
+                      isDark && {
+                        color: "#FFFFFF", // ✅ FIXED (1D text)
+                      },
+                  ]}
+                >
+                  {d}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
 
         {/* RIGHT : DATE FILTER */}
         <View style={styles.rightRow}>
-          {/* FROM DATE */}
           <TouchableOpacity
-            style={styles.dateBtn}
+            style={[
+              styles.dateBtn,
+              isDark && {
+                backgroundColor: "#121212",
+                borderColor: "rgba(255,255,255,0.2)",
+              },
+            ]}
             onPress={() => setShowFromPicker(true)}
           >
-            <Text style={styles.dateText}>
-              {fromDate ? formatDate(fromDate) : i18n.t("from")}
+            <Text
+              style={[
+                styles.dateText,
+                isDark && { color: "#E5E7EB" },
+              ]}
+            >
+              {fromDate ? formatDate(fromDate) : "From"}
             </Text>
-            <Ionicons name="calendar" size={16} color="#1E2A78" />
+            <Ionicons
+              name="calendar"
+              size={16}
+              color={isDark ? "#E5E7EB" : "#1E2A78"}
+            />
           </TouchableOpacity>
 
-          {/* TO DATE */}
           <TouchableOpacity
-            style={styles.dateBtn}
+            style={[
+              styles.dateBtn,
+              isDark && {
+                backgroundColor: "#121212",
+                borderColor: "rgba(255,255,255,0.2)",
+              },
+            ]}
             onPress={() => setShowToPicker(true)}
           >
-            <Text style={styles.dateText}>
-              {toDate ? formatDate(toDate) : i18n.t("to")}
+            <Text
+              style={[
+                styles.dateText,
+                isDark && { color: "#E5E7EB" },
+              ]}
+            >
+              {toDate ? formatDate(toDate) : "To"}
             </Text>
-            <Ionicons name="calendar" size={16} color="#1E2A78" />
+            <Ionicons
+              name="calendar"
+              size={16}
+              color={isDark ? "#E5E7EB" : "#1E2A78"}
+            />
           </TouchableOpacity>
 
-          {/* FILTER ICON */}
           <TouchableOpacity>
-            <Ionicons name="funnel" size={20} color="#1E2A78" />
+            <Ionicons
+              name="funnel"
+              size={20}
+              color={isDark ? "#E5E7EB" : "#1E2A78"}
+            />
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* ================= FROM DATE PICKER ================= */}
+      {/* DATE PICKERS */}
       {showFromPicker && (
         <DateTimePicker
           value={fromDate || new Date()}
@@ -151,7 +201,6 @@ export default function Performancebuttons({
         />
       )}
 
-      {/* ================= TO DATE PICKER ================= */}
       {showToPicker && (
         <DateTimePicker
           value={toDate || new Date()}

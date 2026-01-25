@@ -1,38 +1,106 @@
-import React, { useContext } from "react";
+// Logout.tsx
+
+import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-import i18n from "../i18n";
-import { LanguageContext } from "../context/LanguageContext";
+import { useTheme } from "../context/ThemeContext";
 
 export default function LogoutScreen({ navigation }: any) {
-  const { reloadKey } = useContext(LanguageContext); // ✅ refresh texts
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   return (
-    <View key={reloadKey} style={styles.container}>
-      <View style={styles.box}>
-        <MaterialIcons name="logout" size={60} color="#1E2A78" />
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: isDark ? "#1a1a1a" : "#ffffff" },
+      ]}
+    >
+      <View
+        style={[
+          styles.box,
+          {
+            backgroundColor: isDark ? "#1a1a1a" : "transparent",
+            borderRadius: isDark ? 16 : 0,
+          },
+        ]}
+      >
+        <MaterialIcons
+          name="logout"
+          size={60}
+          color={isDark ? "#E5E7EB" : "#1E2A78"}
+        />
 
-        <Text style={styles.title}>{i18n.t("logout")}</Text>
-        <Text style={styles.user}>
-          {i18n.t("hi")} John
+        <Text
+          style={[
+            styles.title,
+            { color: isDark ? "#E5E7EB" : "#1E2A78" },
+          ]}
+        >
+          Logout
         </Text>
 
-        <Text style={styles.msg}>{i18n.t("logout_confirm")}</Text>
+        <Text
+          style={[
+            styles.user,
+            { color: isDark ? "#e5e7eb" : "#1E2A78" },
+          ]}
+        >
+          Hi John
+        </Text>
+
+        <Text
+          style={[
+            styles.msg,
+            { color: isDark ? "#e5e7eb" : "#1E2A78" },
+          ]}
+        >
+          Are you sure you want to logout?
+        </Text>
 
         <View style={styles.row}>
-          <TouchableOpacity style={styles.yes} onPress={() => navigation.goBack()}>
-            <Text style={styles.yesText}>{i18n.t("yes")}</Text>
+          <TouchableOpacity
+            style={[
+              styles.yes,
+              { backgroundColor: isDark ? "#E5E7EB" : "#1E2A78" },
+            ]}
+            onPress={() => navigation.goBack()}
+          >
+            <Text
+              style={[
+                styles.yesText,
+                { color: isDark ? "#020617" : "#ffffff" },
+              ]}
+            >
+              Yes
+            </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.no} onPress={() => navigation.goBack()}>
-            <Text style={styles.noText}>{i18n.t("no")}</Text>
+          <TouchableOpacity
+            style={[
+              styles.no,
+              { borderColor: isDark ? "#E5E7EB" : "#1E2A78" },
+            ]}
+            onPress={() => navigation.goBack()}
+          >
+            <Text
+              style={[
+                styles.noText,
+                { color: isDark ? "#E5E7EB" : "#1E2A78" },
+              ]}
+            >
+              No
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
     </View>
   );
 }
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -44,8 +112,10 @@ const styles = StyleSheet.create({
   box: {
     width: "85%",
     padding: 30,
+    //borderWidth: 1,
+   // borderColor: "#999",
     alignItems: "center",
-    gap: 6,
+    gap: 6
   },
 
   title: {
@@ -59,7 +129,7 @@ const styles = StyleSheet.create({
     marginTop: 18,
     color: "#1E2A78",
     fontWeight: "bold",
-    fontSize: 18,
+    fontSize: 18
   },
 
   msg: {
@@ -85,7 +155,7 @@ const styles = StyleSheet.create({
   yesText: {
     color: "#fff",
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: "500"
   },
 
   no: {
@@ -98,6 +168,6 @@ const styles = StyleSheet.create({
   noText: {
     color: "#1E2A78",
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: "500"
   },
 });

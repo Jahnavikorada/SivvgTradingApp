@@ -1,36 +1,44 @@
-import React, { useContext } from "react";
+import React from "react";
 import { View, StyleSheet, Dimensions, Text, Image } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import CommonHeader from "../components/CommonHeader";
-
-import i18n from "../../i18n";
-import { LanguageContext } from "../../context/LanguageContext";
+import { useTheme } from  "../../context/ThemeContext";
 
 const { height } = Dimensions.get("window");
 
 export default function Holiday({ navigation }: any) {
-  const { reloadKey } = useContext(LanguageContext); // ✅ re-render on language change
+  const { isDark } = useTheme();
 
   return (
     <LinearGradient
-      colors={["#FF2E4C", "#1E2A78"]}
+      colors={["#FF2E4C", "#1E2A78"]} // SAME gradient for both themes
       style={styles.gradient}
       start={{ x: 0, y: 0.5 }}
       end={{ x: 1, y: 0.5 }}
     >
-      <View key={reloadKey} style={styles.container}>
-        {/* ✅ Header Title Translated */}
-        <CommonHeader title={i18n.t("intraday_tips")} navigation={navigation} />
+      <View style={styles.container}>
+        <CommonHeader title="Intraday Tips" navigation={navigation} />
 
-        <View style={styles.card}>
+        <View
+          style={[
+            styles.card,
+            { backgroundColor: isDark ? "#1a1a1a" : "white" },
+          ]}
+        >
           <Image
             source={require("../../../assets/images/holiday.png")}
             style={{ width: 140, height: 140 }}
             resizeMode="contain"
           />
 
-          {/* ✅ Translated Text */}
-          <Text style={styles.header}>{i18n.t("market_closed_today")}</Text>
+          <Text
+            style={[
+              styles.header,
+              { color: isDark ? "#FFFFFF" : "#1E2A78" },
+            ]}
+          >
+            The market is closed today
+          </Text>
         </View>
       </View>
     </LinearGradient>
@@ -48,7 +56,6 @@ const styles = StyleSheet.create({
 
   card: {
     flex: 1,
-    backgroundColor: "white",
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
     marginTop: 10,
@@ -59,7 +66,6 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    color: "#1E2A78",
     fontSize: 18,
     fontWeight: "600",
     textAlign: "center",

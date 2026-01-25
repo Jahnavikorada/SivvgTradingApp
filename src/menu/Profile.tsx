@@ -1,123 +1,192 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  StatusBar,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Ionicons from "react-native-vector-icons/Ionicons";
-
-import i18n from "../i18n";
-import { LanguageContext } from "../context/LanguageContext";
+import { useTheme } from "../context/ThemeContext";
 
 export default function Profile({ navigation }: any) {
-  const { reloadKey } = useContext(LanguageContext); // ✅ refresh texts
   const [showPassword, setShowPassword] = useState(false);
+  const { isDark } = useTheme();
+
+  /* ================= COLORS ================= */
+
+  // Header title → SAME for both themes
+  const headerTitleColor = "#FFFFFF";
+
+  // Header icons (back, edit, profile)
+  const headerIconColor = isDark ? "rgba(0,0,0,0.7)" : "#FFFFFF";
 
   return (
-    <View key={reloadKey} style={{ flex: 1 }}>
+    <>
+      <StatusBar barStyle={isDark ? "light-content" : "light-content"} />
+
       <LinearGradient
         colors={["#FF2E4C", "#1E2A78"]}
         style={styles.container}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
       >
-        {/* HEADER */}
+        {/* ================= HEADER ================= */}
         <View style={styles.headerRow}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back" size={26} color="white" />
+            <Ionicons
+              name="arrow-back"
+              size={26}
+              color={headerIconColor}
+            />
           </TouchableOpacity>
 
-          <Text style={styles.headerTitle}>{i18n.t("my_profile")}</Text>
+          <Text style={[styles.headerTitle, { color: headerTitleColor }]}>
+            My Profile
+          </Text>
 
-          <TouchableOpacity onPress={() => navigation.navigate("")}>
-            <Ionicons name="pencil" size={22} color="white" />
+          <TouchableOpacity>
+            <Ionicons
+              name="pencil"
+              size={22}
+              color={headerIconColor}
+            />
           </TouchableOpacity>
         </View>
 
-        {/* PROFILE IMAGE */}
+        {/* ================= PROFILE ICON ================= */}
         <View style={styles.imageWrapper}>
-          <Ionicons name="person-circle" size={120} color="white" />
+          <Ionicons
+            name="person-circle"
+            size={120}
+            color={headerIconColor}
+          />
         </View>
 
-        {/* WHITE CARD */}
-        <View style={styles.card}>
+        {/* ================= CARD ================= */}
+        <View
+          style={[
+            styles.card,
+            isDark && { backgroundColor: "rgba(0,0,0,0.4)" },
+          ]}
+        >
           {/* USER ID */}
-          <View style={styles.inputBox}>
-            <Ionicons name="person" size={20} color="#1E2A78" />
+          <View
+            style={[
+              styles.inputBox,
+              isDark && { backgroundColor: "rgba(0,0,0,0.55)" },
+            ]}
+          >
+            <Ionicons
+              name="person"
+              size={20}
+              color={isDark ? "#E4E8EC" : "#1E2A78"}
+            />
             <TextInput
-              style={styles.input}
-              placeholder={i18n.t("user_id")}
-              placeholderTextColor="#777"
-              defaultValue="John_ID77"
+              style={[styles.input, isDark && { color: "#FFFFFF" }]}
+              placeholder="John_ID77"
+              placeholderTextColor={isDark ? "#94A3B8" : "#777"}
             />
           </View>
 
           {/* PASSWORD */}
-          <View style={styles.inputBox}>
-            <Ionicons name="lock-closed" size={20} color="#1E2A78" />
+          <View
+            style={[
+              styles.inputBox,
+              isDark && { backgroundColor: "rgba(0,0,0,0.55)" },
+            ]}
+          >
+            <Ionicons
+              name="lock-closed"
+              size={20}
+              color={isDark ? "#E4E8EC" : "#1E2A78"}
+            />
             <TextInput
-              style={styles.passwordInput}
-              placeholder={i18n.t("password")}
-              placeholderTextColor="#777"
+              style={[styles.input, isDark && { color: "#FFFFFF" }]}
+              placeholder="********"
+              placeholderTextColor={isDark ? "#94A3B8" : "#777"}
               secureTextEntry={!showPassword}
-              defaultValue="********"
             />
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
               <Ionicons
                 name={showPassword ? "eye" : "eye-off"}
                 size={20}
-                color="#1E2A78"
+                color={isDark ? "#E4E8EC" : "#1E2A78"}
               />
             </TouchableOpacity>
           </View>
 
           {/* EMAIL */}
-          <View style={styles.inputBox}>
-            <Ionicons name="mail" size={20} color="#1E2A78" />
+          <View
+            style={[
+              styles.inputBox,
+              isDark && { backgroundColor: "rgba(0,0,0,0.55)" },
+            ]}
+          >
+            <Ionicons
+              name="mail"
+              size={20}
+              color={isDark ? "#E4E8EC" : "#1E2A78"}
+            />
             <TextInput
-              style={styles.input}
-              placeholder={i18n.t("email")}
-              placeholderTextColor="#777"
-              defaultValue="john420@gmail.com"
+              style={[styles.input, isDark && { color: "#FFFFFF" }]}
+              placeholder="john420@gmail.com"
+              placeholderTextColor={isDark ? "#94A3B8" : "#777"}
+              keyboardType="email-address"
             />
           </View>
 
           {/* PHONE */}
-          <View style={styles.inputBox}>
-            <Ionicons name="call" size={20} color="#1E2A78" />
+          <View
+            style={[
+              styles.inputBox,
+              isDark && { backgroundColor: "rgba(0,0,0,0.55)" },
+            ]}
+          >
+            <Ionicons
+              name="call"
+              size={20}
+              color={isDark ? "#E4E8EC" : "#1E2A78"}
+            />
             <TextInput
-              style={styles.input}
-              placeholder={i18n.t("phone_number")}
-              placeholderTextColor="#777"
+              style={[styles.input, isDark && { color: "#FFFFFF" }]}
+              placeholder="9848321230"
+              placeholderTextColor={isDark ? "#94A3B8" : "#777"}
               keyboardType="phone-pad"
-              defaultValue="9848321230"
             />
           </View>
 
-          {/* BUTTON ROW */}
+          {/* ================= BUTTONS ================= */}
           <View style={styles.btnRow}>
             <TouchableOpacity
-              style={styles.updateBtn}
-              onPress={() => navigation.navigate("")}
+              style={[
+                styles.btn,
+                isDark && { backgroundColor: "rgba(0,0,0,0.60)" },
+              ]}
             >
-              <Text style={styles.updateText}>{i18n.t("update")}</Text>
+              <Text style={[styles.btnText, isDark && { color: "#FFFFFF" }]}>
+                Update
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.deleteBtn}
-              onPress={() => navigation.navigate("")}
+              style={[
+                styles.btn,
+                isDark && { backgroundColor: "rgba(0,0,0,0.60) "},
+              ]}
             >
-              <Text style={styles.deleteText}>{i18n.t("delete")}</Text>
+              <Text style={[styles.btnText, isDark && { color: "#FFFFFF" }]}>
+                Delete
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
       </LinearGradient>
-    </View>
+    </>
   );
 }
+
+/* ================= STYLES ================= */
 
 const styles = StyleSheet.create({
   container: {
@@ -131,20 +200,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 40,
     paddingHorizontal: 20,
-    gap: 10,
   },
 
   headerTitle: {
     fontSize: 20,
-    color: "white",
     fontWeight: "600",
   },
 
   imageWrapper: {
     marginTop: 50,
     alignSelf: "center",
-    justifyContent: "center",
-    alignItems: "center",
   },
 
   card: {
@@ -152,7 +217,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.4)",
+    borderColor: "rgba(255,255,255,0.35)",
     backgroundColor: "rgba(255,255,255,0.15)",
   },
 
@@ -163,17 +228,10 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     paddingHorizontal: 15,
     height: 50,
-    marginBottom: 25,
+    marginBottom: 20,
   },
 
   input: {
-    flex: 1,
-    marginLeft: 10,
-    fontSize: 15,
-    color: "#1E2A78",
-  },
-
-  passwordInput: {
     flex: 1,
     marginLeft: 10,
     fontSize: 15,
@@ -186,31 +244,16 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 
-  updateBtn: {
+  btn: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#FFFFFF",
     paddingVertical: 12,
     borderRadius: 25,
     alignItems: "center",
-    marginRight: 10,
+    marginHorizontal: 5,
   },
 
-  deleteBtn: {
-    flex: 1,
-    backgroundColor: "#FFf",
-    paddingVertical: 12,
-    borderRadius: 25,
-    alignItems: "center",
-    marginLeft: 10,
-  },
-
-  updateText: {
-    color: "#1E2A78",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-
-  deleteText: {
+  btnText: {
     color: "#1E2A78",
     fontSize: 16,
     fontWeight: "600",

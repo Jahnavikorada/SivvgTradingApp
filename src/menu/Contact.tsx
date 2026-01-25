@@ -1,4 +1,6 @@
-import React, { useState, useContext } from "react";
+// Contact.tsx
+
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -12,8 +14,7 @@ import MapView, { Marker } from "react-native-maps";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/Ionicons";
 
-import i18n from "../i18n";
-import { LanguageContext } from "../context/LanguageContext";
+import { useTheme } from "../context/ThemeContext";
 
 const { width, height } = Dimensions.get("window");
 
@@ -22,6 +23,7 @@ interface ContactButtonProps {
   title: string;
   subtitle: string;
   onPress?: () => void;
+  isDark: boolean;
 }
 
 const ContactButton: React.FC<ContactButtonProps> = ({
@@ -29,28 +31,66 @@ const ContactButton: React.FC<ContactButtonProps> = ({
   title,
   subtitle,
   onPress,
+  isDark,
 }) => (
-  <View style={styles.shadowWrapper}>
-    <TouchableOpacity style={styles.button} onPress={onPress}>
-      <Icon name={icon} size={22} color="#1e2a78" />
+  <View
+    style={[
+      styles.shadowWrapper,
+      { backgroundColor: isDark ? "rgba(0,0,0,0.50)" : "#1e2a78" },
+    ]}
+  >
+    <TouchableOpacity
+      style={[
+        styles.button,
+        {
+          backgroundColor: isDark ? "rgba(0,0,0,0.55)" : "#ffffff",
+          borderColor: isDark ? "#ebe7eb" : "#1e2a78",
+        },
+      ]}
+      onPress={onPress}
+    >
+      <Icon
+        name={icon}
+        size={22}
+        color={isDark ? "#E5E7EB" : "#1e2a78"}
+      />
 
       <View style={styles.btnTextContainer}>
-        <Text style={styles.btnTitle}>{title}</Text>
-        <Text style={styles.btnSubtitle}>{subtitle}</Text>
+        <Text
+          style={[
+            styles.btnTitle,
+            { color: isDark ? "#E5E7EB" : "#1e2a78" },
+          ]}
+        >
+          {title}
+        </Text>
+        <Text
+          style={[
+            styles.btnSubtitle,
+            { color: isDark ? "#e5e7eb" : "#1e2a78" },
+          ]}
+        >
+          {subtitle}
+        </Text>
       </View>
 
-      <Icon name="chevron-forward" size={22} color="#1e2a78" />
+      <Icon
+        name="chevron-forward"
+        size={22}
+        color={isDark ? "#E5E7EB" : "#1e2a78"}
+      />
     </TouchableOpacity>
   </View>
 );
 
 const ContactScreen = ({ navigation }: any) => {
-  const { reloadKey } = useContext(LanguageContext); // ✅ refresh texts
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalType, setModalType] = useState<"callback" | "email" | "chat" | null>(
-    null
-  );
+  const [modalType, setModalType] = useState<
+    "callback" | "email" | "chat" | null
+  >(null);
 
   const initialRegion = {
     latitude: 17.7511,
@@ -70,96 +110,137 @@ const ContactScreen = ({ navigation }: any) => {
   };
 
   return (
-    <View key={reloadKey} style={styles.container}>
-      {/* TOP HALF MAP */}
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: isDark ? "rgba(0,0,0,0.90)" : "#ffffff" },
+      ]}
+    >
+      {/* MAP */}
       <View style={styles.map}>
-        {/* MAP */}
         <MapView
           style={StyleSheet.absoluteFillObject}
           initialRegion={initialRegion}
-          zoomEnabled
-          scrollEnabled
         >
           <Marker
             coordinate={{
               latitude: 17.7511,
               longitude: 83.2869,
             }}
-            title={i18n.t("contact_location")}
-            description={i18n.t("contact_address")}
+            title="Contact Location"
           />
         </MapView>
 
-        {/* BACK ARROW ON MAP */}
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
           <LinearGradient
-            colors={["#ff2e4c", "#1e2a78"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
+            colors={
+              isDark
+                ? ["#1a1a1a", "#0F172A"]
+                : ["#ff2e4c", "#1e2a78"]
+            }
             style={styles.backGradient}
           >
-            <Icon name="arrow-back" size={22} color="#ffffffff" />
+            <Icon name="arrow-back" size={22} color="#fff" />
           </LinearGradient>
         </TouchableOpacity>
       </View>
 
-      {/* CONTACT CARD */}
-      <LinearGradient colors={["#ff2e4c", "#1e2a78"]} style={styles.card}>
-        <Text style={styles.title}>{i18n.t("contact_us")}</Text>
+      {/* CARD */}
+      <LinearGradient
+        colors={
+          isDark
+            ? ["#ff2e4c", "#1e2a78"]
+            : ["#ff2e4c", "#1e2a78"]
+        }
+        style={styles.card}
+      >
+        <Text style={styles.title}>Contact us</Text>
         <View style={styles.titleUnderline} />
 
-        <Text style={styles.subtitle}>{i18n.t("contact_question")}</Text>
+        <Text style={styles.subtitle}>
+          How do you wish to contact us?
+        </Text>
 
         <ContactButton
           icon="call-outline"
-          title={i18n.t("request_callback")}
-          subtitle={i18n.t("request_callback_sub")}
+          title="Request a callback"
+          subtitle="Need help? Request a callback."
           onPress={() => openModal("callback")}
+          isDark={isDark}
         />
 
         <ContactButton
           icon="mail-outline"
-          title={i18n.t("write_to_us")}
-          subtitle={i18n.t("write_to_us_sub")}
+          title="Write to us"
+          subtitle="Write to us, and we'll get back to you quickly."
           onPress={() => openModal("email")}
+          isDark={isDark}
         />
 
         <ContactButton
           icon="chatbubble-outline"
-          title={i18n.t("chat_with_us")}
-          subtitle={i18n.t("chat_with_us_sub")}
+          title="Chat with us"
+          subtitle="Talk to our experts, Monday–Friday."
           onPress={() => openModal("chat")}
+          isDark={isDark}
         />
       </LinearGradient>
 
       {/* MODAL */}
       <Modal transparent visible={modalVisible} animationType="fade">
         <View style={styles.modalOverlay}>
-          <View style={styles.modalBox}>
-            <Text style={styles.modalTitle}>
-              {modalType === "callback" && i18n.t("request_callback")}
-              {modalType === "email" && i18n.t("write_to_us")}
-              {modalType === "chat" && i18n.t("chat_with_us")}
+          <View
+            style={[
+              styles.modalBox,
+              { backgroundColor: isDark ? "#1a1a1a" : "#ffffff" },
+            ]}
+          >
+            <Text
+              style={[
+                styles.modalTitle,
+                { color: isDark ? "#E5E7EB" : "#1e2a78" },
+              ]}
+            >
+              {modalType === "callback" && "Request a Callback"}
+              {modalType === "email" && "Write to Us"}
+              {modalType === "chat" && "Chat with Us"}
             </Text>
 
-            {/* ✅ ONLY MESSAGE INPUT */}
             <TextInput
-              placeholder={i18n.t("type_message")}
+              placeholder="Type your message here..."
+              placeholderTextColor={isDark ? "#e5e7eb" : "#000"}
               multiline
-              numberOfLines={4}
-              style={[styles.input, { height: 120 }]}
-              placeholderTextColor="#000"
+              style={[
+                styles.input,
+                {
+                  height: 120,
+                  color: isDark ? "#E5E7EB" : "#000",
+                  borderColor: isDark ? "#e5e7eb" : "#3a3939",
+                },
+              ]}
             />
 
-            <TouchableOpacity style={styles.sendBtn}>
-              <Text style={styles.sendText}>{i18n.t("send")}</Text>
+            <TouchableOpacity
+              style={[
+                styles.sendBtn,
+                { backgroundColor: isDark ? "#E5E7EB" : "#1e2a78" },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.sendText,
+                  { color: isDark ? "#020617" : "#fff" },
+                ]}
+              >
+                Send
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={closeModal}>
-              <Text style={styles.closeText}>{i18n.t("cancel")}</Text>
+              <Text style={styles.closeText}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -170,38 +251,39 @@ const ContactScreen = ({ navigation }: any) => {
 
 export default ContactScreen;
 
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
   },
 
-  backButton: {
-    position: "absolute",
-    top: 50,
-    left: 20,
-    elevation: 6,
-    borderRadius: 25,
-  },
+backButton: {
+  position: "absolute",
+  top: 50,        // ✅ status bar safe
+  left: 20,
+  elevation: 6,
+  borderRadius: 25,
+},
 
-  backGradient: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+backGradient: {
+  width: 44,
+  height: 44,
+  borderRadius: 22,
+  justifyContent: "center",
+  alignItems: "center",
+},
 
-  mapContainer: {
-    flex: 1,
-  },
-
+mapContainer: {
+  flex: 1,          // 🔥 HALF SCREEN
+},
   map: {
     width: width,
     height: height * 0.45,
     zIndex: 1,
   },
-
+ 
   card: {
     position: "absolute",
     bottom: 80,
@@ -210,7 +292,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 40,
     height: 565,
-    elevation: 10,
+    elevation: 1,
     zIndex: 2,
   },
 
@@ -246,6 +328,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     backgroundColor: "#1e2a78",
     marginBottom: 35,
+  
   },
 
   button: {
@@ -279,7 +362,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
 
-  modalOverlay: {
+   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.6)",
     justifyContent: "center",
@@ -307,16 +390,18 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     marginBottom: 14,
-    textAlignVertical: "top",
+    textAlignVertical: "top", 
+    
   },
 
   sendBtn: {
     backgroundColor: "#1e2a78",
     paddingVertical: 6,
     borderRadius: 18,
-    width: 100,
+    width:100,
     alignItems: "center",
     alignSelf: "center",
+    
   },
 
   sendText: {
@@ -326,10 +411,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 
+  
   closeText: {
     color: "#ff2e4c",
     textAlign: "center",
     marginTop: 14,
     fontWeight: "600",
   },
+
 });

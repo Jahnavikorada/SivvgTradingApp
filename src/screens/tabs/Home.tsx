@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -7,48 +7,58 @@ import {
   TouchableOpacity,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
-import CommonHeader from "../components/CommonHeader";
 
+import CommonHeader from "../components/CommonHeader";
 import HomeEquity from "../hometips/HomeEquity";
 import HomeFutures from "../hometips/HomeFuture";
 import HomeOptions from "../hometips/HomeOptions";
 
-import i18n from "../../i18n";
-import { LanguageContext } from "../../context/LanguageContext";
+import { useTheme } from "../../context/ThemeContext";
+import { LightColors, DarkColors } from "../../theme/colors";
 
 const { height } = Dimensions.get("window");
 
 export default function Home({ navigation }: any) {
-  const { reloadKey } = useContext(LanguageContext); // ✅ re-render on language change
+  const [activeTab, setActiveTab] =
+    useState<"Equity" | "Futures" | "Options">("Equity");
 
-  const [activeTab, setActiveTab] = useState<"Equity" | "Futures" | "Options">(
-    "Equity"
-  );
+  const { isDark } = useTheme();
+  const colors = isDark ? DarkColors : LightColors;
 
   return (
     <LinearGradient
-      colors={["#FF2E4C", "#1E2A78"]}
+      colors={[colors.gradientStart, colors.gradientEnd]}
       style={styles.gradient}
       start={{ x: 0, y: 0.5 }}
       end={{ x: 1, y: 0.5 }}
     >
-      <View key={reloadKey} style={styles.container}>
-        {/* ✅ Translated Header */}
-        <CommonHeader title={i18n.t("intraday_tips")} navigation={navigation} />
+      <View style={styles.container}>
+        <CommonHeader title="Intraday Tips" navigation={navigation} />
 
-        <View style={styles.card}>
-          {/* TOP TABS */}
-          <View style={styles.tabs}>
+        {/* MAIN CARD */}
+        <View
+          style={[
+            styles.card,
+            {
+              backgroundColor: isDark
+                ? "#1a1a1a"
+                : "#FFFFFF",
+            },
+          ]}
+        >
+          {/* TABS */}
+          <View
+            style={[
+              styles.tabs,
+              {
+                borderColor: isDark
+                  ? "rgba(255,255,255,0.20)"
+                  : "#1E2A78",
+              },
+            ]}
+          >
             {["Equity", "Futures", "Options"].map((tab) => {
               const isActive = activeTab === tab;
-
-              // ✅ Translate tab names
-              const translatedTab =
-                tab === "Equity"
-                  ? i18n.t("equity")
-                  : tab === "Futures"
-                  ? i18n.t("futures")
-                  : i18n.t("options");
 
               return (
                 <TouchableOpacity
@@ -59,16 +69,39 @@ export default function Home({ navigation }: any) {
                 >
                   {isActive ? (
                     <LinearGradient
-                      colors={["#FF2E4C", "#1E2A78"]}
+                      colors={[
+                        colors.gradientStart,
+                        colors.gradientEnd,
+                      ]}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 0 }}
                       style={styles.activeGradient}
                     >
-                      <Text style={styles.activeTabText}>{translatedTab}</Text>
+                      <Text style={styles.activeTabText}>{tab}</Text>
                     </LinearGradient>
                   ) : (
-                    <View style={styles.inactiveTab}>
-                      <Text style={styles.tabText}>{translatedTab}</Text>
+                    <View
+                      style={[
+                        styles.inactiveTab,
+                        {
+                          backgroundColor: isDark
+                            ? "rgba(0,0,0,0.60)"
+                            : "#FFFFFF",
+                        },
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.tabText,
+                          {
+                            color: isDark
+                              ? colors.textSecondary
+                              : "#1E2A78",
+                          },
+                        ]}
+                      >
+                        {tab}
+                      </Text>
                     </View>
                   )}
                 </TouchableOpacity>
@@ -99,7 +132,6 @@ const styles = StyleSheet.create({
 
   card: {
     flex: 1,
-    backgroundColor: "white",
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
     marginTop: 30,
@@ -109,30 +141,22 @@ const styles = StyleSheet.create({
 
   tabs: {
     flexDirection: "row",
-    borderWidth: 2,
-    borderColor: "#1E2A78",
+    borderWidth: 1.5,
     overflow: "hidden",
     width: "100%",
     marginBottom: 16,
     marginTop: 20,
     height: 45,
+    borderRadius: 10,
   },
 
   tab: {
     flex: 1,
-    alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    justifyContent: "center",
-  },
-
-  activeTab: {
-    backgroundColor: "#FF2E4C",
   },
 
   tabText: {
     fontWeight: "600",
     fontSize: 18,
-    color: "#1E2A78",
   },
 
   activeTabText: {
@@ -147,14 +171,11 @@ const styles = StyleSheet.create({
     height: "100%",
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 8,
   },
 
   inactiveTab: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 8,
-    backgroundColor: "white",
   },
 });

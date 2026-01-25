@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -8,6 +8,7 @@ import {
   Text,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
+import { useTheme } from "../../context/ThemeContext";
 
 import { bankData } from "../sectoraldata/bankData";
 import { pharmaData } from "../sectoraldata/pharmaData";
@@ -17,22 +18,18 @@ import { metalData } from "../sectoraldata/metalData";
 import { autoData } from "../sectoraldata/autoData";
 import { fmcgData } from "../sectoraldata/fmcData";
 
-import i18n from "../../i18n";
-import { LanguageContext } from "../../context/LanguageContext";
-
 export default function SectoralPanel() {
-  const { reloadKey } = useContext(LanguageContext); // ✅ refresh heading on language change
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const { isDark } = useTheme();
 
-  // ✅ Heading translation keys (ONLY TEXT CHANGED)
   const sectorHeadingMap: any = {
-    bank: "nifty_bank",
-    pharma: "nifty_pharma",
-    it: "nifty_it",
-    money: "nifty_financial",
-    metal: "nifty_metal",
-    auto: "nifty_auto",
-    fmcg: "nifty_fmcg",
+    bank: "Nifty Bank",
+    pharma: "Nifty Pharma",
+    it: "Nifty IT",
+    money: "Nifty Financial",
+    metal: "Nifty Metal",
+    auto: "Nifty Auto",
+    fmcg: "Nifty FMCG",
   };
 
   const icons = [
@@ -59,8 +56,8 @@ export default function SectoralPanel() {
   const activeData = sectorMap[activeKey];
 
   return (
-    <View key={reloadKey} style={styles.row}>
-      {/* ✅ LEFT BLUE CARD */}
+    <View style={styles.row}>
+      {/* LEFT BAR */}
       <View style={styles.leftBar}>
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -73,31 +70,54 @@ export default function SectoralPanel() {
               <TouchableOpacity
                 key={index}
                 onPress={() => setSelectedIndex(index)}
-                style={isActive ? styles.activeCircle : styles.inactiveCircle}
+                style={[
+                  styles.circleBase,
+                  isActive
+                    ? isDark
+                      ? styles.activeCircleDark
+                      : styles.activeCircle
+                    : isDark
+                    ? styles.inactiveCircleDark
+                    : styles.inactiveCircle,
+                ]}
               >
-                <Image
-                  source={item.img}
-                  style={isActive ? styles.activeIcon : styles.inactiveIcon}
-                />
+                <Image source={item.img} style={styles.icon} />
               </TouchableOpacity>
             );
           })}
         </ScrollView>
       </View>
 
-      {/* ✅ RIGHT SECTOR LIST CARD */}
+      {/* RIGHT CARD */}
       <LinearGradient
         colors={["rgba(255,46,76,0.30)", "rgba(30,42,120,0.30)"]}
-        style={styles.rightCard}
+        style={[
+          styles.rightCard,
+          isDark && { borderColor: "rgba(255,255,255,0.15)" },
+        ]}
       >
-        {/* ✅ Translated Sector Heading */}
-        <Text style={styles.heading}>{i18n.t(sectorHeadingMap[activeKey])}</Text>
+        {/* 🔴 ONLY CHANGE HERE */}
+        <Text style={[styles.heading, isDark && { color: "#FFFFFF" }]}>
+          {sectorHeadingMap[activeKey]}
+        </Text>
 
         <ScrollView showsVerticalScrollIndicator={false}>
           {activeData.map((item: any, index: number) => (
-            <View key={index} style={styles.bankWhiteCard}>
+            <View
+              key={index}
+              style={[
+                styles.bankWhiteCard,
+                isDark && {
+                  backgroundColor: "#121212",
+                  opacity: 0.8,
+                  borderColor: "rgba(255,255,255,0.15)",
+                },
+              ]}
+            >
               <Image source={item.img} style={styles.bankLogo} />
-              <Text style={styles.bankText}>{item.name}</Text>
+              <Text style={[styles.bankText, isDark && { color: "#E5E7EB" }]}>
+                {item.name}
+              </Text>
             </View>
           ))}
         </ScrollView>
@@ -105,6 +125,8 @@ export default function SectoralPanel() {
     </View>
   );
 }
+
+/* ================= STYLES ================= */
 
 const styles = StyleSheet.create({
   row: {
@@ -124,42 +146,40 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
 
-  /* ACTIVE ICON */
-  activeCircle: {
+  circleBase: {
     height: 70,
     width: 70,
     borderRadius: 60,
-    backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 30,
   },
 
-  /* INACTIVE ICON */
+  activeCircle: {
+    backgroundColor: "#ffffff",
+  },
+
   inactiveCircle: {
-    height: 70,
-    width: 70,
-    borderRadius: 50,
     backgroundColor: "rgba(255,255,255,0.15)",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 30,
     borderWidth: 1.5,
     borderColor: "rgba(255,255,255,0.4)",
   },
 
-  activeIcon: {
-    height: 50,
-    width: 50,
-    resizeMode: "contain",
-    opacity: 1,
+  activeCircleDark: {
+    backgroundColor: "#1a1a1a",
   },
 
-  inactiveIcon: {
+  inactiveCircleDark: {
+    backgroundColor: "rgba(0,0,0,0.35)",
+    borderWidth: 1.5,
+    borderColor: "rgba(255,255,255,0.15)",
+  },
+
+  icon: {
     height: 50,
     width: 50,
     resizeMode: "contain",
-    opacity: 0.9,
+    opacity: 0.95,
   },
 
   rightCard: {
@@ -181,7 +201,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 20,
     marginLeft: 20,
-    letterSpacing: 0.5,
   },
 
   bankWhiteCard: {

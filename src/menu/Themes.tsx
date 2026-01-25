@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -8,36 +8,18 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/Ionicons";
-
-import i18n from "../i18n";
-import { LanguageContext } from "../context/LanguageContext";
+import { ThemeContext } from "../context/ThemeContext"; // ✅ Import ThemeContext
 
 export default function Themes({ navigation }: any) {
-  const { reloadKey } = useContext(LanguageContext); // ✅ refresh texts
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-
-  // Theme colors (LOCAL)
-  const colors =
-    theme === "light"
-      ? {
-          background: "#FFFFFF",
-          text: "#1E2A78",
-          card: "#FFFFFF",
-          border: "#1E2A78",
-        }
-      : {
-          background: "#0F172A",
-          text: "#FFFFFF",
-          card: "#0F172A",
-          border: "#FFFFFF",
-        };
+  // ✅ Use context instead of local state
+  const { theme, setTheme } = useContext(ThemeContext);
+  const isLight = theme === "light";
 
   return (
-    <View key={reloadKey} style={{ flex: 1, backgroundColor: colors.background }}>
-      <StatusBar
-        barStyle={theme === "light" ? "dark-content" : "light-content"}
-      />
+    <View style={[styles.container, { backgroundColor: isLight ? "#fff" : "#1A1A1A" }]}>
+      <StatusBar barStyle={isLight ? "dark-content" : "light-content"} />
 
+      {/* Gradient Header */}
       <LinearGradient
         colors={["#FF2E4C", "#1E2A78"]}
         style={styles.gradient}
@@ -48,62 +30,114 @@ export default function Themes({ navigation }: any) {
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Icon name="arrow-back" size={26} color="#fff" />
           </TouchableOpacity>
-
-          <Text style={styles.headerTitle}>{i18n.t("themes")}</Text>
+          <Text style={styles.headerTitle}>Themes</Text>
         </View>
 
-        <View style={[styles.card, { backgroundColor: colors.card }]}>
-          <Text style={[styles.title, { color: colors.text }]}>
-            {i18n.t("choose_theme")}
+        {/* White Card */}
+        <View
+          style={[
+            styles.card,
+            { backgroundColor: isLight ? "#fff" : "#1a1a1a" },
+          ]}
+        >
+          <Text style={[styles.title, { color: isLight ? "#1E2A78" : "#E0E0E0" }]}>
+            Choose a Theme
           </Text>
 
           <View style={styles.row}>
             {/* LIGHT THEME */}
-            <TouchableOpacity
-              style={[
-                styles.preview,
-                {
-                  backgroundColor: "#FFFFFF",
-                  borderColor: theme === "light" ? "#1E2A78" : "#CBD5E1",
-                },
-              ]}
-              onPress={() => setTheme("light")}
-            >
-              <View style={[styles.line, { backgroundColor: "#E5E7EB" }]} />
-              <View style={[styles.line, { backgroundColor: "#CBD5E1" }]} />
-              <Text style={styles.previewText}>{i18n.t("light")}</Text>
-              {theme === "light" && <View style={styles.dot} />}
-            </TouchableOpacity>
+            <View style={styles.themeWrapper}>
+              <View
+                style={[
+                  styles.previewOuter,
+                  { backgroundColor: "#D3D6E0" },
+                  isLight && styles.selectedBorder,
+                ]}
+              >
+                <View style={styles.innerLightCard}>
+                  <View style={styles.previewRow}>
+                    <View style={styles.previewDot} />
+                    <View style={styles.previewLineLight} />
+                  </View>
+                  <View style={styles.previewRow}>
+                    <View style={styles.previewDot} />
+                    <View style={styles.previewLineLight} />
+                  </View>
+                </View>
+              </View>
+
+              <Text
+                style={[
+                  styles.previewLabel,
+                  { color: isLight ? "#1E2A78" : "#E0E0E0" },
+                ]}
+              >
+                Light
+              </Text>
+
+              <TouchableOpacity onPress={() => setTheme("light")}>
+                <View style={styles.radioOuter}>
+                  {isLight && <View style={styles.radioInner} />}
+                </View>
+              </TouchableOpacity>
+            </View>
 
             {/* DARK THEME */}
-            <TouchableOpacity
-              style={[
-                styles.preview,
-                {
-                  backgroundColor: "#0F172A",
-                  borderColor: theme === "dark" ? "#FFFFFF" : "#334155",
-                },
-              ]}
-              onPress={() => setTheme("dark")}
-            >
-              <View style={[styles.line, { backgroundColor: "#334155" }]} />
-              <View style={[styles.line, { backgroundColor: "#475569" }]} />
-              <Text style={[styles.previewText, { color: "#FFFFFF" }]}>
-                {i18n.t("dark")}
+            <View style={styles.themeWrapper}>
+              <View
+                style={[
+                  styles.previewOuter,
+                  { backgroundColor: "#D3D6E0" },
+                  !isLight && styles.selectedBorder,
+                ]}
+              >
+                <View style={styles.innerDarkCard}>
+                  <View style={styles.previewRow}>
+                    <View style={styles.previewDot} />
+                    <View style={styles.previewLineDark} />
+                  </View>
+                  <View style={styles.previewRow}>
+                    <View style={styles.previewDot} />
+                    <View style={styles.previewLineDark} />
+                  </View>
+                </View>
+              </View>
+
+              <Text
+                style={[
+                  styles.previewLabel,
+                  { color: isLight ? "#1E2A78" : "#E0E0E0" },
+                ]}
+              >
+                Dark
               </Text>
-              {theme === "dark" && (
-                <View style={[styles.dot, { backgroundColor: "#FFFFFF" }]} />
-              )}
-            </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => setTheme("dark")}>
+                <View style={styles.radioOuter}>
+                  {!isLight && <View style={styles.radioInner} />}
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
 
-          {/* DONE BUTTON */}
+          {/* Done Button */}
           <TouchableOpacity
-            style={[styles.button, { borderColor: colors.border }]}
+            style={[
+              styles.button,
+              {
+                backgroundColor: isLight ? "#fff" : "#1E1E1E",
+                borderColor: isLight ? "#1E2A78" : "#E0E0E0",
+              },
+            ]}
             onPress={() => navigation.goBack()}
           >
-            <Text style={[styles.buttonText, { color: colors.text }]}>
-              {i18n.t("done")}
+            <Text
+              style={[
+                styles.buttonText,
+                { color: isLight ? "#1E2A78" : "#E0E0E0" },
+              ]}
+            >
+              Done
             </Text>
           </TouchableOpacity>
         </View>
@@ -113,6 +147,10 @@ export default function Themes({ navigation }: any) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+
   gradient: {
     flex: 1,
   },
@@ -128,123 +166,135 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: "#fff",
     fontSize: 20,
-    fontWeight: "bold",
-  },
-
-  container: {
-    flex: 1,
+    fontWeight: "600",
   },
 
   card: {
-    alignItems: "center",
-    justifyContent: "center",
     flex: 1,
-    backgroundColor: "white",
+    marginTop: "20%",
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
-    marginTop: "10%",
-    paddingTop: 15,
-    paddingHorizontal: 10,
+    alignItems: "center",
+    paddingTop: 40,
+  },
+
+  title: {
+    fontSize: 22,
+    fontWeight: "600",
+    marginBottom: 40,
+    marginTop: 120,
   },
 
   row: {
     flexDirection: "row",
+    gap: 40,
+  },
+
+  themeWrapper: {
     alignItems: "center",
-    paddingVertical: 18,
-    paddingHorizontal: 15,
-    borderBottomWidth: 1,
-    borderColor: "#E5E5E5",
   },
 
-  rowText: {
-    flex: 1,
-    marginLeft: 15,
-    fontSize: 16,
-    color: "#1E2A78",
-    fontWeight: "500",
-  },
-
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#1E2A78",
-    marginTop: 10,
-  },
-
-  subtitle: {
-    fontSize: 14,
-    color: "#777",
-    marginBottom: 25,
-    textAlign: "center",
-  },
-
-  btn: {
-    width: "70%",
-    paddingVertical: 12,
-    marginVertical: 8,
-    borderRadius: 6,
+  previewOuter: {
+    width: 140,
+    height: 100,
+    borderRadius: 4,
     borderWidth: 1,
+    borderColor: "#B9BCC6",
+    padding: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+
+  selectedBorder: {
     borderColor: "#1E2A78",
-    alignItems: "center",
-    backgroundColor: "#fff",
   },
 
-  activeBtn: {
-    backgroundColor: "#1E2A78",
-  },
-
-  btnText: {
-    color: "#1E2A78",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-
-  activeText: {
-    color: "#fff",
-  },
-
-  preview: {
-    width: 120,
-    height: 140,
-    borderRadius: 14,
-    borderWidth: 2,
-    padding: 12,
+  innerLightCard: {
+    flex: 1,
+    borderRadius: 8,
+    backgroundColor: "#FFFFFF",
+    padding: 10,
     justifyContent: "center",
   },
 
-  line: {
-    height: 10,
-    borderRadius: 6,
+  innerDarkCard: {
+    flex: 1,
+    borderRadius: 8,
+    backgroundColor: "#bfbbbbff",
+    padding: 10,
+    justifyContent: "center",
+  },
+
+  previewRow: {
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 8,
   },
 
-  previewText: {
-    textAlign: "center",
-    marginTop: 12,
-    fontWeight: "600",
-    color: "#1E2A78",
+  previewDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#1E2A78",
+    marginRight: 8,
   },
 
-  dot: {
-    alignSelf: "center",
+  previewLineLight: {
+    height: 8,
+    borderRadius: 4,
+    flex: 1,
+    backgroundColor: "#E0E2EA",
+  },
+
+  previewLineDark: {
+    height: 8,
+    borderRadius: 4,
+    flex: 1,
+    backgroundColor: "#8F95A6",
+  },
+
+  previewLabel: {
     marginTop: 8,
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+    fontWeight: "500",
+    fontSize: 20,
+  },
+
+  radioOuter: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: "#1E2A78",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 10,
+    zIndex: 10,
+    backgroundColor: "#FFFFFF",
+  },
+
+  radioInner: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
     backgroundColor: "#1E2A78",
   },
 
   button: {
-    marginTop: 40,
-    alignSelf: "center",
+    marginTop: 60,
     borderWidth: 1.5,
-    borderRadius: 25,
-    paddingHorizontal: 40,
-    paddingVertical: 10,
+    borderRadius: 30,
+    transform: [{ translateY: -4 }],
+    paddingHorizontal: 50,
+    paddingVertical: 5,
+    borderColor: "#1E2A78",
+    backgroundColor: "#fff",
   },
 
   buttonText: {
-    fontWeight: "600",
-    fontSize: 14,
+    fontWeight: "700",
+    fontSize: 18,
   },
 });

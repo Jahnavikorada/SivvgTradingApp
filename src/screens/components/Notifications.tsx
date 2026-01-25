@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -9,54 +9,70 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/Feather";
-import i18n from "../../i18n";
-import { LanguageContext } from "../../context/LanguageContext";
+import { useTheme } from "../../context/ThemeContext"; // ✅ ADD
 
 const notifications = [
   {
     id: "1",
     symbol: "GODREJCP",
-    message: "notification_target_reached",
-    time: "notification_1_min_ago",
+    message: "Target 1 reached successfully",
+    time: "1 min ago",
   },
   {
     id: "2",
     symbol: "ADANIENT",
-    message: "notification_target_reached",
-    time: "notification_7_mins_ago",
+    message: "Target 1 reached successfully",
+    time: "7 mins ago",
   },
   {
     id: "3",
     symbol: "COLPAL",
-    message: "notification_target_reached",
-    time: "notification_45_mins_ago",
+    message: "Target 1 reached successfully",
+    time: "45 mins ago",
   },
   {
     id: "4",
     symbol: "ANGELONE",
-    message: "notification_target_reached",
-    time: "notification_1_hr_ago",
+    message: "Target 1 reached successfully",
+    time: "1 hr ago",
   },
 ];
 
 const NotificationScreen = ({ navigation }: any) => {
-  const { reloadKey } = useContext(LanguageContext); // ✅ refresh texts
+  const { colors, isDark } = useTheme(); // ✅ USE GLOBAL THEME
 
   const renderItem = ({ item }: any) => (
-    <View style={styles.card}>
+    <View
+      style={[
+        styles.card,
+        {
+          backgroundColor: colors.card,
+          borderColor: colors.border,
+          shadowOpacity: isDark ? 0.4 : 0.15, // ✅ dark elevation fix
+        },
+      ]}
+    >
       <View style={styles.cardContent}>
-        <Text style={styles.symbol}>{item.symbol} - </Text>
-        <Text style={styles.message}>{i18n.t(item.message)}</Text>
+        <Text style={[styles.symbol, { color: colors.textPrimary }]}>
+          {item.symbol} -{" "}
+        </Text>
+        <Text style={[styles.message, { color: colors.textPrimary }]}>
+          {item.message}
+        </Text>
       </View>
 
-      <Text style={styles.time}>{i18n.t(item.time)}</Text>
+      <Text style={[styles.time, { color: colors.textSecondary }]}>
+        {item.time}
+      </Text>
     </View>
   );
 
   return (
-    <SafeAreaView key={reloadKey} style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+    >
       <LinearGradient
-        colors={["#E73C4E", "#3A4B8F"]}
+        colors={[colors.gradientStart, colors.gradientEnd]} // ✅ SAME HEADER
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={styles.header}
@@ -65,12 +81,17 @@ const NotificationScreen = ({ navigation }: any) => {
           <Icon name="chevron-left" size={28} color="#FFFFFF" />
         </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>{i18n.t("notifications")}</Text>
+        <Text style={styles.headerTitle}>Notifications</Text>
 
         <View style={{ width: 28 }} />
       </LinearGradient>
 
-      <View style={styles.body}>
+      <View
+        style={[
+          styles.body,
+          { backgroundColor: colors.background },
+        ]}
+      >
         <FlatList
           data={notifications}
           keyExtractor={(item) => item.id}
@@ -88,7 +109,6 @@ export default NotificationScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
   },
 
   header: {
@@ -108,7 +128,6 @@ const styles = StyleSheet.create({
 
   body: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 26,
     borderTopRightRadius: 26,
     marginTop: -20,
@@ -116,17 +135,14 @@ const styles = StyleSheet.create({
   },
 
   card: {
-    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     marginHorizontal: 16,
     marginBottom: 18,
     padding: 18,
     borderWidth: 1.5,
-    borderColor: "#1E2A78",
-    elevation: 4,
 
+    elevation: 4,
     shadowColor: "#000",
-    shadowOpacity: 0.15,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 4 },
   },
@@ -137,13 +153,11 @@ const styles = StyleSheet.create({
   },
 
   symbol: {
-    color: "#1E2A78",
     fontSize: 16,
     fontWeight: "500",
   },
 
   message: {
-    color: "#1E2A78",
     fontSize: 15,
     fontWeight: "400",
   },
@@ -151,7 +165,6 @@ const styles = StyleSheet.create({
   time: {
     textAlign: "right",
     marginTop: 10,
-    color: "#1E2A78",
     fontSize: 14,
     fontWeight: "500",
   },

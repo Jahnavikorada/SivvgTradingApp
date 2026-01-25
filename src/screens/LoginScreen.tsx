@@ -9,9 +9,12 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import i18n from "../i18n"; // ✅ ADD THIS
+import { useTheme } from "../context/ThemeContext"; // ✅ ThemeContext
 
 export default function LoginScreen({ navigation }: any) {
+  const { theme } = useTheme();
+  const isLight = theme === "light";
+
   const [showPassword, setShowPassword] = useState(false);
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
@@ -24,29 +27,26 @@ export default function LoginScreen({ navigation }: any) {
   const [isUserIdValid, setIsUserIdValid] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
 
-  // =================== VALIDATION ===================
   const handleLogin = () => {
     let valid = true;
     let newErrors: any = { userId: "", password: "" };
 
-    // USER ID VALIDATION
     if (!userId.trim()) {
-      newErrors.userId = i18n.t("err_userid_required");
+      newErrors.userId = "User ID is required";
       valid = false;
       setIsUserIdValid(false);
     } else if (userId.includes(" ")) {
-      newErrors.userId = i18n.t("err_userid_no_spaces");
+      newErrors.userId = "User ID must not contain spaces";
       valid = false;
       setIsUserIdValid(false);
     } else if (userId.length < 5) {
-      newErrors.userId = i18n.t("err_userid_min_5");
+      newErrors.userId = "User ID must be at least 5 characters";
       valid = false;
       setIsUserIdValid(false);
     } else {
       setIsUserIdValid(true);
     }
 
-    // PASSWORD VALIDATION
     const regex = {
       uppercase: /[A-Z]/,
       lowercase: /[a-z]/,
@@ -56,31 +56,31 @@ export default function LoginScreen({ navigation }: any) {
     };
 
     if (!password.trim()) {
-      newErrors.password = i18n.t("err_password_required");
+      newErrors.password = "Password is required";
       valid = false;
       setIsPasswordValid(false);
     } else if (password.length < 5) {
-      newErrors.password = i18n.t("err_password_min_5");
+      newErrors.password = "Password must be at least 5 characters";
       valid = false;
       setIsPasswordValid(false);
     } else if (regex.whitespace.test(password)) {
-      newErrors.password = i18n.t("err_whitespace_not_allowed");
+      newErrors.password = "Whitespace not allowed";
       valid = false;
       setIsPasswordValid(false);
     } else if (!regex.uppercase.test(password)) {
-      newErrors.password = i18n.t("err_uppercase_required");
+      newErrors.password = "Must contain an uppercase letter";
       valid = false;
       setIsPasswordValid(false);
     } else if (!regex.lowercase.test(password)) {
-      newErrors.password = i18n.t("err_lowercase_required");
+      newErrors.password = "Must contain a lowercase letter";
       valid = false;
       setIsPasswordValid(false);
     } else if (!regex.number.test(password)) {
-      newErrors.password = i18n.t("err_number_required");
+      newErrors.password = "Must contain a number";
       valid = false;
       setIsPasswordValid(false);
     } else if (!regex.special.test(password)) {
-      newErrors.password = i18n.t("err_special_required");
+      newErrors.password = "Must contain a special character";
       valid = false;
       setIsPasswordValid(false);
     } else {
@@ -100,31 +100,75 @@ export default function LoginScreen({ navigation }: any) {
       style={{ flex: 1 }}
       resizeMode="cover"
     >
+      {/* ✅ FIXED BACKGROUND GRADIENT */}
       <LinearGradient
-        colors={["rgba(255,46,76,0.8)", "rgba(30,42,120,0.8)"]}
+        colors={["rgba(255,46,76,0.75)", "rgba(30,42,120,0.75)"]}
         style={styles.container}
       >
-        <View style={styles.card}>
-          {/* Title Section */}
-          <Text style={styles.title}>
-            {i18n.t("welcome_to")} <Text style={styles.brand}>SIVVG</Text>
+        {/* ✅ CARD */}
+        <View
+          style={[
+            styles.card,
+            {
+              backgroundColor: isLight
+                ? "rgba(250,250,250,0.2)"
+                : "rgba(30,41,59,0.5)", // dynamic card
+              borderColor: isLight
+                ? "rgba(255,255,255,0.4)"
+                : "rgba(148,163,184,0.4)", // dynamic border
+            },
+          ]}
+        >
+          {/* TITLE */}
+          <Text
+            style={[
+              styles.title,
+              { color: isLight ? "#FFFFFF" : "#Fff" },
+            ]}
+          >
+            Welcome to{" "}
+            <Text
+              style={[
+                styles.brand,
+                { color: isLight ? "#FFFFFF" : "#fff" },
+              ]}
+            >
+              SIVVG
+            </Text>
           </Text>
 
-          <Text style={styles.subtitle}>{i18n.t("login_subtitle")}</Text>
+          <Text
+            style={[
+              styles.subtitle,
+              { color: isLight ? "#E5E7EB" : "#e5e7eb" },
+            ]}
+          >
+            Enter your credentials to login
+          </Text>
 
           {/* USER ID */}
           <View
             style={[
               styles.inputBox,
-              errors.userId ? styles.errorBorder : null,
-              isUserIdValid ? styles.successBorder : null,
+              {
+                backgroundColor: isLight ? "#FAFAFA" : "rgba(0,0,0,0.55)", // dynamic input bg
+              },
+              errors.userId && styles.errorBorder,
+              isUserIdValid && styles.successBorder,
             ]}
           >
-            <Ionicons name="person" size={22} color="#162F7A" />
+            <Ionicons
+              name="person"
+              size={22}
+              color={isLight ? "#162F7A" : "#e4e8ec"}
+            />
             <TextInput
-              placeholder={i18n.t("user_id")}
-              placeholderTextColor="#1E2A78"
-              style={styles.input}
+              placeholder="User ID"
+              placeholderTextColor={isLight ? "#5A6BA0" : "#94A3B8"}
+              style={[
+                styles.input,
+                { color: isLight ? "#1E2A78" : "#F8FAFC" },
+              ]}
               value={userId}
               onChangeText={(t) => {
                 setUserId(t);
@@ -133,24 +177,35 @@ export default function LoginScreen({ navigation }: any) {
               }}
             />
           </View>
-          {errors.userId ? (
+
+          {errors.userId && (
             <Text style={styles.errorText}>{errors.userId}</Text>
-          ) : null}
+          )}
 
           {/* PASSWORD */}
           <View
             style={[
               styles.inputBox,
-              errors.password ? styles.errorBorder : null,
-              isPasswordValid ? styles.successBorder : null,
+              {
+                backgroundColor: isLight ? "#FAFAFA" : "rgba(0,0,0,0.55)", // dynamic input bg
+              },
+              errors.password && styles.errorBorder,
+              isPasswordValid && styles.successBorder,
             ]}
           >
-            <Ionicons name="lock-closed" size={22} color="#162F7A" />
+            <Ionicons
+              name="lock-closed"
+              size={22}
+              color={isLight ? "#162F7A" : "#e4e8ec"}
+            />
             <TextInput
-              placeholder={i18n.t("password")}
-              placeholderTextColor="#1E2A78"
+              placeholder="Password"
+              placeholderTextColor={isLight ? "#5A6BA0" : "#94A3B8"}
               secureTextEntry={!showPassword}
-              style={styles.input}
+              style={[
+                styles.input,
+                { color: isLight ? "#1E2A78" : "#F8FAFC" },
+              ]}
               value={password}
               onChangeText={(t) => {
                 setPassword(t);
@@ -158,43 +213,57 @@ export default function LoginScreen({ navigation }: any) {
                 setIsPasswordValid(false);
               }}
             />
-
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
               <Ionicons
                 name={showPassword ? "eye" : "eye-off"}
                 size={20}
-                color="#162F7A"
+                color={isLight ? "#162F7A" : "#e4e8ec"}
               />
             </TouchableOpacity>
           </View>
 
-          {errors.password ? (
+          {errors.password && (
             <Text style={styles.errorText}>{errors.password}</Text>
-          ) : null}
+          )}
 
           {/* FORGOT PASSWORD */}
           <TouchableOpacity style={{ alignSelf: "flex-end" }}>
             <Text
-              style={styles.forgot}
+              style={[
+                styles.forgot,
+                { color: isLight ? "#01D5FF" : "#38BDF8" },
+              ]}
               onPress={() => navigation.navigate("ForgotPassword")}
             >
-              {i18n.t("forgot_password")}
+              Forgot Password ?
             </Text>
           </TouchableOpacity>
 
           {/* LOGIN BUTTON */}
-          <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
-            <Text style={styles.loginText}>{i18n.t("login")}</Text>
+          <TouchableOpacity
+            style={[
+              styles.loginBtn,
+              { backgroundColor: isLight ? "#F5F5F5" : "#1a1a1a", opacity:0.9 },
+            ]}
+            onPress={handleLogin}
+          >
+            <Text style={[styles.loginText, { color: isLight ? "#162F7A" : "#ffffff" }]}>Login</Text>
+            
           </TouchableOpacity>
 
           {/* FOOTER */}
-          <Text style={styles.footerText}>
-            {i18n.t("dont_have_account")}{" "}
+          <Text
+            style={[
+              styles.footerText,
+              { color: isLight ? "#FFFFFF" : "#fff" },
+            ]}
+          >
+            Don't have an account?{" "}
             <Text
               style={styles.signup}
               onPress={() => navigation.navigate("Register")}
             >
-              {i18n.t("signup")}
+              Signup
             </Text>
           </Text>
         </View>
@@ -209,38 +278,17 @@ const styles = StyleSheet.create({
   card: {
     marginHorizontal: 25,
     padding: 25,
-    borderRadius: 20,
+    borderRadius: 22,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.4)",
-    backgroundColor: "rgba(255,255,255,0.15)",
   },
 
-  title: {
-    fontSize: 25,
-    color: "#FFF",
-    textAlign: "center",
-    fontFamily: "Lato-Bold",
-  },
-
-  brand: {
-    fontSize: 32,
-    color: "#FFF",
-    fontFamily: "Lemon-Regular",
-  },
-
-  subtitle: {
-    fontSize: 14,
-    color: "#FFF",
-    opacity: 0.8,
-    marginBottom: 25,
-    textAlign: "center",
-    fontFamily: "Lato-Semibold",
-  },
+  title: { fontSize: 25, textAlign: "center", fontFamily: "Lato-Bold" },
+  brand: { fontSize: 32, fontFamily: "Lemon-Regular" },
+  subtitle: { fontSize: 14, marginBottom: 25, textAlign: "center", fontFamily: "Lato-Semibold" },
 
   inputBox: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFF",
     borderRadius: 30,
     paddingHorizontal: 15,
     height: 50,
@@ -249,57 +297,20 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
 
-  errorBorder: { borderColor: "#e66868ff" },
-  successBorder: { borderColor: "#28A745" },
+  input: { flex: 1, marginLeft: 10, fontFamily: "Lato-Medium" },
 
-  input: {
-    flex: 1,
-    marginLeft: 10,
-    color: "#1E2A78",
-    fontFamily: "Lato-Medium",
-  },
+  errorBorder: { borderColor: "#E57373" },
+  successBorder: { borderColor: "#22C55E" },
 
-  errorText: {
-    color: "yellow",
-    fontSize: 13,
-    marginBottom: 12,
-    marginLeft: 10,
-  },
+  errorText: { color: "#FACC15", fontSize: 13, marginBottom: 12, marginLeft: 10 },
 
-  forgotWrapper: {
-    alignSelf: "flex-end",
-    marginBottom: 15,
-  },
+  forgot: { fontSize: 14, fontFamily: "Lato-Bold" },
 
-  forgot: {
-    fontSize: 14,
-    color: "#01D5FF",
-    fontFamily: "Lato-Bold",
-  },
+  loginBtn: { paddingVertical: 12, borderRadius: 25, alignItems: "center", marginTop: 25 },
 
-  loginBtn: {
-    backgroundColor: "#FFF",
-    paddingVertical: 12,
-    borderRadius: 25,
-    alignItems: "center",
-    marginTop: 25,
-  },
+  loginText: { fontSize: 20, color: "#162F7A", fontFamily: "Lato-Bold" },
 
-  loginText: {
-    fontSize: 20,
-    color: "#162F7A",
-    fontFamily: "Lato-Bold",
-  },
+  footerText: { marginTop: 15, textAlign: "center", fontFamily: "Lato-Semibold" },
 
-  footerText: {
-    marginTop: 15,
-    color: "#FFF",
-    textAlign: "center",
-    fontFamily: "Lato-Semibold",
-  },
-
-  signup: {
-    color: "#01D5FF",
-    fontFamily: "Lato-Bold",
-  },
+  signup: { color: "#38BDF8", fontFamily: "Lato-Bold" },
 });

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useContext } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
@@ -9,18 +9,14 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import i18n from "../i18n";
-import { LanguageContext } from "../context/LanguageContext";
+import { useTheme } from "../context/ThemeContext"; // ✅ ThemeContext
 
 export default function OtpScreen({ navigation }: any) {
-  const { reloadKey } = useContext(LanguageContext); // ✅ re-render trigger
+  const { theme } = useTheme();
+  const isLight = theme === "light";
 
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [isOtpValid, setIsOtpValid] = useState<boolean | null>(null);
-
-  // ✅ DEBUG LOGS (ADD HERE ✅)
-  console.log("LANG:", i18n.locale);
-  console.log("OTP TITLE:", i18n.t("otp_verification"));
 
   const inputRefs = [
     useRef<TextInput>(null),
@@ -51,97 +47,111 @@ export default function OtpScreen({ navigation }: any) {
       return;
     }
 
-    setIsOtpValid(true);
-    navigation.navigate("ChangePassword");
+    // Mock verification
+    if (code === "any") {
+      setIsOtpValid(true);
+      setTimeout(() => {
+        navigation.navigate("ChangePassword");
+      }, 600);
+    } else {
+      setIsOtpValid(true);
+      navigation.navigate("ChangePassword");
+    }
   };
 
   return (
-    <View key={reloadKey} style={{ flex: 1 }}>
-      <ImageBackground
-        source={require("../../assets/images/otp.png")}
-        style={{ flex: 1 }}
-        resizeMode="cover"
+    <ImageBackground
+      source={require("../../assets/images/otp.png")}
+      style={{ flex: 1 }}
+      resizeMode="cover"
+    >
+      <LinearGradient
+        colors={["rgba(255,46,76,0.85)", "rgba(30,42,120,0.85)"]}
+        style={styles.container}
       >
-        <LinearGradient
-          colors={["rgba(255,46,76,0.85)", "rgba(30,42,120,0.85)"]}
-          style={styles.container}
+        {/* Back Button */}
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
         >
-          {/* Back Button */}
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Ionicons name="chevron-back" size={30} color="#FFF" />
-          </TouchableOpacity>
+          <Ionicons name="chevron-back" size={30} color="#FFF" />
+        </TouchableOpacity>
 
-          {/* Card */}
-          <View style={styles.card}>
-            {/* ✅ Translated Title */}
-            <Text style={styles.title}>{i18n.t("otp_verification")}</Text>
+        {/* Card */}
+        <View
+          style={[
+            styles.card,
+            { backgroundColor: isLight ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.30)" },
+          ]}
+        >
+          <Text style={[styles.title, { color: "#FFF" }]}>Otp Verification</Text>
+          <Text style={[styles.subtitle, { color: "#FFF", opacity: 0.9 }]}>
+            Please enter your verification code{"\n"}sent to Email or phone number
+          </Text>
 
-            {/* ✅ Translated Subtitle */}
-            <Text style={styles.subtitle}>{i18n.t("otp_subtitle")}</Text>
-
-            {/* OTP Boxes */}
-            <View style={styles.otpRow}>
-              {otp.map((digit, index) => (
-                <TextInput
-                  key={index}
-                  ref={inputRefs[index]}
-                  style={[
-                    styles.otpBox,
-                    isOtpValid === true && styles.successBorder,
-                    isOtpValid === false && styles.errorBorder,
-                  ]}
-                  keyboardType="numeric"
-                  maxLength={1}
-                  value={digit}
-                  onChangeText={(val) => handleOtpChange(val, index)}
-                />
-              ))}
-            </View>
-
-            {/* Resend + Timer */}
-            <View style={styles.resendRow}>
-              <TouchableOpacity>
-                {/* ✅ Translated Resend */}
-                <Text style={styles.resendText}>{i18n.t("resend_otp")}</Text>
-              </TouchableOpacity>
-
-              <Text style={styles.timerText}>0:59</Text>
-            </View>
-
-            {/* Verify Button */}
-            <TouchableOpacity style={styles.verifyBtn} onPress={handleVerify}>
-              {/* ✅ Translated Verify */}
-              <Text style={styles.verifyText}>{i18n.t("verify_otp")}</Text>
-            </TouchableOpacity>
+          {/* OTP Boxes */}
+          <View style={styles.otpRow}>
+            {otp.map((digit, index) => (
+              <TextInput
+                key={index}
+                ref={inputRefs[index]}
+                style={[
+                  styles.otpBox,
+                  { 
+                    backgroundColor: isLight ? "#FFF" : "rgba(0,0,0,0.55)",
+                    color: isLight ? "#162F7A" : "#F8FAFC"
+                  },
+                  isOtpValid === true && styles.successBorder,
+                  isOtpValid === false && styles.errorBorder,
+                ]}
+                keyboardType="numeric"
+                maxLength={1}
+                value={digit}
+                onChangeText={(val) => handleOtpChange(val, index)}
+                placeholderTextColor={isLight ? "#94A3B8" : "#94A3B8"}
+              />
+            ))}
           </View>
-        </LinearGradient>
-      </ImageBackground>
-    </View>
+
+          {/* Resend + Timer */}
+          <View style={styles.resendRow}>
+            <TouchableOpacity>
+              <Text style={[styles.resendText, { color: isLight ? "#0066FF" : "#60A5FA" }]}>
+                Resend OTP
+              </Text>
+            </TouchableOpacity>
+
+            <Text style={[styles.timerText, { color: "#FFF" }]}>0:59</Text>
+          </View>
+
+          {/* Verify Button */}
+          <TouchableOpacity
+            style={[
+              styles.verifyBtn,
+              { backgroundColor: isLight ? "#FFF" : "#1a1a1a", opacity: 0.9 },
+            ]}
+            onPress={handleVerify}
+          >
+            <Text style={[styles.verifyText, { color: isLight ? "#162F7A" : "#F8FAFC" }]}>
+              Verify Otp
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </LinearGradient>
+    </ImageBackground>
   );
 }
 
 // ------------------ STYLES ------------------
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  container: { flex: 1, justifyContent: "center", alignItems: "center" },
 
-  backButton: {
-    position: "absolute",
-    top: 40,
-    left: 20,
-  },
+  backButton: { position: "absolute", top: 40, left: 20 },
 
   card: {
     width: "85%",
     padding: 25,
     borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.2)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.3)",
   },
@@ -149,14 +159,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontFamily: "Lato-Bold",
-    color: "#FFF",
     textAlign: "center",
   },
 
   subtitle: {
     fontSize: 14,
-    color: "#FFF",
-    opacity: 0.9,
     textAlign: "center",
     marginVertical: 15,
     fontFamily: "Lato-Semibold",
@@ -171,12 +178,9 @@ const styles = StyleSheet.create({
   otpBox: {
     width: 55,
     height: 55,
-    backgroundColor: "#FFF",
     borderRadius: 10,
     textAlign: "center",
     fontSize: 22,
-    color: "#162F7A",
-    elevation: 3,
     fontFamily: "Lato-Bold",
     borderWidth: 2,
     borderColor: "transparent",
@@ -199,25 +203,21 @@ const styles = StyleSheet.create({
   },
 
   resendText: {
-    color: "#00BFFF",
     fontFamily: "Lato-Bold",
   },
 
   timerText: {
-    color: "#FFF",
     fontSize: 15,
     fontFamily: "Lato-Bold",
   },
 
   verifyBtn: {
-    backgroundColor: "#FFF",
     paddingVertical: 12,
     borderRadius: 25,
     alignItems: "center",
   },
 
   verifyText: {
-    color: "#162F7A",
     fontSize: 18,
     fontFamily: "Lato-Bold",
   },

@@ -1,149 +1,3 @@
-// import React, { useEffect } from "react";
-// import {
-//   View,
-//   Text,
-//   StyleSheet,
-//   Image,
-//   TouchableOpacity,
-// } from "react-native";
-// import LinearGradient from "react-native-linear-gradient";
-// import i18n from "../i18n";
-
-// export default function WelcomeOfferScreen({ navigation }:any) {
-//       // ------------------ AUTO SPLASH NAVIGATION ------------------
-//   // useEffect(() => {
-//   //   const timer = setTimeout(() => {
-//   //     navigation.replace("Login"); // Replace prevents coming back
-//   //   }, 3000); // 3 seconds splash delay
-
-//   //   return () => clearTimeout(timer); // Cleanup
-//   // }, []);
-  
-
-//   return (
-//     <LinearGradient
-//       colors={["#FF2E4C", "#1E2A78"]}
-//       style={styles.container}
-//     >
-//       {/* LOGO */}
-//       <Image
-//         source={require("../../assets/images/logo.png")} // Replace with your logo
-//         style={styles.logo}
-//         resizeMode="contain"
-//       />
-
-//       {/* HEADING */}
-//       {/* <Text style={styles.heading}>Unlock Your Potential</Text> */}
-//       <Text style={styles.heading}>{i18n.t("Unlock Your Potential")}</Text>
-
-
-//       {/* CIRCLE */}
-//       <LinearGradient
-//         colors={["#FF5668", "#5B67E1"]}
-//         style={styles.outerCircle}
-//       >
-//         <View style={styles.innerCircle}>
-//           <Text style={styles.circleText}>20</Text>
-//         </View>
-//       </LinearGradient>
-
-//       {/* SUB TEXT */}
-//       <Text style={styles.subText}>
-//         20Days of Smart Portfolio{"\n"}Tracking
-//       </Text>
-
-//       {/* BUTTON */}
-//       <TouchableOpacity
-//         style={styles.buttonContainer}
-//         onPress={() => navigation.navigate("Login")}
-//       >
-//         <LinearGradient
-//           colors={["#FF2E4C", "#FFFFFF"]}
-//           start={{ x: 0, y: 0 }}
-//           end={{ x: 1, y: 0 }}
-//           style={styles.button}
-//         >
-//           <Text style={styles.buttonText}>START YOUR JOURNEY</Text>
-//         </LinearGradient>
-//       </TouchableOpacity>
-//     </LinearGradient>
-//   );
-// }
-
-// // ------------------ STYLES ------------------
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: "center",
-//     alignItems: "center",
-//     paddingHorizontal: 30,
-//   },
-
-//   logo: {
-//     width: 130,
-//     height: 130,
-//     marginBottom: 15,
-//   },
-
-//   heading: {
-//     fontSize: 22,
-//     color: "#FFF",
-//     //fontWeight: "700",
-//     fontFamily: "Lato-Bold",
-//     marginBottom: 25,
-//   },
-
-//   outerCircle: {
-//     width: 160,
-//     height: 160,
-//     borderRadius: 80,
-//     justifyContent: "center",
-//     alignItems: "center",
-//     marginBottom: 20,
-//   },
-
-//   innerCircle: {
-//     width: 130,
-//     height: 130,
-//     backgroundColor: "#FFF",
-//     borderRadius: 65,
-//     justifyContent: "center",
-//     alignItems: "center",
-//   },
-
-//   circleText: {
-//     fontSize: 46,
-//     fontWeight: "700",
-//     color: "#1E2A78",
-//   },
-
-//   subText: {
-//     fontSize: 16,
-//     color: "#FFF",
-//     textAlign: "center",
-//     marginBottom: 40,
-//     fontFamily: "Lato-Bold",
-//   },
-
-//   buttonContainer: {
-//     width: "80%",
-//   },
-
-//   button: {
-//     paddingVertical: 14,
-//     borderRadius: 25,
-//     justifyContent: "center",
-//     alignItems: "center",
-//   },
-
-//   buttonText: {
-//     color: "#1E2A78",
-//     //fontWeight: "700",
-//     fontSize: 14,
-//     fontFamily: "Lato-Bold",
-//   },
-// });
-
 import React, { useEffect, useRef } from "react";
 import {
   SafeAreaView,
@@ -159,6 +13,7 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import MaskedView from "@react-native-masked-view/masked-view";
+import { useTheme } from "../context/ThemeContext"; // ✅
 
 import Svg, {
   Defs,
@@ -166,8 +21,6 @@ import Svg, {
   Stop,
   Circle,
 } from "react-native-svg";
-
-import i18n from "../i18n"; // ✅ ADD THIS
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -191,6 +44,7 @@ const svgSize = Math.min(SW * 0.41, 200);
 const strokeWidth = normalize(14);
 
 export default function WelcomeOfferScreen({ navigation }: any) {
+  const { isDark } = useTheme(); // ✅
   const days = 20;
 
   const rotateAnim = useRef(new Animated.Value(0)).current;
@@ -219,7 +73,7 @@ export default function WelcomeOfferScreen({ navigation }: any) {
         }),
       ])
     ).start();
-  }, [rotateAnim, shineAnim]);
+  }, []);
 
   const rotateInterpolate = rotateAnim.interpolate({
     inputRange: [0, 1],
@@ -235,40 +89,26 @@ export default function WelcomeOfferScreen({ navigation }: any) {
     <LinearGradient colors={["#FF2E4C", "#1E2A78"]} style={styles.container}>
       <SafeAreaView style={styles.safe}>
         <View style={styles.content}>
-          {/* ✅ LOGO */}
           <Image
             source={require("../../assets/images/logo.png")}
             style={styles.logo}
             resizeMode="contain"
           />
 
-          {/* ✅ TITLE */}
-          <Text style={styles.title}>{i18n.t("unlock_title")}</Text>
+          <Text style={styles.title}>Unlock Your Potential</Text>
 
-          {/* ✅ ROTATING SVG RING */}
+          {/* PROGRESS */}
           <View style={styles.progressWrap}>
             <Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
               <Svg width={svgSize} height={svgSize}>
                 <Defs>
-                  <SvgLinearGradient
-                    id="ringColor"
-                    x1="0%"
-                    y1="0%"
-                    x2="100%"
-                    y2="100%"
-                  >
+                  <SvgLinearGradient id="ringColor" x1="0%" y1="0%" x2="100%" y2="100%">
                     <Stop offset="0%" stopColor="#FF2E4C" />
                     <Stop offset="50%" stopColor="#FFFFFF" />
                     <Stop offset="100%" stopColor="#1E2A78" />
                   </SvgLinearGradient>
 
-                  <SvgLinearGradient
-                    id="shine"
-                    x1="0%"
-                    y1="0%"
-                    x2="100%"
-                    y2="100%"
-                  >
+                  <SvgLinearGradient id="shine" x1="0%" y1="0%" x2="100%" y2="100%">
                     <Stop offset="0%" stopColor="white" stopOpacity="0.9" />
                     <Stop offset="100%" stopColor="white" stopOpacity="0" />
                   </SvgLinearGradient>
@@ -280,7 +120,6 @@ export default function WelcomeOfferScreen({ navigation }: any) {
                   r={(svgSize - strokeWidth) / 2}
                   stroke="url(#ringColor)"
                   strokeWidth={strokeWidth}
-                  strokeLinecap="round"
                   fill="transparent"
                 />
 
@@ -301,33 +140,43 @@ export default function WelcomeOfferScreen({ navigation }: any) {
             </View>
           </View>
 
-          {/* ✅ SUBTITLE */}
-          <Text style={styles.subtitle}>{i18n.t("unlock_subtitle")}</Text>
+          <Text style={styles.subtitle}>
+            20 Days of Smart Portfolio{"\n"}Tracking
+          </Text>
 
-          {/* ✅ BUTTON */}
+          {/* BUTTON */}
           <TouchableOpacity
             activeOpacity={0.85}
             onPress={() => navigation.navigate("Login")}
+            style={{ width: "100%", alignItems: "center" }}
           >
             <LinearGradient
               colors={["#FF2E4C", "#1E2A78"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
               style={styles.btnBorder}
             >
-              <View style={styles.btnInner}>
+              <View
+                style={[
+                  styles.btnInner,
+                  { backgroundColor: isDark ? "#1a1a1a" : "#FFFFFF" },
+                ]}
+              >
                 <MaskedView
+                  style={{ width: "100%", alignItems: "center" }}
                   maskElement={
-                    <Text style={styles.btnText}>{i18n.t("start_journey")}</Text>
+                    <Text style={styles.btnText} numberOfLines={1}>
+                      START YOUR JOURNEY
+                    </Text>
                   }
                 >
                   <LinearGradient
-                    colors={["#FF2E4C", "#1E2A78"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
+                    colors={
+                      isDark
+                        ? ["#FFFFFF", "#FFFFFF"] // ✅ DARK = WHITE TEXT
+                        : ["#FF2E4C", "#1E2A78"] // ✅ LIGHT = SAME AS BEFORE
+                    }
                   >
-                    <Text style={[styles.btnText, { opacity: 0 }]}>
-                      {i18n.t("start_journey")}
+                    <Text style={[styles.btnText, { opacity: 0 }]} numberOfLines={1}>
+                      START YOUR JOURNEY
                     </Text>
                   </LinearGradient>
                 </MaskedView>
@@ -362,22 +211,17 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#FFFFFF",
     marginBottom: verticalScale(35),
-    textAlign: "center",
   },
 
   progressWrap: {
     width: svgSize,
     height: svgSize,
-    justifyContent: "center",
-    alignItems: "center",
     marginBottom: verticalScale(30),
+    alignItems: "center",
+    justifyContent: "center",
   },
 
-  progressCenter: {
-    position: "absolute",
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  progressCenter: { position: "absolute" },
 
   progressNumber: {
     fontSize: normalize(74),
@@ -387,10 +231,8 @@ const styles = StyleSheet.create({
 
   subtitle: {
     fontSize: normalize(22),
-    fontWeight: "500",
     color: "#FFFFFF",
     textAlign: "center",
-    lineHeight: normalize(26),
     marginBottom: verticalScale(55),
   },
 
@@ -400,17 +242,16 @@ const styles = StyleSheet.create({
   },
 
   btnInner: {
-    backgroundColor: "#FFFFFF",
-    paddingHorizontal: 38,
-    paddingVertical: 14,
+    width: "85%",
+    paddingVertical: 16,
+    paddingHorizontal: 20,
     borderRadius: 37,
     alignItems: "center",
-    justifyContent: "center",
   },
 
   btnText: {
+    fontSize: normalize(16),
     fontWeight: "800",
-    fontSize: normalize(18),
     letterSpacing: 1,
   },
 });

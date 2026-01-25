@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -11,11 +11,11 @@ import {
 import LinearGradient from "react-native-linear-gradient";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import i18n from "../i18n";
-import { LanguageContext } from "../context/LanguageContext";
+import { useTheme } from "../context/ThemeContext"; // ✅ ThemeContext
 
 export default function RegisterScreen({ navigation }: any) {
-  const { reloadKey } = useContext(LanguageContext); // ✅ to refresh texts on language change
+  const { theme } = useTheme();
+  const isLight = theme === "light";
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -50,60 +50,39 @@ export default function RegisterScreen({ navigation }: any) {
     return `${day}/${month}/${year}`;
   };
 
-  // ---------------- AGE VALIDATION (>=18) ----------------
+  // ---------------- AGE VALIDATION ----------------
   const isAge18OrAbove = (date: Date) => {
     const today = new Date();
     let age = today.getFullYear() - date.getFullYear();
-
     const monthDiff = today.getMonth() - date.getMonth();
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < date.getDate())
-    ) {
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < date.getDate())) {
       age--;
     }
-
     return age >= 18;
   };
 
-  // ---------------- FORM VALIDATION (on SignUp press) ----------------
+  // ---------------- FORM VALIDATION ----------------
   const validate = () => {
     let validForm = true;
     let newErrors: any = {};
     let newValid: any = {};
 
-    if (!username.trim()) {
-      newErrors.username = i18n.t("err_username_required");
-      validForm = false;
-    } else newValid.username = true;
-
+    if (!username.trim()) { newErrors.username = "Username is required"; validForm = false; } else newValid.username = true;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email.trim()) {
-      newErrors.email = i18n.t("err_email_required");
-      validForm = false;
-    } else if (!emailRegex.test(email)) {
-      newErrors.email = i18n.t("err_email_invalid");
-      validForm = false;
-    } else newValid.email = true;
+    if (!email.trim()) { newErrors.email = "Email is required"; validForm = false; } 
+    else if (!emailRegex.test(email)) { newErrors.email = "Enter valid email"; validForm = false; } 
+    else newValid.email = true;
 
     const phoneRegex = /^(\+91)?[6-9][0-9]{9}$/;
-    if (!phone.trim()) {
-      newErrors.phone = i18n.t("err_phone_required");
-      validForm = false;
-    } else if (!phoneRegex.test(phone)) {
-      newErrors.phone = i18n.t("err_phone_invalid");
-      validForm = false;
-    } else newValid.phone = true;
+    if (!phone.trim()) { newErrors.phone = "Phone number is required"; validForm = false; } 
+    else if (!phoneRegex.test(phone)) { newErrors.phone = "Enter valid Indian number"; validForm = false; } 
+    else newValid.phone = true;
 
-    if (!dob.trim() || !selectedDate || !isAge18OrAbove(selectedDate)) {
-      newErrors.dob = i18n.t("err_age_18");
-      validForm = false;
-    } else newValid.dob = true;
+    if (!dob.trim() || !selectedDate || !isAge18OrAbove(selectedDate)) { newErrors.dob = "Age must be 18 years or above"; validForm = false; } 
+    else newValid.dob = true;
 
-    if (!gender.trim()) {
-      newErrors.gender = i18n.t("err_select_gender");
-      validForm = false;
-    } else newValid.gender = true;
+    if (!gender.trim()) { newErrors.gender = "Select gender"; validForm = false; } 
+    else newValid.gender = true;
 
     setErrors(newErrors);
     setValid(newValid);
@@ -112,282 +91,172 @@ export default function RegisterScreen({ navigation }: any) {
 
   // ---------------- REGISTER ----------------
   const handleRegister = () => {
-    if (validate()) {
-      navigation.navigate("Login");
-    }
+    if (validate()) navigation.navigate("Login");
   };
 
   const getBorderColor = (field: keyof typeof errors) => {
     if (errors[field]) return "#e66868";
     if (valid[field]) return "green";
-    return "#ccc";
+    return isLight ? "#ccc" : "#94A3B8";
   };
 
   return (
-    <View key={reloadKey} style={{ flex: 1 }}>
-      <ImageBackground
-        source={require("../../assets/images/register.png")}
-        style={{ flex: 1 }}
+    <ImageBackground
+      source={require("../../assets/images/register.png")}
+      style={{ flex: 1 }}
+    >
+      {/* ✅ SAME BACKGROUND GRADIENT */}
+      <LinearGradient
+        colors={["rgba(255,46,76,0.8)", "rgba(30,42,120,0.8)"]}
+        style={styles.container}
       >
-        <LinearGradient
-          colors={["rgba(255,46,76,0.8)", "rgba(30,42,120,0.8)"]}
-          style={styles.container}
+        {/* CARD */}
+        <View
+          style={[
+            styles.card,
+            {
+              backgroundColor: isLight
+                ? "rgba(250,250,250,0.2)"
+                : "rgba(30,41,59,0.5)",
+              borderColor: isLight
+                ? "rgba(255,255,255,0.4)"
+                : "rgba(148,163,184,0.25)",
+            },
+          ]}
         >
-          <View style={styles.card}>
-            <Text style={styles.title}>{i18n.t("create_new_account")}</Text>
+          <Text style={[styles.title, { color: isLight ? "#FFFFFF" : "#FFFFFF" }]}>
+            Create a New Account
+          </Text>
 
-            {/* USERNAME */}
-            <View
-              style={[
-                styles.inputBox,
-                { borderColor: getBorderColor("username") },
-              ]}
-            >
-              <Ionicons name="person" size={22} color="#162F7A" />
-              <TextInput
-                placeholder={i18n.t("username")}
-                style={styles.input}
-                value={username}
-                onChangeText={(text) => {
-                  setUsername(text);
+          {/* USERNAME */}
+          <View style={[styles.inputBox, { borderColor: getBorderColor("username"), backgroundColor: isLight ? "#FAFAFA" : "rgba(0,0,0,0.55)" }]}>
+            <Ionicons name="person" size={22} color={isLight ? "#162F7A" : "#e4e8ec"} />
+            <TextInput
+              placeholder="Username"
+              placeholderTextColor={isLight ? "#5A6BA0" : "#94A3B8"}
+              style={[styles.input, { color: isLight ? "#1E2A78" : "#F8FAFC" }]}
+              value={username}
+              onChangeText={setUsername}
+            />
+          </View>
+          {errors.username && <Text style={styles.errorText}>{errors.username}</Text>}
 
-                  if (!text.trim()) {
-                    setErrors((prev) => ({
-                      ...prev,
-                      username: i18n.t("err_username_required"),
-                    }));
-                    setValid((prev) => ({ ...prev, username: false }));
-                  } else {
-                    setErrors((prev) => ({ ...prev, username: "" }));
-                    setValid((prev) => ({ ...prev, username: true }));
-                  }
-                }}
-              />
-            </View>
-            {errors.username && (
-              <Text style={styles.errorText}>{errors.username}</Text>
-            )}
+          {/* EMAIL */}
+          <View style={[styles.inputBox, { borderColor: getBorderColor("email"), backgroundColor: isLight ? "#FAFAFA" : "rgba(0,0,0,0.55)" }]}>
+            <Ionicons name="mail" size={22} color={isLight ? "#162F7A" : "#e4e8ec"} />
+            <TextInput
+              placeholder="Email"
+              keyboardType="email-address"
+              placeholderTextColor={isLight ? "#5A6BA0" : "#94A3B8"}
+              style={[styles.input, { color: isLight ? "#1E2A78" : "#F8FAFC" }]}
+              value={email}
+              onChangeText={setEmail}
+            />
+          </View>
+          {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
 
-            {/* EMAIL */}
-            <View
-              style={[
-                styles.inputBox,
-                { borderColor: getBorderColor("email") },
-              ]}
-            >
-              <Ionicons name="mail" size={22} color="#162F7A" />
-              <TextInput
-                placeholder={i18n.t("email")}
-                keyboardType="email-address"
-                style={styles.input}
-                value={email}
-                onChangeText={(text) => {
-                  setEmail(text);
+          {/* PHONE */}
+          <View style={[styles.inputBox, { borderColor: getBorderColor("phone"), backgroundColor: isLight ? "#FAFAFA" : "rgba(0,0,0,0.55)" }]}>
+            <Ionicons name="call" size={22} color={isLight ? "#162F7A" : "#e4e8ec"} />
+            <TextInput
+              placeholder="Phone Number"
+              keyboardType="phone-pad"
+              placeholderTextColor={isLight ? "#5A6BA0" : "#94A3B8"}
+              style={[styles.input, { color: isLight ? "#1E2A78" : "#F8FAFC" }]}
+              value={phone}
+              onChangeText={setPhone}
+            />
+          </View>
+          {errors.phone && <Text style={styles.errorText}>{errors.phone}</Text>}
 
-                  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-                  if (!text.trim()) {
-                    setErrors((prev) => ({
-                      ...prev,
-                      email: i18n.t("err_email_required"),
-                    }));
-                    setValid((prev) => ({ ...prev, email: false }));
-                  } else if (!emailRegex.test(text)) {
-                    setErrors((prev) => ({
-                      ...prev,
-                      email: i18n.t("err_email_invalid"),
-                    }));
-                    setValid((prev) => ({ ...prev, email: false }));
-                  } else {
-                    setErrors((prev) => ({ ...prev, email: "" }));
-                    setValid((prev) => ({ ...prev, email: true }));
-                  }
-                }}
-              />
-            </View>
-            {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
-
-            {/* PHONE */}
-            <View
-              style={[
-                styles.inputBox,
-                { borderColor: getBorderColor("phone") },
-              ]}
-            >
-              <Ionicons name="call" size={22} color="#162F7A" />
-              <TextInput
-                placeholder={i18n.t("phone_number")}
-                keyboardType="phone-pad"
-                style={styles.input}
-                value={phone}
-                onChangeText={(text) => {
-                  // ✅ allow only numbers and + (for +91)
-                  const cleaned = text.replace(/[^0-9+]/g, "");
-                  setPhone(cleaned);
-
-                  const phoneRegex = /^(\+91)?[6-9][0-9]{9}$/;
-
-                  if (!cleaned.trim()) {
-                    setErrors((prev) => ({
-                      ...prev,
-                      phone: i18n.t("err_phone_required"),
-                    }));
-                    setValid((prev) => ({ ...prev, phone: false }));
-                  } else if (!phoneRegex.test(cleaned)) {
-                    setErrors((prev) => ({
-                      ...prev,
-                      phone: i18n.t("err_phone_invalid"),
-                    }));
-                    setValid((prev) => ({ ...prev, phone: false }));
-                  } else {
-                    setErrors((prev) => ({ ...prev, phone: "" }));
-                    setValid((prev) => ({ ...prev, phone: true }));
-                  }
-                }}
-              />
-            </View>
-            {errors.phone && <Text style={styles.errorText}>{errors.phone}</Text>}
-
-            {/* DOB */}
-            <View
-              style={[
-                styles.inputBox,
-                { borderColor: getBorderColor("dob") },
-              ]}
-            >
-              <TextInput
-                placeholder={i18n.t("dob_placeholder")}
-                style={styles.input}
-                value={dob}
-                editable={false}
-              />
-              <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                <Ionicons name="calendar" size={22} color="#162F7A" />
-              </TouchableOpacity>
-            </View>
-            {errors.dob && <Text style={styles.errorText}>{errors.dob}</Text>}
-
-            {showDatePicker && (
-              <DateTimePicker
-                value={selectedDate || new Date()}
-                mode="date"
-                display={Platform.OS === "ios" ? "spinner" : "default"}
-                maximumDate={
-                  new Date(new Date().setFullYear(new Date().getFullYear() - 18))
-                }
-                onChange={(event, date) => {
-                  setShowDatePicker(false);
-                  if (!date) return;
-
-                  if (!isAge18OrAbove(date)) {
-                    setDob("");
-                    setSelectedDate(null);
-                    setErrors((prev) => ({ ...prev, dob: i18n.t("err_age_18") }));
-                    setValid((prev) => ({ ...prev, dob: false }));
-                    return;
-                  }
-
-                  setSelectedDate(date);
-                  setDob(formatDate(date));
-                  setErrors((prev) => ({ ...prev, dob: "" }));
-                  setValid((prev) => ({ ...prev, dob: true }));
-                }}
-              />
-            )}
-
-            {/* GENDER */}
-            <View
-              style={[
-                styles.genderBox,
-                { borderColor: getBorderColor("gender"), borderWidth: 2 },
-              ]}
-            >
-              <Text style={styles.genderLabel}>{i18n.t("gender")}</Text>
-              <View style={styles.genderRow}>
-                {[i18n.t("male"), i18n.t("female"), i18n.t("others")].map(
-                  (g) => (
-                    <TouchableOpacity
-                      key={g}
-                      onPress={() => {
-                        setGender(g);
-                        setErrors((prev) => ({ ...prev, gender: "" }));
-                        setValid((prev) => ({ ...prev, gender: true }));
-                      }}
-                      style={styles.radioRow}
-                    >
-                      <Ionicons
-                        name={
-                          gender === g
-                            ? "radio-button-on"
-                            : "radio-button-off"
-                        }
-                        size={20}
-                        color="#162F7A"
-                      />
-                      <Text style={styles.radioText}>{g}</Text>
-                    </TouchableOpacity>
-                  )
-                )}
-              </View>
-            </View>
-            {errors.gender && (
-              <Text style={styles.errorText}>{errors.gender}</Text>
-            )}
-
-            <TouchableOpacity style={styles.loginBtn} onPress={handleRegister}>
-              <Text style={styles.loginBtnText}>{i18n.t("sign_up")}</Text>
+          {/* DOB */}
+          <View style={[styles.inputBox, { borderColor: getBorderColor("dob"), backgroundColor: isLight ? "#FAFAFA" : "rgba(0,0,0,0.55)" }]}>
+            <TextInput
+              placeholder="DOB (DD/MM/YYYY)"
+              style={[styles.input, { color: isLight ? "#1E2A78" : "#F8FAFC" }]}
+              value={dob}
+              editable={false}
+            />
+            <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+              <Ionicons name="calendar" size={22} color={isLight ? "#162F7A" : "#e4e8ec"} />
             </TouchableOpacity>
           </View>
-        </LinearGradient>
-      </ImageBackground>
-    </View>
+          {errors.dob && <Text style={styles.errorText}>{errors.dob}</Text>}
+
+          {showDatePicker && (
+            <DateTimePicker
+              value={selectedDate || new Date()}
+              mode="date"
+              display={Platform.OS === "ios" ? "spinner" : "default"}
+              maximumDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
+              onChange={(event, date) => {
+                setShowDatePicker(false);
+                if (!date) return;
+                if (!isAge18OrAbove(date)) {
+                  setDob("");
+                  setErrors({ ...errors, dob: "Age must be 18 years or above" });
+                  setValid({ ...valid, dob: false });
+                  return;
+                }
+                setSelectedDate(date);
+                setDob(formatDate(date));
+                setErrors({ ...errors, dob: "" });
+                setValid({ ...valid, dob: true });
+              }}
+            />
+          )}
+
+          {/* GENDER */}
+          <View style={[styles.genderBox, { borderColor: getBorderColor("gender"), borderWidth: 2, backgroundColor: isLight ? "#FAFAFA" : "rgba(0,0,0,0.55)" }]}>
+            <Text style={[styles.genderLabel, { color: isLight ? "#162F7A" : "#F8FAFC" }]}>Gender</Text>
+            <View style={styles.genderRow}>
+                {["Male", "Female", "Others"].map((g) => (
+                <TouchableOpacity
+                  key={g}
+                  onPress={() => {
+                    setGender(g);
+                    setValid({ ...valid, gender: true });
+                  }}
+                  style={styles.radioRow}
+                >
+                  <Ionicons
+                    name={gender === g ? "radio-button-on" : "radio-button-off"}
+                    size={20}
+                    color={isLight ? "#162F7A" : "#e4e8ec"}
+                  />
+                  <Text style={[styles.radioText, { color: isLight ? "#162F7A" : "#F8FAFC" }]}>{g}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+          {errors.gender && <Text style={styles.errorText}>{errors.gender}</Text>}
+
+          {/* REGISTER BUTTON */}
+          <TouchableOpacity
+            style={[styles.loginBtn, { backgroundColor: isLight ? "#F5F5F5" : "#1a1a1a", opacity: 0.9 }]}
+            onPress={handleRegister}
+          >
+            <Text style={[styles.loginBtnText, { color: isLight ? "#162F7A" : "#ffffff" }]}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
+      </LinearGradient>
+    </ImageBackground>
   );
 }
 
 // ---------------- STYLES ----------------
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: "center" },
-  card: {
-    marginHorizontal: 25,
-    padding: 25,
-    borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.15)",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#FFF",
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  inputBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#FFF",
-    borderRadius: 30,
-    paddingHorizontal: 15,
-    marginBottom: 12,
-    height: 50,
-    borderWidth: 2,
-  },
-  input: { flex: 1, marginLeft: 10, color: "#1E2A78" },
-  genderBox: {
-    backgroundColor: "#FFF",
-    padding: 15,
-    borderRadius: 20,
-    marginTop: 10,
-  },
-  genderLabel: { fontWeight: "700", color: "#162F7A", marginBottom: 8 },
+  card: { marginHorizontal: 25, padding: 25, borderRadius: 22, borderWidth: 1 },
+  title: { fontSize: 24, fontWeight: "700", textAlign: "center", marginBottom: 20 },
+  inputBox: { flexDirection: "row", alignItems: "center", borderRadius: 30, paddingHorizontal: 15, marginBottom: 12, height: 50, borderWidth: 2 },
+  input: { flex: 1, marginLeft: 10, fontFamily: "Lato-Medium" },
+  genderBox: { padding: 15, borderRadius: 20, marginTop: 10 },
+  genderLabel: { fontWeight: "700", marginBottom: 8 },
   genderRow: { flexDirection: "row", justifyContent: "space-around" },
   radioRow: { flexDirection: "row", alignItems: "center" },
-  radioText: { marginLeft: 5, color: "#162F7A" },
-  errorText: { color: "yellow", marginLeft: 10, marginBottom: 8 },
-  loginBtn: {
-    backgroundColor: "#FFF",
-    paddingVertical: 12,
-    borderRadius: 25,
-    alignItems: "center",
-    marginTop: 15,
-  },
-  loginBtnText: { color: "#162F7A", fontSize: 18, fontWeight: "700" },
+  radioText: { marginLeft: 5 },
+  errorText: { color: "#FACC15", marginLeft: 10, marginBottom: 8 },
+  loginBtn: { paddingVertical: 12, borderRadius: 25, alignItems: "center", marginTop: 15 },
+  loginBtnText: { fontSize: 18, fontWeight: "700" },
 });

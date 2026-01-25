@@ -1,14 +1,18 @@
-import React, { useContext } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 import LinearGradient from "react-native-linear-gradient";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import i18n from "../../i18n";
-import { LanguageContext } from "../../context/LanguageContext";
+import { useTheme } from "../../context/ThemeContext";
 
 export default function CustomDrawer(props: any) {
   const { navigation } = props;
-  const { reloadKey } = useContext(LanguageContext); // ✅ to refresh text
+  const { isDark } = useTheme();
 
   const DrawerItem = ({
     icon,
@@ -19,17 +23,33 @@ export default function CustomDrawer(props: any) {
     label: string;
     onPress: () => void;
   }) => (
-    <TouchableOpacity style={styles.item} onPress={onPress}>
+    <TouchableOpacity
+      style={styles.item}
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
       <View style={styles.itemLeft}>
-        <Ionicons name={icon} size={20} color="#1E2A78" />
-        <Text style={styles.itemText}>{label}</Text>
+        <Ionicons
+          name={icon}
+          size={20}
+          color={isDark ? "rgba(255,255,255,0.85)" : "#1E2A78"}
+        />
+        <Text style={[styles.itemText, isDark && styles.textDark]}>
+          {label}
+        </Text>
       </View>
-      <Ionicons name="chevron-forward" size={20} color="#1E2A78" />
+
+      <Ionicons
+        name="chevron-forward"
+        size={20}
+        color={isDark ? "rgba(255,255,255,0.6)" : "#1E2A78"}
+      />
     </TouchableOpacity>
   );
 
   return (
-    <View key={reloadKey} style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
+      {/* 🔴 GRADIENT HEADER */}
       <LinearGradient
         colors={["#FF2E4C", "#1E2A78"]}
         start={{ x: 0, y: 0 }}
@@ -38,68 +58,78 @@ export default function CustomDrawer(props: any) {
         pointerEvents="none"
       >
         <View style={styles.profileContainer}>
-          <View style={styles.avatar}>
-            <Ionicons name="person" size={34} color="#1E2A78" />
+          <View style={[styles.avatar, isDark && styles.avatarDark]}>
+            <Ionicons
+              name="person"
+              size={34}
+              color={isDark ? "rgba(255,255,255,0.85)" : "#1E2A78"}
+            />
           </View>
-          <Text style={styles.username}>{i18n.t("drawer_username")}</Text>
-
+          <Text style={styles.username}>John_ID77</Text>
         </View>
       </LinearGradient>
 
-      {/* ⚪ WHITE CARD */}
-      <View style={styles.menucard}>
+      {/* ⚪ MENU CARD */}
+      <View style={[styles.menucard, isDark && styles.menuCardDark]}>
         <DrawerContentScrollView
           {...props}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 20 }}
         >
-          {/* ⚪ MENU */}
           <View style={styles.menu}>
             <DrawerItem
               icon="person"
-              label={i18n.t("drawer_my_profile")}
+              label="My Profile"
               onPress={() => navigation.navigate("Profile")}
             />
 
             <DrawerItem
               icon="settings"
-              label={i18n.t("drawer_app_preferences")}
+              label="App Preferences"
               onPress={() => navigation.navigate("AppPreference")}
             />
 
             <DrawerItem
               icon="information-circle"
-              label={i18n.t("drawer_about")}
+              label="About"
               onPress={() => navigation.navigate("About")}
             />
 
             <DrawerItem
               icon="call"
-              label={i18n.t("drawer_contact_us")}
+              label="ContactUs"
               onPress={() => navigation.navigate("ContactUs")}
             />
 
             <DrawerItem
               icon="log-out"
-              label={i18n.t("drawer_logout")}
+              label="Logout"
               onPress={() => navigation.navigate("Logout")}
             />
 
             {/* 🔽 FOOTER */}
             <View style={styles.footer}>
               <View style={styles.links}>
-                <Text style={styles.link}>{i18n.t("privacy_policy")}</Text>
-                <Text style={styles.link}>{i18n.t("terms_conditions")}</Text>
+                <Text style={[styles.link, isDark && styles.textMutedDark]}>
+                  Privacy Policy
+                </Text>
+                <Text style={[styles.link, isDark && styles.textMutedDark]}>
+                  Terms & Conditions
+                </Text>
               </View>
             </View>
 
-            <Text style={styles.version}>{i18n.t("android_version")}</Text>
+            <Text style={[styles.version, isDark && styles.textMutedDark]}>
+              Android Version 0.1.0
+            </Text>
           </View>
         </DrawerContentScrollView>
       </View>
     </View>
   );
 }
+
+/* ---------------- STYLES ---------------- */
 
 const styles = StyleSheet.create({
   gradientOverlay: {
@@ -124,10 +154,8 @@ const styles = StyleSheet.create({
     elevation: 12,
   },
 
-  header: {
-    height: 220,
-    justifyContent: "center",
-    alignItems: "center",
+  menuCardDark: {
+    backgroundColor: "#1a1a1a",
   },
 
   avatar: {
@@ -139,6 +167,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
     elevation: 6,
+  },
+
+  avatarDark: {
+    backgroundColor: "#1a1a1a",
   },
 
   username: {
@@ -180,14 +212,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
 
-  version: {
-    marginTop: "70%",
-    textAlign: "center",
-    alignSelf: "center",
-    fontSize: 11,
-    color: "#999",
-  },
-
   links: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -198,5 +222,22 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#1E2A78",
     fontWeight: "600",
+  },
+
+  version: {
+    marginTop: "70%",
+    textAlign: "center",
+    alignSelf: "center",
+    fontSize: 11,
+    color: "#999",
+  },
+
+  /* 🌙 DARK TEXT HELPERS */
+  textDark: {
+    color: "rgba(255,255,255,0.85)",
+  },
+
+  textMutedDark: {
+    color: "rgba(255,255,255,0.55)",
   },
 });
