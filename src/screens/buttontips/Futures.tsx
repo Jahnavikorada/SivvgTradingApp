@@ -2,11 +2,12 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import TipsCard from "../components/TipsCard";
 import { useTheme } from "../../context/ThemeContext";
+import i18n from "../../i18n"; // ✅ language import
 
 type DurationType = "1D" | "1W" | "1M";
 
 export default function Futures({ duration }: { duration: DurationType }) {
-  const { isDark } = useTheme();
+  const { isDark } = useTheme(); // ✅ theme untouched
 
   const futuresData: Record<DurationType, any[]> = {
     "1D": [
@@ -28,14 +29,14 @@ export default function Futures({ duration }: { duration: DurationType }) {
 
   return (
     <View>
-      {/* ✅ THEME-AWARE TITLE */}
+      {/* ✅ THEME + LANGUAGE (NO THEME MODIFIED) */}
       <Text
         style={[
           styles.title,
           { color: isDark ? "#FFFFFF" : "#1a1a1a" },
         ]}
       >
-        Futures ({duration})
+        {i18n.t("futures")} ({duration})
       </Text>
 
       {data.map((item, index) => (

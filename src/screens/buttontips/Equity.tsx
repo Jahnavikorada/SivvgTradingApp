@@ -1,17 +1,18 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import TipsCard from "../components/TipsCard";
+
 import { useTheme } from "../../context/ThemeContext";
+import i18n from "../../i18n";
 
 type DurationType = "1D" | "1W" | "1M";
 
 export default function Equity({ duration }: { duration: DurationType }) {
-  const { isDark } = useTheme();
+  const { isDark } = useTheme(); // 🌙 theme (unchanged)
 
   const equityData: Record<DurationType, any[]> = {
     "1D": [
       { symbol: "PEL-1343", t1: 1358, t2: 1373, t3: 1388 },
-      // { symbol: "TCS-4201", t1: 4205, t2: 4240, t3: 4280 },
     ],
 
     "1W": [
@@ -30,14 +31,14 @@ export default function Equity({ duration }: { duration: DurationType }) {
 
   return (
     <View>
-      {/* ✅ THEME-AWARE TITLE */}
+      {/* ✅ THEME + LANGUAGE AWARE TITLE */}
       <Text
         style={[
           styles.title,
           { color: isDark ? "#FFFFFF" : "#1a1a1a" },
         ]}
       >
-        Equity ({duration})
+        {i18n.t("equity")} ({duration})
       </Text>
 
       {data.map((item, index) => (

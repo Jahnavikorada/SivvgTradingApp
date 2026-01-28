@@ -6,6 +6,10 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { FontProvider } from "./src/context/FontContext";
 import { ThemeProvider, ThemeContext } from "./src/context/ThemeContext"; // ✅ import ThemeContext
 import DrawerNavigator from "./src/navigation/DrawerNavigator";
+import {
+  LanguageProvider,
+  LanguageContext,
+} from "./src/context/LanguageContext";
 
 import SplashScreen from "./src/screens/SplashScreen";
 import LanguageScreen from "./src/screens/LanguageScreen";
@@ -30,9 +34,11 @@ const Stack = createNativeStackNavigator();
 // ✅ Inner component to use theme context
 function AppNavigator() {
   const { isDark } = useContext(ThemeContext); // ✅ get current theme from context
+    const { reloadKey } = useContext(LanguageContext);
 
   return (
     <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}> {/* ✅ PASS theme here */}
+      key={reloadKey} {/* ✅ re-mount navigator on language change */}
       <Stack.Navigator
         initialRouteName="SplashScreen"
         screenOptions={{ headerShown: false }}
@@ -69,7 +75,9 @@ export default function App() {
     <ThemeProvider>
       <FontProvider>
         <SafeAreaProvider>
+           <LanguageProvider>
           <AppNavigator /> {/* ✅ use inner component to access theme context */}
+           </LanguageProvider>
         </SafeAreaProvider>
       </FontProvider>
     </ThemeProvider>

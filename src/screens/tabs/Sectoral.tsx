@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, StyleSheet, Dimensions } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 
@@ -8,31 +8,37 @@ import SectoralPanel from "../components/SectoralPanel";
 import { useTheme } from "../../context/ThemeContext";
 import { LightColors, DarkColors } from "../../theme/colors";
 
+import i18n from "../../i18n";
+import { LanguageContext } from "../../context/LanguageContext";
+
 const { height } = Dimensions.get("window");
 
 export default function Sectoral({ navigation }: any) {
-  const { isDark } = useTheme();
+  const { isDark } = useTheme(); // ❌ theme untouched
   const colors = isDark ? DarkColors : LightColors;
+
+  const { reloadKey } = useContext(LanguageContext); // ✅ language refresh
 
   return (
     <LinearGradient
-      colors={[colors.gradientStart, colors.gradientEnd]}
+      colors={[colors.gradientStart, colors.gradientEnd]} // ❌ unchanged
       style={styles.gradient}
       start={{ x: 0, y: 0.5 }}
       end={{ x: 1, y: 0.5 }}
     >
-      <View style={styles.container}>
-        {/* ✅ TOP HEADER (UNCHANGED) */}
-        <CommonHeader title="Sectoral Indices" navigation={navigation} />
+      <View key={reloadKey} style={styles.container}>
+        {/* ✅ Translated Header */}
+        <CommonHeader
+          title={i18n.t("sectoral_indices")}
+          navigation={navigation}
+        />
 
-        {/* ✅ THEME AWARE PARENT CARD */}
+        {/* ✅ Theme-aware Parent Card (unchanged logic) */}
         <View
           style={[
             styles.card,
             {
-              backgroundColor: isDark
-                ? "#1a1a1a"
-                : "#FFFFFF",
+              backgroundColor: isDark ? "#1a1a1a" : "#FFFFFF",
             },
           ]}
         >

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { View, StyleSheet, Dimensions, ScrollView } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 
@@ -12,14 +12,19 @@ import Options from "../buttontips/Options";
 import { useTheme } from "../../context/ThemeContext";
 import { LightColors, DarkColors } from "../../theme/colors";
 
+import i18n from "../../i18n";
+import { LanguageContext } from "../../context/LanguageContext";
+
 const { height } = Dimensions.get("window");
 
 type TabType = "Equity" | "Futures" | "Options";
 type DurationType = "1D" | "1W" | "1M";
 
 export default function Home({ navigation }: any) {
-  const { isDark } = useTheme();
+  const { isDark } = useTheme(); // ✅ theme untouched
   const colors = isDark ? DarkColors : LightColors;
+
+  const { reloadKey } = useContext(LanguageContext); // ✅ language refresh
 
   const [selectedTab, setSelectedTab] = useState<TabType>("Equity");
   const [selectedDuration, setSelectedDuration] =
@@ -32,18 +37,21 @@ export default function Home({ navigation }: any) {
       start={{ x: 0, y: 0.5 }}
       end={{ x: 1, y: 0.5 }}
     >
-      <View style={styles.container}>
-        <CommonHeader title="Past Performance" navigation={navigation} />
+      <View key={reloadKey} style={styles.container}>
+        {/* ✅ TRANSLATED TITLE */}
+        <CommonHeader
+          title={i18n.t("past_performance")}
+          navigation={navigation}
+        />
+
         <Carousel />
 
-        {/* ✅ THEME-AWARE CARD */}
+        {/* ✅ THEME-AWARE CARD (UNCHANGED) */}
         <View
           style={[
             styles.card,
             {
-              backgroundColor: isDark
-                ? "#1a1a1a"
-                : "#FFFFFF",
+              backgroundColor: isDark ? "#1a1a1a" : "#FFFFFF",
             },
           ]}
         >

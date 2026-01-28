@@ -15,6 +15,7 @@ export default function SuccessScreen({ navigation }: any) {
     return () => clearTimeout(timer);
   }, []);
 
+  
   return (
     <View key={reloadKey} style={{ flex: 1 }}>
       <LinearGradient colors={["#FF2E4C", "#1E2A78"]} style={styles.container}>

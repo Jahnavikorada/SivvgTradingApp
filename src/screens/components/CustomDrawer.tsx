@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   View,
   Text,
@@ -9,10 +9,13 @@ import { DrawerContentScrollView } from "@react-navigation/drawer";
 import LinearGradient from "react-native-linear-gradient";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useTheme } from "../../context/ThemeContext";
+import i18n from "../../i18n";
+import { LanguageContext } from "../../context/LanguageContext";
 
 export default function CustomDrawer(props: any) {
   const { navigation } = props;
-  const { isDark } = useTheme();
+  const { isDark } = useTheme(); // ✅ THEME (UNCHANGED)
+  const { reloadKey } = useContext(LanguageContext); // ✅ LANGUAGE REFRESH
 
   const DrawerItem = ({
     icon,
@@ -48,7 +51,7 @@ export default function CustomDrawer(props: any) {
   );
 
   return (
-    <View style={{ flex: 1 }}>
+    <View key={reloadKey} style={{ flex: 1 }}>
       {/* 🔴 GRADIENT HEADER */}
       <LinearGradient
         colors={["#FF2E4C", "#1E2A78"]}
@@ -65,7 +68,11 @@ export default function CustomDrawer(props: any) {
               color={isDark ? "rgba(255,255,255,0.85)" : "#1E2A78"}
             />
           </View>
-          <Text style={styles.username}>John_ID77</Text>
+
+          {/* ✅ LANGUAGE APPLIED */}
+          <Text style={styles.username}>
+            {i18n.t("drawer_username")}
+          </Text>
         </View>
       </LinearGradient>
 
@@ -79,31 +86,31 @@ export default function CustomDrawer(props: any) {
           <View style={styles.menu}>
             <DrawerItem
               icon="person"
-              label="My Profile"
+              label={i18n.t("drawer_my_profile")}
               onPress={() => navigation.navigate("Profile")}
             />
 
             <DrawerItem
               icon="settings"
-              label="App Preferences"
+              label={i18n.t("drawer_app_preferences")}
               onPress={() => navigation.navigate("AppPreference")}
             />
 
             <DrawerItem
               icon="information-circle"
-              label="About"
+              label={i18n.t("drawer_about")}
               onPress={() => navigation.navigate("About")}
             />
 
             <DrawerItem
               icon="call"
-              label="ContactUs"
+              label={i18n.t("drawer_contact_us")}
               onPress={() => navigation.navigate("ContactUs")}
             />
 
             <DrawerItem
               icon="log-out"
-              label="Logout"
+              label={i18n.t("drawer_logout")}
               onPress={() => navigation.navigate("Logout")}
             />
 
@@ -111,16 +118,16 @@ export default function CustomDrawer(props: any) {
             <View style={styles.footer}>
               <View style={styles.links}>
                 <Text style={[styles.link, isDark && styles.textMutedDark]}>
-                  Privacy Policy
+                  {i18n.t("privacy_policy")}
                 </Text>
                 <Text style={[styles.link, isDark && styles.textMutedDark]}>
-                  Terms & Conditions
+                  {i18n.t("terms_conditions")}
                 </Text>
               </View>
             </View>
 
             <Text style={[styles.version, isDark && styles.textMutedDark]}>
-              Android Version 0.1.0
+              {i18n.t("android_version")}
             </Text>
           </View>
         </DrawerContentScrollView>
@@ -129,7 +136,7 @@ export default function CustomDrawer(props: any) {
   );
 }
 
-/* ---------------- STYLES ---------------- */
+/* ---------------- STYLES (UNCHANGED) ---------------- */
 
 const styles = StyleSheet.create({
   gradientOverlay: {

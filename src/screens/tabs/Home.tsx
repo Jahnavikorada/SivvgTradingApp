@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -15,6 +15,8 @@ import HomeOptions from "../hometips/HomeOptions";
 
 import { useTheme } from "../../context/ThemeContext";
 import { LightColors, DarkColors } from "../../theme/colors";
+import i18n from "../../i18n";
+import { LanguageContext } from "../../context/LanguageContext";
 
 const { height } = Dimensions.get("window");
 
@@ -22,8 +24,16 @@ export default function Home({ navigation }: any) {
   const [activeTab, setActiveTab] =
     useState<"Equity" | "Futures" | "Options">("Equity");
 
-  const { isDark } = useTheme();
+  const { isDark } = useTheme(); // ✅ THEME (UNCHANGED)
   const colors = isDark ? DarkColors : LightColors;
+
+  const { reloadKey } = useContext(LanguageContext); // ✅ LANGUAGE REFRESH
+
+  const getTranslatedTab = (tab: string) => {
+    if (tab === "Equity") return i18n.t("equity");
+    if (tab === "Futures") return i18n.t("futures");
+    return i18n.t("options");
+  };
 
   return (
     <LinearGradient
@@ -32,17 +42,19 @@ export default function Home({ navigation }: any) {
       start={{ x: 0, y: 0.5 }}
       end={{ x: 1, y: 0.5 }}
     >
-      <View style={styles.container}>
-        <CommonHeader title="Intraday Tips" navigation={navigation} />
+      <View key={reloadKey} style={styles.container}>
+        {/* ✅ TRANSLATED HEADER */}
+        <CommonHeader
+          title={i18n.t("intraday_tips")}
+          navigation={navigation}
+        />
 
         {/* MAIN CARD */}
         <View
           style={[
             styles.card,
             {
-              backgroundColor: isDark
-                ? "#1a1a1a"
-                : "#FFFFFF",
+              backgroundColor: isDark ? "#1a1a1a" : "#FFFFFF",
             },
           ]}
         >
@@ -77,7 +89,9 @@ export default function Home({ navigation }: any) {
                       end={{ x: 1, y: 0 }}
                       style={styles.activeGradient}
                     >
-                      <Text style={styles.activeTabText}>{tab}</Text>
+                      <Text style={styles.activeTabText}>
+                        {getTranslatedTab(tab)}
+                      </Text>
                     </LinearGradient>
                   ) : (
                     <View
@@ -100,7 +114,7 @@ export default function Home({ navigation }: any) {
                           },
                         ]}
                       >
-                        {tab}
+                        {getTranslatedTab(tab)}
                       </Text>
                     </View>
                   )}

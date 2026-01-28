@@ -5,206 +5,130 @@ import Icon from "react-native-vector-icons/Ionicons";
 
 import { useFont } from "../context/FontContext";
 import { getFontFamily } from "../context/fontHelper";
-import { ThemeContext } from "../context/ThemeContext"; // ✅ Theme Context
+import { useTheme } from "../context/ThemeContext";
+import i18n from "../i18n";
+import { LanguageContext } from "../context/LanguageContext";
 
 export default function AppPreference({ navigation }: any) {
   const { fontFamily, fontSize } = useFont();
-  const { theme } = useContext(ThemeContext);
+  const { reloadKey } = useContext(LanguageContext); // ✅ language refresh
+  const { colors, isDark } = useTheme(); // ✅ theme
 
-  const isLight = theme === "light";
   const [selected, setSelected] = useState("None");
 
+  const textColor = (row: string) =>
+    selected === row
+      ? "#fff"
+      : isDark
+      ? colors.textSecondary
+      : "#1E2A78";
+
+  const iconColor = (row: string) =>
+    selected === row
+      ? "#fff"
+      : isDark
+      ? colors.textSecondary
+      : "#1E2A78";
+
   return (
-    <LinearGradient
-      colors={["#FF2E4C", "#1E2A78"]}
-      style={styles.gradient}
-      start={{ x: 0, y: 0.5 }}
-      end={{ x: 1, y: 0.5 }}
-    >
-      <View style={styles.headerRow}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back" size={26} color="#fff" />
-        </TouchableOpacity>
-
-        <Text
-          style={[
-            styles.headerTitle,
-            {
-              fontFamily: getFontFamily(fontFamily, "bold"),
-              fontSize: fontSize + 6,
-            },
-          ]}
-        >
-          App Preferences
-        </Text>
-      </View>
-
-      <View
-        style={[
-          styles.card,
-          { backgroundColor: isLight ? "#fff" : "#1a1a1a" }, // ✅ theme
-        ]}
+    <View key={reloadKey} style={{ flex: 1 }}>
+      <LinearGradient
+        colors={[colors.gradientStart, colors.gradientEnd]}
+        style={styles.gradient}
+        start={{ x: 0, y: 0.5 }}
+        end={{ x: 1, y: 0.5 }}
       >
-        {/* Change Language */}
-        <TouchableOpacity
-          style={[
-            styles.row,
-            selected === "lang" && styles.activeRow,
-          ]}
-          onPress={() => {
-            setSelected("lang");
-            navigation.navigate("ChangeLanguage");
-          }}
-        >
-          <Icon
-            name="language"
-            size={22}
-            color={
-              selected === "lang"
-                ? "#fff"
-                : isLight
-                ? "#1E2A78"
-                : "#E0E0E0"
-            }
-          />
-          <Text
-            style={[
-              styles.rowText,
-              selected === "lang" && styles.activeText,
-              {
-                fontFamily: getFontFamily(fontFamily, "semibold"),
-                fontSize,
-                color:
-                  selected === "lang"
-                    ? "#fff"
-                    : isLight
-                    ? "#1E2A78"
-                    : "#E0E0E0",
-              },
-            ]}
-          >
-            Change Language
-          </Text>
-          <Icon
-            name="chevron-forward"
-            size={22}
-            color={
-              selected === "lang"
-                ? "#fff"
-                : isLight
-                ? "#1E2A78"
-                : "#E0E0E0"
-            }
-          />
-        </TouchableOpacity>
+        {/* HEADER */}
+        <View style={styles.headerRow}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon name="arrow-back" size={26} color="#fff" />
+          </TouchableOpacity>
 
-        {/* Themes */}
-        <TouchableOpacity
-          style={[
-            styles.row,
-            selected === "theme" && styles.activeRow,
-          ]}
-          onPress={() => {
-            setSelected("theme");
-            navigation.navigate("Themes");
-          }}
-        >
-          <Icon
-            name="moon"
-            size={22}
-            color={
-              selected === "theme"
-                ? "#fff"
-                : isLight
-                ? "#1E2A78"
-                : "#E0E0E0"
-            }
-          />
           <Text
             style={[
-              styles.rowText,
-              selected === "theme" && styles.activeText,
+              styles.headerTitle,
               {
-                fontFamily: getFontFamily(fontFamily, "semibold"),
-                fontSize,
-                color:
-                  selected === "theme"
-                    ? "#fff"
-                    : isLight
-                    ? "#1E2A78"
-                    : "#E0E0E0",
+                fontFamily: getFontFamily(fontFamily, "bold"),
+                fontSize: fontSize + 6,
               },
             ]}
           >
-            Themes
+            {i18n.t("app_preferences")}
           </Text>
-          <Icon
-            name="chevron-forward"
-            size={22}
-            color={
-              selected === "theme"
-                ? "#fff"
-                : isLight
-                ? "#1E2A78"
-                : "#E0E0E0"
-            }
-          />
-        </TouchableOpacity>
+        </View>
 
-        {/* Fonts */}
-        <TouchableOpacity
+        {/* CARD */}
+        <View
           style={[
-            styles.row,
-            selected === "fonts" && styles.activeRow,
+            styles.card,
+            { backgroundColor: isDark ? "#1a1a1a" : "#fff" },
           ]}
-          onPress={() => {
-            setSelected("fonts");
-            navigation.navigate("Fonts");
-          }}
         >
-          <Icon
-            name="text"
-            size={22}
-            color={
-              selected === "fonts"
-                ? "#fff"
-                : isLight
-                ? "#1E2A78"
-                : "#E0E0E0"
-            }
-          />
-          <Text
-            style={[
-              styles.rowText,
-              selected === "fonts" && styles.activeText,
-              {
-                fontFamily: getFontFamily(fontFamily, "semibold"),
-                fontSize,
-                color:
-                  selected === "fonts"
-                    ? "#fff"
-                    : isLight
-                    ? "#1E2A78"
-                    : "#E0E0E0",
-              },
-            ]}
+          {/* Change Language */}
+          <TouchableOpacity
+            style={[styles.row, selected === "lang" && styles.activeRow]}
+            onPress={() => {
+              setSelected("lang");
+              navigation.navigate("ChangeLanguage");
+            }}
           >
-            Fonts
-          </Text>
-          <Icon
-            name="chevron-forward"
-            size={22}
-            color={
-              selected === "fonts"
-                ? "#fff"
-                : isLight
-                ? "#1E2A78"
-                : "#E0E0E0"
-            }
-          />
-        </TouchableOpacity>
-      </View>
-    </LinearGradient>
+            <Icon name="language" size={22} color={iconColor("lang")} />
+            <Text
+              style={[
+                styles.rowText,
+                { fontFamily: getFontFamily(fontFamily, "semibold"), fontSize, color: textColor("lang") },
+                selected === "lang" && styles.activeText,
+              ]}
+            >
+              {i18n.t("change_language")}
+            </Text>
+            <Icon name="chevron-forward" size={22} color={iconColor("lang")} />
+          </TouchableOpacity>
+
+          {/* Themes */}
+          <TouchableOpacity
+            style={[styles.row, selected === "theme" && styles.activeRow]}
+            onPress={() => {
+              setSelected("theme");
+              navigation.navigate("Themes");
+            }}
+          >
+            <Icon name="moon" size={22} color={iconColor("theme")} />
+            <Text
+              style={[
+                styles.rowText,
+                { fontFamily: getFontFamily(fontFamily, "semibold"), fontSize, color: textColor("theme") },
+                selected === "theme" && styles.activeText,
+              ]}
+            >
+              {i18n.t("themes")}
+            </Text>
+            <Icon name="chevron-forward" size={22} color={iconColor("theme")} />
+          </TouchableOpacity>
+
+          {/* Fonts */}
+          <TouchableOpacity
+            style={[styles.row, selected === "fonts" && styles.activeRow]}
+            onPress={() => {
+              setSelected("fonts");
+              navigation.navigate("Fonts");
+            }}
+          >
+            <Icon name="text" size={22} color={iconColor("fonts")} />
+            <Text
+              style={[
+                styles.rowText,
+                { fontFamily: getFontFamily(fontFamily, "semibold"), fontSize, color: textColor("fonts") },
+                selected === "fonts" && styles.activeText,
+              ]}
+            >
+              {i18n.t("fonts")}
+            </Text>
+            <Icon name="chevron-forward" size={22} color={iconColor("fonts")} />
+          </TouchableOpacity>
+        </View>
+      </LinearGradient>
+    </View>
   );
 }
 

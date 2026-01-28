@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -9,11 +9,15 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { useTheme } from "../context/ThemeContext"; // ✅ ThemeContext
+import { useTheme } from "../context/ThemeContext"; // ✅ Theme (UNCHANGED)
+import i18n from "../i18n";
+import { LanguageContext } from "../context/LanguageContext"; // ✅ Language refresh
 
 export default function ForgotPasswordScreen({ navigation }: any) {
   const { theme } = useTheme();
   const isLight = theme === "light";
+
+  const { reloadKey } = useContext(LanguageContext); // ✅ re-render on language change
 
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
@@ -24,16 +28,16 @@ export default function ForgotPasswordScreen({ navigation }: any) {
     setIsTouched(true);
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const cleanedValue = value.replace(/\s+/g, ""); 
+    const cleanedValue = value.replace(/\s+/g, "");
     const indianPhoneRegex = /^(\+91)?[6-9][0-9]{9}$/;
 
     if (!cleanedValue.trim()) {
-      setError("Email or Phone number is required");
+      setError(i18n.t("err_email_or_phone_required"));
       return false;
     }
 
     if (!emailRegex.test(cleanedValue) && !indianPhoneRegex.test(cleanedValue)) {
-      setError("Enter valid phone number: +91 XXXXXXXXXX");
+      setError(i18n.t("err_enter_valid_phone"));
       return false;
     }
 
@@ -48,83 +52,104 @@ export default function ForgotPasswordScreen({ navigation }: any) {
   };
 
   return (
-    <ImageBackground
-      source={require("../../assets/images/forgot.png")}
-      style={{ flex: 1 }}
-      resizeMode="cover"
-    >
-      <LinearGradient
-        colors={["rgba(255,46,76,0.8)", "rgba(30,42,120,0.8)"]}
-        style={styles.container}
+    <View key={reloadKey} style={{ flex: 1 }}>
+      <ImageBackground
+        source={require("../../assets/images/forgot.png")}
+        style={{ flex: 1 }}
+        resizeMode="cover"
       >
-        {/* Back Button */}
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
+        <LinearGradient
+          colors={["rgba(255,46,76,0.8)", "rgba(30,42,120,0.8)"]}
+          style={styles.container}
         >
-          <Ionicons name="chevron-back" size={28} color="#FFF" />
-        </TouchableOpacity>
-
-        {/* CARD */}
-        <View style={[
-          styles.card,
-          { backgroundColor: isLight ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.5)" }
-        ]}>
-          <Text style={[styles.title, { color: "#FFF" }]}>Forgot Password</Text>
-
-          <Text style={[styles.subtitle, { color: "#FFF", opacity: 0.8 }]}>
-            Enter your Email or Phone number
-          </Text>
-
-          {/* Input Box */}
-          <View style={[
-            styles.inputBox,
-            isTouched && {
-              borderWidth: 2,
-              borderColor: error ? "#e66868ff" : "green",
-            },
-            { backgroundColor: isLight ? "#FFF" : "rgba(0,0,0,0.55)" }
-          ]}>
-            <Ionicons name="mail" size={22} color={isLight ? "#162F7A" : "#e4e8ec"} />
-            <TextInput
-              placeholder="Email / Phone Number"
-              placeholderTextColor={isLight ? "#1E2A78" : "#94A3B8"}
-              style={[styles.input, { color: isLight ? "#1E2A78" : "#F8FAFC" }]}
-              keyboardType="email-address"
-              value={value}
-              onChangeText={(text) => {
-                setValue(text);
-                setError("");
-                setIsTouched(false);
-              }}
-            />
-          </View>
-
-          {/* Error Text */}
-          {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
-          {/* Send OTP */}
+          {/* Back Button */}
           <TouchableOpacity
-            style={[
-              styles.sendOtpBtn,
-              { backgroundColor: isLight ? "#FFF" : "#1a1a1a", }
-            ]}
-            onPress={handleSendOtp}
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
           >
-            <Text style={[
-              styles.sendOtpText,
-              { color: isLight ? "#162F7A" : "#F8FAFC" }
-            ]}>
-              Send OTP
-            </Text>
+            <Ionicons name="chevron-back" size={28} color="#FFF" />
           </TouchableOpacity>
-        </View>
-      </LinearGradient>
-    </ImageBackground>
+
+          {/* CARD */}
+          <View
+            style={[
+              styles.card,
+              {
+                backgroundColor: isLight
+                  ? "rgba(255,255,255,0.15)"
+                  : "rgba(0,0,0,0.5)",
+              },
+            ]}
+          >
+            <Text style={[styles.title, { color: "#FFF" }]}>
+              {i18n.t("forgot_password_title")}
+            </Text>
+
+            <Text style={[styles.subtitle, { color: "#FFF", opacity: 0.8 }]}>
+              {i18n.t("forgot_password_subtitle")}
+            </Text>
+
+            {/* Input Box */}
+            <View
+              style={[
+                styles.inputBox,
+                isTouched && {
+                  borderWidth: 2,
+                  borderColor: error ? "#e66868ff" : "green",
+                },
+                { backgroundColor: isLight ? "#FFF" : "rgba(0,0,0,0.55)" },
+              ]}
+            >
+              <Ionicons
+                name="mail"
+                size={22}
+                color={isLight ? "#162F7A" : "#e4e8ec"}
+              />
+              <TextInput
+                placeholder={i18n.t("email_or_phone_placeholder")}
+                placeholderTextColor={isLight ? "#1E2A78" : "#94A3B8"}
+                style={[
+                  styles.input,
+                  { color: isLight ? "#1E2A78" : "#F8FAFC" },
+                ]}
+                keyboardType="email-address"
+                value={value}
+                onChangeText={(text) => {
+                  setValue(text);
+                  setError("");
+                  setIsTouched(false);
+                }}
+              />
+            </View>
+
+            {/* Error Text */}
+            {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+            {/* Send OTP */}
+            <TouchableOpacity
+              style={[
+                styles.sendOtpBtn,
+                { backgroundColor: isLight ? "#FFF" : "#1a1a1a" },
+              ]}
+              onPress={handleSendOtp}
+            >
+              <Text
+                style={[
+                  styles.sendOtpText,
+                  { color: isLight ? "#162F7A" : "#F8FAFC" },
+                ]}
+              >
+                {i18n.t("send_otp")}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </LinearGradient>
+      </ImageBackground>
+    </View>
   );
 }
 
-// ------------------ STYLES ------------------
+// ------------------ STYLES (UNCHANGED) ------------------
 const styles = StyleSheet.create({
   container: {
     flex: 1,

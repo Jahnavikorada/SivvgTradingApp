@@ -1,12 +1,14 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import TipsCard from "../components/TipsCard";
+
 import { useTheme } from "../../context/ThemeContext";
+import i18n from "../../i18n";
 
 type DurationType = "1D" | "1W" | "1M";
 
 export default function Options({ duration }: { duration: DurationType }) {
-  const { isDark } = useTheme();
+  const { isDark } = useTheme(); // 🌙 theme (unchanged)
 
   const optionsData: Record<DurationType, any[]> = {
     "1D": [
@@ -27,14 +29,14 @@ export default function Options({ duration }: { duration: DurationType }) {
 
   return (
     <View>
-      {/* ✅ THEME-AWARE TITLE */}
+      {/* ✅ THEME + LANGUAGE AWARE TITLE */}
       <Text
         style={[
           styles.title,
           { color: isDark ? "#FFFFFF" : "#1a1a1a" },
         ]}
       >
-        Options ({duration})
+        {i18n.t("options")} ({duration})
       </Text>
 
       {data.map((item, index) => (

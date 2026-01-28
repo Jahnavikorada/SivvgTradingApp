@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -9,57 +9,67 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { useTheme } from "../context/ThemeContext"; // ✅ ThemeContext
+import { useTheme } from "../context/ThemeContext"; // ✅ Theme
+import i18n from "../i18n"; // ✅ Language
+import { LanguageContext } from "../context/LanguageContext"; // ✅ Language reload
 
 export default function ChangePasswordScreen({ navigation }: any) {
   const { theme } = useTheme();
+  const { reloadKey } = useContext(LanguageContext); // ✅ re-render on language change
   const isLight = theme === "light";
 
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+
   const [showPass, setShowPass] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
+
   const [passError, setPassError] = useState("");
   const [confirmError, setConfirmError] = useState("");
+
   const [isPassTouched, setIsPassTouched] = useState(false);
   const [isConfirmTouched, setIsConfirmTouched] = useState(false);
 
   // ---------------- VALIDATION ----------------
   const validateAndSubmit = () => {
     let valid = true;
+
     setIsPassTouched(true);
     setIsConfirmTouched(true);
     setPassError("");
     setConfirmError("");
 
     if (!password.trim()) {
-      setPassError("Password is required");
+      setPassError(i18n.t("err_password_required"));
       valid = false;
     }
+
     if (!confirm.trim()) {
-      setConfirmError("Confirm password is required");
+      setConfirmError(i18n.t("err_confirm_password_required"));
       valid = false;
     }
+
     if (!valid) return;
 
     if (password.length < 6) {
-      setPassError("Password must be at least 6 characters");
+      setPassError(i18n.t("err_password_min_6"));
       return;
     }
 
-    const missingRules = [];
-    if (!/[A-Z]/.test(password)) missingRules.push("uppercase");
-    if (!/[a-z]/.test(password)) missingRules.push("lowercase");
-    if (!/\d/.test(password)) missingRules.push("number");
-    if (!/[@$!%*?&]/.test(password)) missingRules.push("special character");
+    const missingRules: string[] = [];
+    if (!/[A-Z]/.test(password)) missingRules.push(i18n.t("rule_uppercase"));
+    if (!/[a-z]/.test(password)) missingRules.push(i18n.t("rule_lowercase"));
+    if (!/\d/.test(password)) missingRules.push(i18n.t("rule_number"));
+    if (!/[@$!%*?&]/.test(password))
+      missingRules.push(i18n.t("rule_special_character"));
 
     if (missingRules.length > 0) {
-      setPassError("Must include " + missingRules.join(", "));
+      setPassError(i18n.t("err_must_include") + " " + missingRules.join(", "));
       return;
     }
 
     if (password !== confirm) {
-      setConfirmError("Passwords do not match");
+      setConfirmError(i18n.t("err_passwords_do_not_match"));
       return;
     }
 
@@ -67,113 +77,169 @@ export default function ChangePasswordScreen({ navigation }: any) {
   };
 
   return (
-    <ImageBackground
-      source={require("../../assets/images/change.png")}
-      style={{ flex: 1 }}
-      resizeMode="cover"
-    >
-      <LinearGradient
-        colors={["rgba(255,46,76,0.8)", "rgba(30,42,120,0.8)"]}
-        style={styles.container}
+    <View key={reloadKey} style={{ flex: 1 }}>
+      <ImageBackground
+        source={require("../../assets/images/change.png")}
+        style={{ flex: 1 }}
+        resizeMode="cover"
       >
-        {/* Back Button */}
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
+        <LinearGradient
+          colors={["rgba(255,46,76,0.8)", "rgba(30,42,120,0.8)"]}
+          style={styles.container}
         >
-          <Ionicons name="chevron-back" size={28} color="#FFF" />
-        </TouchableOpacity>
-
-        {/* CARD */}
-        <View style={[
-          styles.card,
-          { backgroundColor: isLight ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.5)" }
-        ]}>
-          <Text style={[styles.title, { color: "#FFF" }]}>Change Password</Text>
-          <Text style={[styles.subtitle, { color: "#FFF", opacity: 0.8 }]}>
-            Please enter your new password
-          </Text>
-
-          {/* PASSWORD FIELD */}
-          <View style={[
-            styles.inputBox,
-            isPassTouched && {
-              borderWidth: 2,
-              borderColor: passError ? "#e66868ff" : "green",
-            },
-            { backgroundColor: isLight ? "#FFF" : "rgba(0,0,0,0.55)" }
-          ]}>
-            <Ionicons name="lock-closed" size={20} color={isLight ? "#1E2A78" : "#e4e8ec"} />
-            <TextInput
-              placeholder="New Password"
-              placeholderTextColor={isLight ? "#1E2A78" : "#94A3B8"}
-              secureTextEntry={!showPass}
-              style={[styles.textInput, { color: isLight ? "#1E2A78" : "#F8FAFC" }]}
-              value={password}
-              onChangeText={(text) => {
-                setPassword(text);
-                setPassError("");
-                setIsPassTouched(false);
-              }}
-            />
-            <TouchableOpacity onPress={() => setShowPass(!showPass)}>
-              <Ionicons
-                name={showPass ? "eye" : "eye-off"}
-                size={20}
-                color={isLight ? "#1E2A78" : "#e4e8ec"}
-              />
-            </TouchableOpacity>
-          </View>
-          {passError ? <Text style={styles.errorText}>{passError}</Text> : null}
-
-          {/* CONFIRM PASSWORD FIELD */}
-          <View style={[
-            styles.inputBox,
-            isConfirmTouched && {
-              borderWidth: 2,
-              borderColor: confirmError ? "#e66868ff" : "green",
-            },
-            { backgroundColor: isLight ? "#FFF" : "rgba(0,0,0,0.55)" }
-          ]}>
-            <Ionicons name="lock-closed" size={20} color={isLight ? "#1E2A78" : "#e4e8ec"} />
-            <TextInput
-              placeholder="Confirm Password"
-              placeholderTextColor={isLight ? "#1E2A78" : "#94A3B8"}
-              secureTextEntry={!showConfirmPass}
-              style={[styles.textInput, { color: isLight ? "#1E2A78" : "#F8FAFC" }]}
-              value={confirm}
-              onChangeText={(text) => {
-                setConfirm(text);
-                setConfirmError("");
-                setIsConfirmTouched(false);
-              }}
-            />
-            <TouchableOpacity onPress={() => setShowConfirmPass(!showConfirmPass)}>
-              <Ionicons
-                name={showConfirmPass ? "eye" : "eye-off"}
-                size={20}
-                color={isLight ? "#1E2A78" : "#e4e8ec"}
-              />
-            </TouchableOpacity>
-          </View>
-          {confirmError ? <Text style={styles.errorText}>{confirmError}</Text> : null}
-
-          {/* BUTTON */}
+          {/* Back Button */}
           <TouchableOpacity
-            style={[styles.button, { backgroundColor: isLight ? "#FFF" : "#1a1a1a", opacity: 0.9 }]}
-            onPress={validateAndSubmit}
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
           >
-            <Text style={[styles.buttonText, { color: isLight ? "#1E2A78" : "#F8FAFC" }]}>
-              Update Password
-            </Text>
+            <Ionicons name="chevron-back" size={28} color="#FFF" />
           </TouchableOpacity>
-        </View>
-      </LinearGradient>
-    </ImageBackground>
+
+          {/* CARD */}
+          <View
+            style={[
+              styles.card,
+              {
+                backgroundColor: isLight
+                  ? "rgba(255,255,255,0.15)"
+                  : "rgba(0,0,0,0.5)",
+              },
+            ]}
+          >
+            <Text style={[styles.title, { color: "#FFF" }]}>
+              {i18n.t("change_password_title")}
+            </Text>
+
+            <Text style={[styles.subtitle, { color: "#FFF", opacity: 0.8 }]}>
+              {i18n.t("change_password_subtitle")}
+            </Text>
+
+            {/* PASSWORD FIELD */}
+            <View
+              style={[
+                styles.inputBox,
+                isPassTouched && {
+                  borderWidth: 2,
+                  borderColor: passError ? "#e66868ff" : "green",
+                },
+                {
+                  backgroundColor: isLight
+                    ? "#FFF"
+                    : "rgba(0,0,0,0.55)",
+                },
+              ]}
+            >
+              <Ionicons
+                name="lock-closed"
+                size={20}
+                color={isLight ? "#1E2A78" : "#e4e8ec"}
+              />
+              <TextInput
+                placeholder={i18n.t("new_password")}
+                placeholderTextColor={isLight ? "#1E2A78" : "#94A3B8"}
+                secureTextEntry={!showPass}
+                style={[
+                  styles.textInput,
+                  { color: isLight ? "#1E2A78" : "#F8FAFC" },
+                ]}
+                value={password}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  setPassError("");
+                  setIsPassTouched(false);
+                }}
+              />
+              <TouchableOpacity onPress={() => setShowPass(!showPass)}>
+                <Ionicons
+                  name={showPass ? "eye" : "eye-off"}
+                  size={20}
+                  color={isLight ? "#1E2A78" : "#e4e8ec"}
+                />
+              </TouchableOpacity>
+            </View>
+
+            {passError ? (
+              <Text style={styles.errorText}>{passError}</Text>
+            ) : null}
+
+            {/* CONFIRM PASSWORD FIELD */}
+            <View
+              style={[
+                styles.inputBox,
+                isConfirmTouched && {
+                  borderWidth: 2,
+                  borderColor: confirmError ? "#e66868ff" : "green",
+                },
+                {
+                  backgroundColor: isLight
+                    ? "#FFF"
+                    : "rgba(0,0,0,0.55)",
+                },
+              ]}
+            >
+              <Ionicons
+                name="lock-closed"
+                size={20}
+                color={isLight ? "#1E2A78" : "#e4e8ec"}
+              />
+              <TextInput
+                placeholder={i18n.t("confirm_password")}
+                placeholderTextColor={isLight ? "#1E2A78" : "#94A3B8"}
+                secureTextEntry={!showConfirmPass}
+                style={[
+                  styles.textInput,
+                  { color: isLight ? "#1E2A78" : "#F8FAFC" },
+                ]}
+                value={confirm}
+                onChangeText={(text) => {
+                  setConfirm(text);
+                  setConfirmError("");
+                  setIsConfirmTouched(false);
+                }}
+              />
+              <TouchableOpacity
+                onPress={() => setShowConfirmPass(!showConfirmPass)}
+              >
+                <Ionicons
+                  name={showConfirmPass ? "eye" : "eye-off"}
+                  size={20}
+                  color={isLight ? "#1E2A78" : "#e4e8ec"}
+                />
+              </TouchableOpacity>
+            </View>
+
+            {confirmError ? (
+              <Text style={styles.errorText}>{confirmError}</Text>
+            ) : null}
+
+            {/* BUTTON */}
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {
+                  backgroundColor: isLight ? "#FFF" : "#1a1a1a",
+                  opacity: 0.9,
+                },
+              ]}
+              onPress={validateAndSubmit}
+            >
+              <Text
+                style={[
+                  styles.buttonText,
+                  { color: isLight ? "#1E2A78" : "#F8FAFC" },
+                ]}
+              >
+                {i18n.t("update_password")}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </LinearGradient>
+      </ImageBackground>
+    </View>
   );
 }
 
-// ------------------- STYLES -------------------
+// ------------------- STYLES (UNCHANGED) -------------------
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: "center", alignItems: "center" },
 
@@ -189,7 +255,12 @@ const styles = StyleSheet.create({
 
   title: { fontSize: 26, textAlign: "center", fontFamily: "Lato-Bold" },
 
-  subtitle: { fontSize: 14, textAlign: "center", marginVertical: 20, fontFamily: "Lato-Semibold" },
+  subtitle: {
+    fontSize: 14,
+    textAlign: "center",
+    marginVertical: 20,
+    fontFamily: "Lato-Semibold",
+  },
 
   inputBox: {
     flexDirection: "row",
@@ -202,9 +273,19 @@ const styles = StyleSheet.create({
 
   textInput: { flex: 1, marginLeft: 10, fontFamily: "Lato-Medium" },
 
-  errorText: { color: "yellow", fontSize: 13, marginBottom: 12, marginLeft: 10 },
+  errorText: {
+    color: "yellow",
+    fontSize: 13,
+    marginBottom: 12,
+    marginLeft: 10,
+  },
 
-  button: { marginTop: 25, paddingVertical: 14, borderRadius: 25, alignItems: "center" },
+  button: {
+    marginTop: 25,
+    paddingVertical: 14,
+    borderRadius: 25,
+    alignItems: "center",
+  },
 
   buttonText: { fontSize: 16, fontFamily: "Lato-Bold" },
 });

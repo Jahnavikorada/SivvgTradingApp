@@ -13,14 +13,14 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import MaskedView from "@react-native-masked-view/masked-view";
-import { useTheme } from "../context/ThemeContext"; // ✅
-
 import Svg, {
   Defs,
   LinearGradient as SvgLinearGradient,
   Stop,
   Circle,
 } from "react-native-svg";
+import i18n from "../i18n";
+import { useTheme } from "../context/ThemeContext";
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -34,18 +34,24 @@ const verticalScale = (size: number) => (SH / guidelineBaseHeight) * size;
 
 const normalize = (size: number) => {
   const newSize = scale(size);
-  if (Platform.OS === "ios") {
-    return Math.round(PixelRatio.roundToNearestPixel(newSize));
-  }
-  return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 1;
+  return Platform.OS === "ios"
+    ? Math.round(PixelRatio.roundToNearestPixel(newSize))
+    : Math.round(PixelRatio.roundToNearestPixel(newSize)) - 1;
 };
 
 const svgSize = Math.min(SW * 0.41, 200);
 const strokeWidth = normalize(14);
 
 export default function WelcomeOfferScreen({ navigation }: any) {
-  const { isDark } = useTheme(); // ✅
+  const { isDark } = useTheme();
   const days = 20;
+
+  /* ------------------ THEME COLORS ------------------ */
+  const bgGradient = isDark
+    ? ["#ff2e4c", "#1e2a78"]
+    : ["#FF2E4C", "#1E2A78"];
+
+  const textColor = "#FFFFFF";
 
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const shineAnim = useRef(new Animated.Value(0)).current;
@@ -86,29 +92,45 @@ export default function WelcomeOfferScreen({ navigation }: any) {
   });
 
   return (
-    <LinearGradient colors={["#FF2E4C", "#1E2A78"]} style={styles.container}>
+    <LinearGradient colors={bgGradient} style={styles.container}>
       <SafeAreaView style={styles.safe}>
         <View style={styles.content}>
+          {/* LOGO */}
           <Image
             source={require("../../assets/images/logo.png")}
             style={styles.logo}
             resizeMode="contain"
           />
 
-          <Text style={styles.title}>Unlock Your Potential</Text>
+          {/* TITLE */}
+          <Text style={[styles.title, { color: textColor }]}>
+            {i18n.t("unlock_title")}
+          </Text>
 
           {/* PROGRESS */}
           <View style={styles.progressWrap}>
             <Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
               <Svg width={svgSize} height={svgSize}>
                 <Defs>
-                  <SvgLinearGradient id="ringColor" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <SvgLinearGradient
+                    id="ringColor"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="100%"
+                  >
                     <Stop offset="0%" stopColor="#FF2E4C" />
                     <Stop offset="50%" stopColor="#FFFFFF" />
                     <Stop offset="100%" stopColor="#1E2A78" />
                   </SvgLinearGradient>
 
-                  <SvgLinearGradient id="shine" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <SvgLinearGradient
+                    id="shine"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="100%"
+                  >
                     <Stop offset="0%" stopColor="white" stopOpacity="0.9" />
                     <Stop offset="100%" stopColor="white" stopOpacity="0" />
                   </SvgLinearGradient>
@@ -136,19 +158,21 @@ export default function WelcomeOfferScreen({ navigation }: any) {
             </Animated.View>
 
             <View style={styles.progressCenter}>
-              <Text style={styles.progressNumber}>{days}</Text>
+              <Text style={[styles.progressNumber, { color: textColor }]}>
+                {days}
+              </Text>
             </View>
           </View>
 
-          <Text style={styles.subtitle}>
-            20 Days of Smart Portfolio{"\n"}Tracking
+          {/* SUBTITLE */}
+          <Text style={[styles.subtitle, { color: textColor }]}>
+            {i18n.t("unlock_subtitle")}
           </Text>
 
           {/* BUTTON */}
           <TouchableOpacity
             activeOpacity={0.85}
             onPress={() => navigation.navigate("Login")}
-            style={{ width: "100%", alignItems: "center" }}
           >
             <LinearGradient
               colors={["#FF2E4C", "#1E2A78"]}
@@ -161,22 +185,21 @@ export default function WelcomeOfferScreen({ navigation }: any) {
                 ]}
               >
                 <MaskedView
-                  style={{ width: "100%", alignItems: "center" }}
                   maskElement={
-                    <Text style={styles.btnText} numberOfLines={1}>
-                      START YOUR JOURNEY
+                    <Text style={styles.btnText}>
+                      {i18n.t("start_journey")}
                     </Text>
                   }
                 >
                   <LinearGradient
                     colors={
                       isDark
-                        ? ["#FFFFFF", "#FFFFFF"] // ✅ DARK = WHITE TEXT
-                        : ["#FF2E4C", "#1E2A78"] // ✅ LIGHT = SAME AS BEFORE
+                        ? ["#FFFFFF", "#FFFFFF"]
+                        : ["#FF2E4C", "#1E2A78"]
                     }
                   >
-                    <Text style={[styles.btnText, { opacity: 0 }]} numberOfLines={1}>
-                      START YOUR JOURNEY
+                    <Text style={[styles.btnText, { opacity: 0 }]}>
+                      {i18n.t("start_journey")}
                     </Text>
                   </LinearGradient>
                 </MaskedView>
@@ -193,26 +216,22 @@ export default function WelcomeOfferScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   safe: { flex: 1 },
-
   content: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
-
   logo: {
     width: normalize(160),
     height: normalize(160),
     marginBottom: verticalScale(16),
   },
-
   title: {
     fontSize: normalize(25),
     fontWeight: "600",
-    color: "#FFFFFF",
     marginBottom: verticalScale(35),
+    textAlign: "center",
   },
-
   progressWrap: {
     width: svgSize,
     height: svgSize,
@@ -220,37 +239,31 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
-  progressCenter: { position: "absolute" },
-
+  progressCenter: {
+    position: "absolute",
+  },
   progressNumber: {
     fontSize: normalize(74),
     fontWeight: "700",
-    color: "#FFFFFF",
   },
-
   subtitle: {
     fontSize: normalize(22),
-    color: "#FFFFFF",
+    fontWeight: "500",
     textAlign: "center",
     marginBottom: verticalScale(55),
   },
-
   btnBorder: {
     padding: 4,
     borderRadius: 40,
   },
-
   btnInner: {
-    width: "85%",
-    paddingVertical: 16,
-    paddingHorizontal: 20,
+    paddingHorizontal: 38,
+    paddingVertical: 14,
     borderRadius: 37,
     alignItems: "center",
   },
-
   btnText: {
-    fontSize: normalize(16),
+    fontSize: normalize(18),
     fontWeight: "800",
     letterSpacing: 1,
   },

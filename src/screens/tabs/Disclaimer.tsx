@@ -1,28 +1,36 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, StyleSheet, Dimensions, Text, Image } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import CommonHeader from "../components/CommonHeader";
 import { useTheme } from "../../context/ThemeContext";
 
+import i18n from "../../i18n";
+import { LanguageContext } from "../../context/LanguageContext";
+
 const { height } = Dimensions.get("window");
 
 export default function Home({ navigation }: any) {
   const { isDark } = useTheme();
+  const { reloadKey } = useContext(LanguageContext); // ✅ language re-render
 
   return (
     <LinearGradient
-      colors={["#FF2E4C", "#1E2A78"]} // SAME gradient for both themes
+      colors={["#FF2E4C", "#1E2A78"]} // ❌ NOT CHANGED
       style={styles.gradient}
       start={{ x: 0, y: 0.5 }}
       end={{ x: 1, y: 0.5 }}
     >
-      <View style={styles.container}>
-        <CommonHeader title="Intraday Tips" navigation={navigation} />
+      <View key={reloadKey} style={styles.container}>
+        {/* ✅ Translated Header */}
+        <CommonHeader
+          title={i18n.t("intraday_tips")}
+          navigation={navigation}
+        />
 
         <View
           style={[
             styles.card,
-            { backgroundColor: isDark ? "#1a1a1a" : "white" },
+            { backgroundColor: isDark ? "#1a1a1a" : "white" }, // ❌ NOT CHANGED
           ]}
         >
           <Image
@@ -31,15 +39,19 @@ export default function Home({ navigation }: any) {
             resizeMode="contain"
           />
 
-          <Text style={styles.header}>DISCLAIMER</Text>
+          {/* ✅ Translated Title */}
+          <Text style={styles.header}>
+            {i18n.t("disclaimer")}
+          </Text>
 
+          {/* ✅ Translated Message */}
           <Text
             style={[
               styles.text,
-              { color: isDark ? "#FFF" : "#1E2A78" },
+              { color: isDark ? "#FFF" : "#1E2A78" }, // ❌ NOT CHANGED
             ]}
           >
-            No trading tips are provided today
+            {i18n.t("no_tips_today")}
           </Text>
         </View>
       </View>
@@ -68,7 +80,7 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    color: "#DC3545", // stays same in both themes
+    color: "#DC3545", // ❌ SAME for both themes
     fontSize: 18,
     fontWeight: "600",
     textAlign: "center",

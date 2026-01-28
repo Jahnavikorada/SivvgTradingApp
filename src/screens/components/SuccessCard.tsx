@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, StyleSheet } from "react-native";
+
 import { useTheme } from "../../context/ThemeContext";
+import { LanguageContext } from "../../context/LanguageContext";
+import i18n from "../../i18n";
 
 type TipsObj = {
   total: number;
@@ -18,7 +21,8 @@ interface Props {
 }
 
 export default function SuccessCard({ title, tipsData }: Props) {
-  const { isDark } = useTheme();
+  const { isDark } = useTheme(); // 🌙 theme (unchanged)
+  const { reloadKey } = useContext(LanguageContext); // 🌐 language refresh
 
   const calculateRate = (obj: TipsObj) => {
     if (!obj || obj.total === 0) return 0;
@@ -26,13 +30,25 @@ export default function SuccessCard({ title, tipsData }: Props) {
   };
 
   const chartData = [
-    { label: "1 Day", value: calculateRate(tipsData.oneDay), color: "#0052cc" },
-    { label: "1 Week", value: calculateRate(tipsData.oneWeek), color: "#198cff" },
-    { label: "1 Month", value: calculateRate(tipsData.oneMonth), color: "#3ec7d1" },
+    {
+      label: i18n.t("one_day"),
+      value: calculateRate(tipsData.oneDay),
+      color: "#0052cc",
+    },
+    {
+      label: i18n.t("one_week"),
+      value: calculateRate(tipsData.oneWeek),
+      color: "#198cff",
+    },
+    {
+      label: i18n.t("one_month"),
+      value: calculateRate(tipsData.oneMonth),
+      color: "#3ec7d1",
+    },
   ];
 
   return (
-    <View style={[styles.card, isDark && styles.cardDark]}>
+    <View key={reloadKey} style={[styles.card, isDark && styles.cardDark]}>
       {/* TITLE BAR */}
       <View style={[styles.textbg, isDark && styles.textbgDark]}>
         <Text style={styles.title}>{title}</Text>
@@ -77,7 +93,7 @@ export default function SuccessCard({ title, tipsData }: Props) {
       </View>
 
       <Text style={[styles.footer, isDark && styles.textDark]}>
-        Recommendations Growth
+        {i18n.t("recommendations_growth")}
       </Text>
     </View>
   );

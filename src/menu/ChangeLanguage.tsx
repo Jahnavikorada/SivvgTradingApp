@@ -1,160 +1,119 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/Ionicons";
-import { ThemeContext } from "../context/ThemeContext";
+
+import i18n from "../i18n";
+import { LanguageContext } from "../context/LanguageContext";
+import { useTheme } from "../context/ThemeContext"; // ✅ theme
 
 export default function ChangeLanguage({ navigation }: any) {
-  const [selected, setSelected] = useState("English");
-  const { theme } = useContext(ThemeContext);
-  const isLight = theme === "light";
+  const { lang, changeLang, reloadKey } = useContext(LanguageContext); // ✅ language
+  const { colors, isDark } = useTheme(); // ✅ theme
+
+  const [selected, setSelected] = useState(lang);
+
+  useEffect(() => {
+    setSelected(lang);
+  }, [lang]);
+
+  const selectLanguage = async (newLang: string) => {
+    setSelected(newLang);
+    await changeLang(newLang); // ✅ updates entire app
+  };
+
+  const isLight = !isDark;
+
+  // helper for dynamic button colors
+  const getBtnStyle = (btnLang: string) => ({
+    backgroundColor:
+      selected === btnLang
+        ? isLight
+          ? "#1E2A78"
+          : "#121212"
+        : isLight
+        ? "#fff"
+        : "#2A2A2A",
+    borderColor: isLight ? "#1E2A78" : "#3A3A3A",
+  });
+
+  const getBtnTextColor = (btnLang: string) =>
+    selected === btnLang
+      ? "#fff"
+      : isLight
+      ? "#1E2A78"
+      : "#E0E0E0";
 
   return (
-    <LinearGradient
-      colors={["#FF2E4C", "#1E2A78"]}
-      style={styles.gradient}
-      start={{ x: 0, y: 0.5 }}
-      end={{ x: 1, y: 0.5 }}
-    >
-      <View style={styles.headerRow}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back" size={26} color="#fff" />
-        </TouchableOpacity>
-
-        <Text style={styles.headerTitle}>Change Language</Text>
-      </View>
-
-      <View
-        style={[
-          styles.card,
-          { backgroundColor: isLight ? "#fff" : "#1a1a1a" },
-        ]}
+    <View key={reloadKey} style={{ flex: 1 }}>
+      <LinearGradient
+        colors={[colors.gradientStart, colors.gradientEnd]}
+        style={styles.gradient}
+        start={{ x: 0, y: 0.5 }}
+        end={{ x: 1, y: 0.5 }}
       >
-        <Icon
-          name="language-outline"
-          size={70}
-          color={isLight ? "#1E2A78" : "#E0E0E0"}
-        />
+        {/* HEADER */}
+        <View style={styles.headerRow}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon name="arrow-back" size={26} color="#fff" />
+          </TouchableOpacity>
 
-        <Text style={[styles.title, { color: isLight ? "#1E2A78" : "#E0E0E0" }]}>
-          Choose a Language
-        </Text>
+          <Text style={styles.headerTitle}>{i18n.t("change_language")}</Text>
+        </View>
 
-        <Text
+        {/* CARD */}
+        <View
           style={[
-            styles.subtitle,
-            { color: isLight ? "#555" : "#B0B0B0" },
+            styles.card,
+            { backgroundColor: isLight ? "#fff" : "#1a1a1a" },
           ]}
         >
-          Please Select a language to get Started
-        </Text>
+          <Icon
+            name="language-outline"
+            size={70}
+            color={isLight ? "#1E2A78" : "#E0E0E0"}
+          />
 
-        {/* ENGLISH */}
-        <TouchableOpacity
-          style={[
-            styles.btn,
-            {
-              backgroundColor: isLight
-                ? selected === "English"
-                  ? "#1E2A78"
-                  : "#fff"
-                : selected === "English"
-                ? "#121212"
-                : "#2A2A2A",
-              borderColor: isLight ? "#1E2A78" : "#3A3A3A",
-            },
-          ]}
-          onPress={() => setSelected("English")}
-        >
-          <Text
-            style={[
-              styles.btnText,
-              {
-                color: isLight
-                  ? selected === "English"
-                    ? "#fff"
-                    : "#1E2A78"
-                  : selected === "English"
-                  ? "#EDEDED"
-                  : "#9CA3AF",
-              },
-            ]}
-          >
-            English
+          <Text style={[styles.title, { color: isLight ? "#1E2A78" : "#E0E0E0" }]}>
+            {i18n.t("choose_language")}
           </Text>
-        </TouchableOpacity>
 
-        {/* HINDI */}
-        <TouchableOpacity
-          style={[
-            styles.btn,
-            {
-              backgroundColor: isLight
-                ? selected === "Hindi"
-                  ? "#1E2A78"
-                  : "#fff"
-                : selected === "Hindi"
-                ? "#121212"
-                : "#2A2A2A",
-              borderColor: isLight ? "#1E2A78" : "#3A3A3A",
-            },
-          ]}
-          onPress={() => setSelected("Hindi")}
-        >
-          <Text
-            style={[
-              styles.btnText,
-              {
-                color: isLight
-                  ? selected === "Hindi"
-                    ? "#fff"
-                    : "#1E2A78"
-                  : selected === "Hindi"
-                  ? "#EDEDED"
-                  : "#9CA3AF",
-              },
-            ]}
-          >
-            Hindi
+          <Text style={[styles.subtitle, { color: isLight ? "#555" : "#B0B0B0" }]}>
+            {i18n.t("select_language_start")}
           </Text>
-        </TouchableOpacity>
 
-        {/* TELUGU */}
-        <TouchableOpacity
-          style={[
-            styles.btn,
-            {
-              backgroundColor: isLight
-                ? selected === "Telugu"
-                  ? "#1E2A78"
-                  : "#fff"
-                : selected === "Telugu"
-                ? "#121212"
-                : "#2A2A2A",
-              borderColor: isLight ? "#1E2A78" : "#3A3A3A",
-            },
-          ]}
-          onPress={() => setSelected("Telugu")}
-        >
-          <Text
-            style={[
-              styles.btnText,
-              {
-                color: isLight
-                  ? selected === "Telugu"
-                    ? "#fff"
-                    : "#1E2A78"
-                  : selected === "Telugu"
-                  ? "#EDEDED"
-                  : "#9CA3AF",
-              },
-            ]}
+          {/* ENGLISH */}
+          <TouchableOpacity
+            style={[styles.btn, getBtnStyle("en")]}
+            onPress={() => selectLanguage("en")}
           >
-            Telugu
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </LinearGradient>
+            <Text style={[styles.btnText, { color: getBtnTextColor("en") }]}>
+              {i18n.t("lang_english")}
+            </Text>
+          </TouchableOpacity>
+
+          {/* HINDI */}
+          <TouchableOpacity
+            style={[styles.btn, getBtnStyle("hi")]}
+            onPress={() => selectLanguage("hi")}
+          >
+            <Text style={[styles.btnText, { color: getBtnTextColor("hi") }]}>
+              {i18n.t("lang_hindi")}
+            </Text>
+          </TouchableOpacity>
+
+          {/* TELUGU */}
+          <TouchableOpacity
+            style={[styles.btn, getBtnStyle("te")]}
+            onPress={() => selectLanguage("te")}
+          >
+            <Text style={[styles.btnText, { color: getBtnTextColor("te") }]}>
+              {i18n.t("lang_telugu")}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </LinearGradient>
+    </View>
   );
 }
 

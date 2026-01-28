@@ -1,28 +1,36 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, StyleSheet, Dimensions, Text, Image } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import CommonHeader from "../components/CommonHeader";
-import { useTheme } from  "../../context/ThemeContext";
+import { useTheme } from "../../context/ThemeContext";
+
+import i18n from "../../i18n";
+import { LanguageContext } from "../../context/LanguageContext";
 
 const { height } = Dimensions.get("window");
 
 export default function Holiday({ navigation }: any) {
-  const { isDark } = useTheme();
+  const { isDark } = useTheme(); // ❌ theme logic untouched
+  const { reloadKey } = useContext(LanguageContext); // ✅ language re-render
 
   return (
     <LinearGradient
-      colors={["#FF2E4C", "#1E2A78"]} // SAME gradient for both themes
+      colors={["#FF2E4C", "#1E2A78"]} // ❌ SAME gradient
       style={styles.gradient}
       start={{ x: 0, y: 0.5 }}
       end={{ x: 1, y: 0.5 }}
     >
-      <View style={styles.container}>
-        <CommonHeader title="Intraday Tips" navigation={navigation} />
+      <View key={reloadKey} style={styles.container}>
+        {/* ✅ Translated Header */}
+        <CommonHeader
+          title={i18n.t("intraday_tips")}
+          navigation={navigation}
+        />
 
         <View
           style={[
             styles.card,
-            { backgroundColor: isDark ? "#1a1a1a" : "white" },
+            { backgroundColor: isDark ? "#1a1a1a" : "white" }, // ❌ unchanged
           ]}
         >
           <Image
@@ -31,13 +39,14 @@ export default function Holiday({ navigation }: any) {
             resizeMode="contain"
           />
 
+          {/* ✅ Translated Text */}
           <Text
             style={[
               styles.header,
-              { color: isDark ? "#FFFFFF" : "#1E2A78" },
+              { color: isDark ? "#FFFFFF" : "#1E2A78" }, // ❌ unchanged
             ]}
           >
-            The market is closed today
+            {i18n.t("market_closed_today")}
           </Text>
         </View>
       </View>

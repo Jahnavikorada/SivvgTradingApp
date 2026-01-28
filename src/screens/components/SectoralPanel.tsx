@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -18,18 +18,23 @@ import { metalData } from "../sectoraldata/metalData";
 import { autoData } from "../sectoraldata/autoData";
 import { fmcgData } from "../sectoraldata/fmcData";
 
+import i18n from "../../i18n";
+import { LanguageContext } from "../../context/LanguageContext";
+
 export default function SectoralPanel() {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const { isDark } = useTheme();
+  const { isDark } = useTheme(); // ✅ THEME (UNCHANGED)
+  const { reloadKey } = useContext(LanguageContext); // ✅ LANGUAGE REFRESH
 
+  // ✅ TRANSLATION KEYS (IMPORTANT)
   const sectorHeadingMap: any = {
-    bank: "Nifty Bank",
-    pharma: "Nifty Pharma",
-    it: "Nifty IT",
-    money: "Nifty Financial",
-    metal: "Nifty Metal",
-    auto: "Nifty Auto",
-    fmcg: "Nifty FMCG",
+    bank: "nifty_bank",
+    pharma: "nifty_pharma",
+    it: "nifty_it",
+    money: "nifty_financial",
+    metal: "nifty_metal",
+    auto: "nifty_auto",
+    fmcg: "nifty_fmcg",
   };
 
   const icons = [
@@ -56,7 +61,7 @@ export default function SectoralPanel() {
   const activeData = sectorMap[activeKey];
 
   return (
-    <View style={styles.row}>
+    <View key={reloadKey} style={styles.row}>
       {/* LEFT BAR */}
       <View style={styles.leftBar}>
         <ScrollView
@@ -96,9 +101,9 @@ export default function SectoralPanel() {
           isDark && { borderColor: "rgba(255,255,255,0.15)" },
         ]}
       >
-        {/* 🔴 ONLY CHANGE HERE */}
+        {/* ✅ LANGUAGE + THEME */}
         <Text style={[styles.heading, isDark && { color: "#FFFFFF" }]}>
-          {sectorHeadingMap[activeKey]}
+          {i18n.t(sectorHeadingMap[activeKey])}
         </Text>
 
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -126,7 +131,7 @@ export default function SectoralPanel() {
   );
 }
 
-/* ================= STYLES ================= */
+/* ================= STYLES (UNCHANGED) ================= */
 
 const styles = StyleSheet.create({
   row: {

@@ -1,19 +1,22 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  SafeAreaView,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/Ionicons";
+
 import { useFont } from "../context/FontContext";
 import { getFontFamily } from "../context/fontHelper";
-import { useTheme } from "../context/ThemeContext"; // ✅ USE THIS
+import { useTheme } from "../context/ThemeContext"; 
+import i18n from "../i18n";
+import { LanguageContext } from "../context/LanguageContext"; 
 
 /* ---------------- INFO BOX ---------------- */
-
 const InfoBox = ({
   icon,
   title,
@@ -24,41 +27,45 @@ const InfoBox = ({
   desc: string;
 }) => {
   const { fontFamily, fontSize } = useFont();
-  const { colors } = useTheme(); // ✅ COLORS ONLY
+  const { isDark } = useTheme();
+
+  const boxColor = isDark ? "#121212" : "#1E2A78"; // Dark blue shades
+  const titleColor = "#FFFFFF"; // always white
+  const descColor = "#E0E0E0"; // lighter gray
 
   return (
     <View
       style={[
         styles.box,
-        { backgroundColor: colors.surface },
+        {
+          backgroundColor: boxColor,
+          shadowColor: "#000",
+          shadowOpacity: 0.25,
+          shadowRadius: 6,
+          shadowOffset: { width: 0, height: 4 },
+        },
       ]}
     >
       <View style={styles.row}>
-        <Icon name={icon} size={28} color={colors.textPrimary} />
-
+        <Icon name={icon} size={24} color={titleColor} style={{ marginTop: 2 }} />
         <View style={styles.textContainer}>
           <Text
-            style={[
-              styles.boxTitle,
-              {
-                fontFamily: getFontFamily(fontFamily, "semibold"),
-                fontSize: fontSize + 2,
-                color: colors.textPrimary,
-              },
-            ]}
+            style={{
+              fontFamily: getFontFamily(fontFamily, "semibold"),
+              fontSize: fontSize + 2,
+              color: titleColor,
+              marginBottom: 2,
+            }}
           >
             {title}
           </Text>
 
           <Text
-            style={[
-              styles.boxText,
-              {
-                fontFamily: getFontFamily(fontFamily, "regular"),
-                fontSize,
-                color: colors.textSecondary,
-              },
-            ]}
+            style={{
+              fontFamily: getFontFamily(fontFamily, "regular"),
+              fontSize,
+              color: descColor,
+            }}
           >
             {desc}
           </Text>
@@ -69,108 +76,110 @@ const InfoBox = ({
 };
 
 /* ---------------- SCREEN ---------------- */
-
 export default function About({ navigation }: any) {
   const { fontFamily, fontSize } = useFont();
-  const { colors } = useTheme(); // ✅ GLOBAL THEME
+  const { colors, isDark } = useTheme(); 
+  const { reloadKey } = useContext(LanguageContext); 
+
+  const isLight = !isDark;
 
   return (
-    <LinearGradient
-      colors={[colors.gradientStart, colors.gradientEnd]}
-      style={styles.gradient}
-      start={{ x: 0, y: 0.5 }}
-      end={{ x: 1, y: 0.5 }}
+    <SafeAreaView
+      key={reloadKey} 
+      style={{ flex: 1, backgroundColor: isLight ? "#fff" : "#121212" }}
     >
-      {/* HEADER */}
-      <View style={styles.headerRow}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back" size={26} color="#fff" />
-        </TouchableOpacity>
+      <LinearGradient
+        colors={isLight ? ["#FF2E4C", "#1E2A78"] : ["#FF2E4C", "#1E2A78"]} 
+        style={styles.gradient}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+      >
+        {/* HEADER */}
+        <View style={styles.headerRow}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon name="arrow-back" size={26} color="#fff" />
+          </TouchableOpacity>
 
-        <Text
-          style={[
-            styles.headerTitle,
-            {
+          <Text
+            style={{
               fontFamily: getFontFamily(fontFamily, "bold"),
               fontSize: fontSize + 6,
-            },
+              color: "#fff",
+            }}
+          >
+            {i18n.t("about_us")}
+          </Text>
+        </View>
+
+        {/* CARD */}
+        <View
+          style={[
+            styles.card,
+            { backgroundColor: isLight ? "#fff" : "#1a1a1a" },
           ]}
         >
-          About Us
-        </Text>
-      </View>
-
-      {/* CARD */}
-      <View
-        style={[
-          styles.card,
-          { backgroundColor: colors.background },
-        ]}
-      >
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <Text
-            style={[
-              styles.header,
-              {
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <Text
+              style={{
+                textAlign: "center",
+                marginVertical: 16,
                 fontFamily: getFontFamily(fontFamily, "semibold"),
                 fontSize: fontSize + 4,
-                color: colors.textPrimary,
-              },
-            ]}
-          >
-            Why choose us?
-          </Text>
+                color: isDark ? "#E0E0E0" : "#1E2A78",
+              }}
+            >
+              {i18n.t("why_choose_us")}
+            </Text>
 
-          <InfoBox
-            icon="checkbox"
-            title="Precision Picks"
-            desc="Accurate intraday tips by experts with clear entry and exit."
-          />
+            <InfoBox
+              icon="checkbox"
+              title={i18n.t("precision_picks")}
+              desc={i18n.t("precision_picks_desc")}
+            />
 
-          <InfoBox
-            icon="flash"
-            title="Quick Trigger"
-            desc="Act fast and catch the right market opportunity."
-          />
+            <InfoBox
+              icon="flash"
+              title={i18n.t("quick_trigger")}
+              desc={i18n.t("quick_trigger_desc")}
+            />
 
-          <InfoBox
-            icon="analytics-sharp"
-            title="Strategic Flow"
-            desc="Structured trading tips with no guesswork."
-          />
+            <InfoBox
+              icon="analytics-sharp"
+              title={i18n.t("strategic_flow")}
+              desc={i18n.t("strategic_flow_desc")}
+            />
 
-          <Text
-            style={[
-              styles.header,
-              {
+            <Text
+              style={{
+                textAlign: "center",
+                marginVertical: 16,
                 fontFamily: getFontFamily(fontFamily, "semibold"),
                 fontSize: fontSize + 4,
-                color: colors.textPrimary,
-              },
-            ]}
-          >
-            What we Offer
-          </Text>
+                color: isDark ? "#E0E0E0" : "#1E2A78",
+              }}
+            >
+              {i18n.t("what_we_offer")}
+            </Text>
 
-          <InfoBox
-            icon="chevron-forward"
-            title="Intraday Tips"
-            desc="(Equity, Futures, Options)"
-          />
+            <InfoBox
+              icon="chevron-forward"
+              title={i18n.t("intraday_tips")}
+              desc={i18n.t("intraday_tips_desc")}
+            />
 
-          <InfoBox
-            icon="chevron-forward"
-            title="Market Notifications"
-            desc="Real-time market updates"
-          />
-        </ScrollView>
-      </View>
-    </LinearGradient>
+            <InfoBox
+              icon="chevron-forward"
+              title={i18n.t("market_notifications")}
+              desc={i18n.t("market_notifications_desc")}
+            />
+          </ScrollView>
+        </View>
+      </LinearGradient>
+    </SafeAreaView>
   );
 }
 
 /* ---------------- STYLES ---------------- */
-
 const styles = StyleSheet.create({
   gradient: {
     flex: 1,
@@ -182,12 +191,6 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingHorizontal: 20,
     gap: 10,
-  },
-
-  headerTitle: {
-    color: "#fff",
-    fontSize: 20,
-    fontWeight: "bold",
   },
 
   card: {
@@ -212,20 +215,5 @@ const styles = StyleSheet.create({
 
   textContainer: {
     flex: 1,
-  },
-
-  boxTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 4,
-  },
-
-  boxText: {
-    fontSize: 14,
-  },
-
-  header: {
-    textAlign: "center",
-    marginVertical: 16,
   },
 });

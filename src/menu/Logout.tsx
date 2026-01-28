@@ -1,18 +1,19 @@
-// Logout.tsx
-
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
+import i18n from "../i18n";
+import { LanguageContext } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
 
 export default function LogoutScreen({ navigation }: any) {
+  const { reloadKey } = useContext(LanguageContext); // ✅ refresh texts
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
   return (
     <View
+      key={reloadKey}
       style={[
         styles.container,
         { backgroundColor: isDark ? "#1a1a1a" : "#ffffff" },
@@ -39,7 +40,7 @@ export default function LogoutScreen({ navigation }: any) {
             { color: isDark ? "#E5E7EB" : "#1E2A78" },
           ]}
         >
-          Logout
+          {i18n.t("logout")}
         </Text>
 
         <Text
@@ -48,7 +49,7 @@ export default function LogoutScreen({ navigation }: any) {
             { color: isDark ? "#e5e7eb" : "#1E2A78" },
           ]}
         >
-          Hi John
+          {i18n.t("hi")} John
         </Text>
 
         <Text
@@ -57,7 +58,7 @@ export default function LogoutScreen({ navigation }: any) {
             { color: isDark ? "#e5e7eb" : "#1E2A78" },
           ]}
         >
-          Are you sure you want to logout?
+          {i18n.t("logout_confirm")}
         </Text>
 
         <View style={styles.row}>
@@ -74,7 +75,7 @@ export default function LogoutScreen({ navigation }: any) {
                 { color: isDark ? "#020617" : "#ffffff" },
               ]}
             >
-              Yes
+              {i18n.t("yes")}
             </Text>
           </TouchableOpacity>
 
@@ -91,7 +92,7 @@ export default function LogoutScreen({ navigation }: any) {
                 { color: isDark ? "#E5E7EB" : "#1E2A78" },
               ]}
             >
-              No
+              {i18n.t("no")}
             </Text>
           </TouchableOpacity>
         </View>
@@ -99,8 +100,6 @@ export default function LogoutScreen({ navigation }: any) {
     </View>
   );
 }
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -112,30 +111,25 @@ const styles = StyleSheet.create({
   box: {
     width: "85%",
     padding: 30,
-    //borderWidth: 1,
-   // borderColor: "#999",
     alignItems: "center",
-    gap: 6
+    gap: 6,
   },
 
   title: {
     marginTop: 10,
     fontSize: 20,
     fontWeight: "600",
-    color: "#1E2A78",
   },
 
   user: {
     marginTop: 18,
-    color: "#1E2A78",
     fontWeight: "bold",
-    fontSize: 18
+    fontSize: 18,
   },
 
   msg: {
     marginTop: 2,
     fontSize: 14,
-    color: "#1E2A78",
     opacity: 0.9,
     textAlign: "center",
   },
@@ -146,28 +140,26 @@ const styles = StyleSheet.create({
   },
 
   yes: {
-    backgroundColor: "#1E2A78",
     paddingHorizontal: 30,
     paddingVertical: 8,
     marginRight: 10,
+    borderRadius: 6,
   },
 
   yesText: {
-    color: "#fff",
     fontSize: 16,
-    fontWeight: "500"
+    fontWeight: "500",
   },
 
   no: {
     borderWidth: 1,
-    borderColor: "#1E2A78",
     paddingHorizontal: 30,
     paddingVertical: 8,
+    borderRadius: 6,
   },
 
   noText: {
-    color: "#1E2A78",
     fontSize: 16,
-    fontWeight: "500"
+    fontWeight: "500",
   },
 });

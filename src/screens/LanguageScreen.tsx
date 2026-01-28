@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import i18n from "../i18n";
+import { LanguageContext } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
 
 type Props = {
@@ -13,20 +14,25 @@ type Props = {
 };
 
 const LanguageScreen: React.FC<Props> = ({ navigation }) => {
+  const { lang, changeLang } = useContext(LanguageContext);
   const { theme } = useTheme();
   const isLight = theme === "light";
 
-  const [selected, setSelected] = useState<string>("en");
+  const [selected, setSelected] = useState<string>(lang);
+
+  useEffect(() => {
+    setSelected(lang);
+  }, [lang]);
 
   const languages = [
-    { code: "A", label: "English", value: "en" },
-    { code: "अ", label: "Hindi", value: "hi" },
-    { code: "అ", label: "Telugu", value: "te" },
+    { code: "A", label: i18n.t("lang_english"), value: "en" },
+    { code: "अ", label: i18n.t("lang_hindi"), value: "hi" },
+    { code: "అ", label: i18n.t("lang_telugu"), value: "te" },
   ];
 
-  const selectLanguage = async (lang: string) => {
-    setSelected(lang);
-    await AsyncStorage.setItem("APP_LANG", lang);
+  const selectLanguage = async (newLang: string) => {
+    setSelected(newLang);
+    await changeLang(newLang); // updates i18n + AsyncStorage
   };
 
   return (
@@ -36,27 +42,27 @@ const LanguageScreen: React.FC<Props> = ({ navigation }) => {
         { backgroundColor: isLight ? "#FFFFFF" : "#1a1a1a" },
       ]}
     >
-      {/* Title */}
+      {/* TITLE */}
       <Text
         style={[
           styles.title,
           { color: isLight ? "#162F7A" : "#EDEDED" },
         ]}
       >
-        Choose your language
+        {i18n.t("choose_language")}
       </Text>
 
-      {/* Subtitle */}
+      {/* SUBTITLE */}
       <Text
         style={[
           styles.subtitle,
           { color: isLight ? "#5A5A5A" : "#B0B0B0" },
         ]}
       >
-        Select a language to continue
+        {i18n.t("subtitle_language")}
       </Text>
 
-      {/* Language Options */}
+      {/* LANGUAGE OPTIONS */}
       {languages.map((item) => {
         const isSelected = selected === item.value;
 
@@ -77,6 +83,7 @@ const LanguageScreen: React.FC<Props> = ({ navigation }) => {
               },
             ]}
             onPress={() => selectLanguage(item.value)}
+            activeOpacity={0.85}
           >
             <Text
               style={[
@@ -111,7 +118,7 @@ const LanguageScreen: React.FC<Props> = ({ navigation }) => {
         );
       })}
 
-      {/* Continue Button */}
+      {/* CONTINUE BUTTON */}
       <TouchableOpacity
         style={[
           styles.continueBtn,
@@ -122,6 +129,7 @@ const LanguageScreen: React.FC<Props> = ({ navigation }) => {
           },
         ]}
         onPress={() => navigation.navigate("Welcome")}
+        activeOpacity={0.85}
       >
         <Text
           style={[
@@ -129,7 +137,7 @@ const LanguageScreen: React.FC<Props> = ({ navigation }) => {
             { color: isLight ? "#FFFFFF" : "#EDEDED" },
           ]}
         >
-          Continue
+          {i18n.t("continue")}
         </Text>
       </TouchableOpacity>
     </View>

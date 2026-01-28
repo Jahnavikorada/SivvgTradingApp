@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -18,13 +18,19 @@ import { useTheme } from "../../context/ThemeContext";
 import CommonHeader from "../components/CommonHeader";
 import MetricCard from "../components/MetricCard";
 
+import i18n from "../../i18n";
+import { LanguageContext } from "../../context/LanguageContext";
+
 const screenWidth = Dimensions.get("window").width;
 
 export default function PortfolioScreen() {
   const navigation = useNavigation<any>();
-  const { isDark } = useTheme();
+  const { isDark } = useTheme(); // ❌ theme untouched
+  const { reloadKey } = useContext(LanguageContext); // ✅ language refresh
 
   const [view, setView] = useState<"Weekly" | "Monthly">("Weekly");
+
+  // ✅ logic keys remain English
   const [selectedMonth, setSelectedMonth] = useState("January");
   const [showMonthDropdown, setShowMonthDropdown] = useState(false);
 
@@ -52,13 +58,21 @@ export default function PortfolioScreen() {
   };
 
   const handleSummaryDownload = () => {
-    Alert.alert("Download 20-Days Summary", "Choose file format", [
-      { text: "PDF", onPress: () => Linking.openURL("https://your-api.com/summary/20days.pdf") },
-      { text: "Excel", onPress: () => Linking.openURL("https://your-api.com/summary/20days.xlsx") },
-      { text: "Word", onPress: () => Linking.openURL("https://your-api.com/summary/20days.docx") },
-      { text: "Cancel", style: "cancel" },
-    ]);
+    Alert.alert(
+      i18n.t("download_summary_title"),
+      i18n.t("choose_file_format"),
+      [
+        { text: "PDF", onPress: () => Linking.openURL("https://your-api.com/summary/20days.pdf") },
+        { text: "Excel", onPress: () => Linking.openURL("https://your-api.com/summary/20days.xlsx") },
+        { text: "Word", onPress: () => Linking.openURL("https://your-api.com/summary/20days.docx") },
+        { text: i18n.t("cancel"), style: "cancel" },
+      ]
+    );
   };
+
+  // ✅ translators (logic safe)
+  const getMonthLabel = (m: string) => i18n.t(`month_${m.toLowerCase()}`);
+  const getMemberLabel = (m: string) => i18n.t(`member_${m.toLowerCase()}`);
 
   return (
     <LinearGradient
@@ -67,9 +81,13 @@ export default function PortfolioScreen() {
       end={{ x: 1, y: 0.5 }}
       style={styles.gradient}
     >
-      <CommonHeader title="Portfolio" navigation={navigation} />
+      <CommonHeader
+        title={i18n.t("portfolio")}
+        navigation={navigation}
+      />
 
       <View
+        key={reloadKey}
         style={[
           styles.card,
           { backgroundColor: isDark ? "#1a1a1a" : "#fff" },
@@ -87,8 +105,16 @@ export default function PortfolioScreen() {
             ]}
           >
             <View style={styles.row}>
-              <MetricCard title="RETURN RATE" value="+18.5%" valueColor="#0DBB51" />
-              <MetricCard title="DIVERSIFICATION SCORE" value="9.2/10" valueColor="#0DBB51" />
+              <MetricCard
+                title={i18n.t("return_rate")}
+                value="+18.5%"
+                valueColor="#0DBB51"
+              />
+              <MetricCard
+                title={i18n.t("diversification_score")}
+                value="9.2/10"
+                valueColor="#0DBB51"
+              />
             </View>
 
             {/* MEMBER SELECTOR */}
@@ -109,14 +135,16 @@ export default function PortfolioScreen() {
                     size={18}
                     color={isDark ? "#fff" : "#1E2A78"}
                   />
+
                   <Text
                     style={[
                       styles.userName,
                       { color: isDark ? "#fff" : "#1E2A78" },
                     ]}
                   >
-                    {selectedMember}
+                    {getMemberLabel(selectedMember)}
                   </Text>
+
                   <Ionicons
                     name="chevron-down"
                     size={18}
@@ -147,7 +175,7 @@ export default function PortfolioScreen() {
                           { color: isDark ? "#fff" : "#1E2A78" },
                         ]}
                       >
-                        {name}
+                        {getMemberLabel(name)}
                       </Text>
                     </TouchableOpacity>
                   ))}
@@ -167,7 +195,7 @@ export default function PortfolioScreen() {
                     { color: view === "Weekly" ? "#fff" : isDark ? "#fff" : "#000" },
                   ]}
                 >
-                  Weekly View
+                  {i18n.t("weekly_view")}
                 </Text>
               </TouchableOpacity>
 
@@ -181,10 +209,11 @@ export default function PortfolioScreen() {
                     { color: view === "Monthly" ? "#fff" : isDark ? "#fff" : "#000" },
                   ]}
                 >
-                  Monthly View
+                  {i18n.t("monthly_view")}
                 </Text>
               </TouchableOpacity>
 
+              {/* MONTH DROPDOWN */}
               <View style={styles.monthWrapper}>
                 <TouchableOpacity
                   style={[
@@ -199,8 +228,9 @@ export default function PortfolioScreen() {
                       { color: isDark ? "#fff" : "#1E2A78" },
                     ]}
                   >
-                    {selectedMonth}
+                    {getMonthLabel(selectedMonth)}
                   </Text>
+
                   <Ionicons
                     name="chevron-down"
                     size={14}
@@ -224,10 +254,8 @@ export default function PortfolioScreen() {
                           setShowMonthDropdown(false);
                         }}
                       >
-                        <Text
-                          style={{ color: isDark ? "#fff" : "#1E2A78" }}
-                        >
-                          {m}
+                        <Text style={{ color: isDark ? "#fff" : "#1E2A78" }}>
+                          {getMonthLabel(m)}
                         </Text>
                       </TouchableOpacity>
                     ))}
@@ -237,13 +265,20 @@ export default function PortfolioScreen() {
             </View>
           </View>
 
-          {/* CHART – already dark */}
+          {/* CHART */}
           <View style={styles.chartCard}>
-            <Text style={styles.chartTitle}>20 Days Performance Overview</Text>
+            <Text style={styles.chartTitle}>
+              {i18n.t("performance_overview")}
+            </Text>
 
             <BarChart
               data={{
-                labels: ["WEEK 1", "WEEK 2", "WEEK 3", "WEEK 4"],
+                labels: [
+                  i18n.t("week_1"),
+                  i18n.t("week_2"),
+                  i18n.t("week_3"),
+                  i18n.t("week_4"),
+                ],
                 datasets: [{ data: memberChartData[selectedMember] }],
               }}
               width={screenWidth - 72}
@@ -267,14 +302,23 @@ export default function PortfolioScreen() {
 
           {/* DOWNLOAD */}
           <TouchableOpacity style={styles.summaryBtn} onPress={handleSummaryDownload}>
-            <Text style={styles.summaryText}>20-Days Summary</Text>
+            <Text style={styles.summaryText}>
+              {i18n.t("summary_20days")}
+            </Text>
             <Ionicons name="download-outline" size={18} color="#fff" />
           </TouchableOpacity>
 
-          {/* BOTTOM CARDS (unchanged gradients) */}
+          {/* BOTTOM CARDS */}
           <View style={styles.rowBottom}>
-            <BottomCard title="Capital Amount" value="₹1,00,000" />
-            <BottomCard title="Total P&L" value="₹65,000" valueColor="#0DBB51" />
+            <BottomCard
+              title={i18n.t("capital_amount")}
+              value="₹1,00,000"
+            />
+            <BottomCard
+              title={i18n.t("total_pl")}
+              value="₹65,000"
+              valueColor="#0DBB51"
+            />
           </View>
         </ScrollView>
       </View>
@@ -295,11 +339,10 @@ function BottomCard({ title, value, valueColor = "#000" }: any) {
   );
 }
 
-/* ---------------- STYLES ---------------- */
+/* ---------------- STYLES (UNCHANGED ✅) ---------------- */
 
 const styles = StyleSheet.create({
   scrollContent: { paddingBottom: 120 },
-
   gradient: { flex: 1 },
 
   card: {
@@ -317,22 +360,11 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
 
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
+  row: { flexDirection: "row", justifyContent: "space-between" },
 
-  userSelectorWrapper: {
-    alignItems: "center",
-    marginTop: 18,
-    zIndex: 20,
-  },
+  userSelectorWrapper: { alignItems: "center", marginTop: 18, zIndex: 20 },
 
-  userGradientBorder: {
-    width: "85%",
-    padding: 1.5,
-    borderRadius: 18,
-  },
+  userGradientBorder: { width: "85%", padding: 1.5, borderRadius: 18 },
 
   userInner: {
     flexDirection: "row",
@@ -342,11 +374,7 @@ const styles = StyleSheet.create({
     height: 42,
   },
 
-  userName: {
-    flex: 1,
-    marginLeft: 10,
-    fontWeight: "700",
-  },
+  userName: { flex: 1, marginLeft: 10, fontWeight: "700" },
 
   memberDropdown: {
     position: "absolute",
@@ -357,15 +385,9 @@ const styles = StyleSheet.create({
     zIndex: 30,
   },
 
-  memberItem: {
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#333",
-  },
+  memberItem: { padding: 12, borderBottomWidth: 1, borderBottomColor: "#333" },
 
-  memberText: {
-    fontWeight: "600",
-  },
+  memberText: { fontWeight: "600" },
 
   toggleRow: {
     flexDirection: "row",
@@ -382,19 +404,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  activeToggle: {
-    backgroundColor: "#1E2A78",
-    borderColor: "#1E2A78",
-  },
+  activeToggle: { backgroundColor: "#1E2A78", borderColor: "#1E2A78" },
 
-  toggleText: {
-    fontSize: 12,
-    fontWeight: "600",
-  },
+  toggleText: { fontSize: 12, fontWeight: "600" },
 
-  monthWrapper: {
-    width: "30%",
-  },
+  monthWrapper: { width: "30%" },
 
   monthBox: {
     flexDirection: "row",
@@ -403,22 +417,11 @@ const styles = StyleSheet.create({
     padding: 8,
   },
 
-  monthText: {
-    fontSize: 12,
-    fontWeight: "600",
-  },
+  monthText: { fontSize: 12, fontWeight: "600" },
 
-  monthDropdown: {
-    position: "absolute",
-    top: 40,
-    width: "100%",
-    elevation: 15,
-    zIndex: 30,
-  },
+  monthDropdown: { position: "absolute", top: 40, width: "100%", elevation: 15, zIndex: 30 },
 
-  monthItem: {
-    padding: 8,
-  },
+  monthItem: { padding: 8 },
 
   chartCard: {
     backgroundColor: "#021b2d",
@@ -427,12 +430,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 
-  chartTitle: {
-    color: "#fff",
-    textAlign: "center",
-    fontWeight: "700",
-    marginBottom: 10,
-  },
+  chartTitle: { color: "#fff", textAlign: "center", fontWeight: "700", marginBottom: 10 },
 
   summaryBtn: {
     flexDirection: "row",
@@ -445,38 +443,15 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
 
-  summaryText: {
-    color: "#fff",
-    marginRight: 6,
-    fontWeight: "600",
-  },
+  summaryText: { color: "#fff", marginRight: 6, fontWeight: "600" },
 
-  rowBottom: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 14,
-  },
+  rowBottom: { flexDirection: "row", justifyContent: "space-between", marginTop: 14 },
 
-  bottomCardBorder: {
-    width: "48%",
-    padding: 1.5,
-    borderRadius: 12,
-  },
+  bottomCardBorder: { width: "48%", padding: 1.5, borderRadius: 12 },
 
-  bottomCardInner: {
-    borderRadius: 10,
-    paddingVertical: 18,
-    alignItems: "center",
-  },
+  bottomCardInner: { borderRadius: 10, paddingVertical: 18, alignItems: "center" },
 
-  bottomTitle: {
-    fontWeight: "600",
-    color: "#1E2A78",
-  },
+  bottomTitle: { fontWeight: "600", color: "#1E2A78" },
 
-  bottomValue: {
-    fontSize: 20,
-    fontWeight: "800",
-    marginTop: 6,
-  },
+  bottomValue: { fontSize: 20, fontWeight: "800", marginTop: 6 },
 });

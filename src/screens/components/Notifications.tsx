@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   View,
   Text,
@@ -9,37 +9,42 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/Feather";
-import { useTheme } from "../../context/ThemeContext"; // ✅ ADD
 
+import { useTheme } from "../../context/ThemeContext"; // ✅ THEME
+import { LanguageContext } from "../../context/LanguageContext"; // ✅ LANGUAGE RELOAD
+import i18n from "../../i18n";
+
+// ✅ USE TRANSLATION KEYS (NOT TEXT)
 const notifications = [
   {
     id: "1",
     symbol: "GODREJCP",
-    message: "Target 1 reached successfully",
-    time: "1 min ago",
+    message: "notification_target_reached",
+    time: "notification_1_min_ago",
   },
   {
     id: "2",
     symbol: "ADANIENT",
-    message: "Target 1 reached successfully",
-    time: "7 mins ago",
+    message: "notification_target_reached",
+    time: "notification_7_mins_ago",
   },
   {
     id: "3",
     symbol: "COLPAL",
-    message: "Target 1 reached successfully",
-    time: "45 mins ago",
+    message: "notification_target_reached",
+    time: "notification_45_mins_ago",
   },
   {
     id: "4",
     symbol: "ANGELONE",
-    message: "Target 1 reached successfully",
-    time: "1 hr ago",
+    message: "notification_target_reached",
+    time: "notification_1_hr_ago",
   },
 ];
 
 const NotificationScreen = ({ navigation }: any) => {
-  const { colors, isDark } = useTheme(); // ✅ USE GLOBAL THEME
+  const { colors, isDark } = useTheme(); // ✅ THEME (UNCHANGED)
+  const { reloadKey } = useContext(LanguageContext); // ✅ FORCE RE-RENDER ON LANGUAGE CHANGE
 
   const renderItem = ({ item }: any) => (
     <View
@@ -48,7 +53,7 @@ const NotificationScreen = ({ navigation }: any) => {
         {
           backgroundColor: colors.card,
           borderColor: colors.border,
-          shadowOpacity: isDark ? 0.4 : 0.15, // ✅ dark elevation fix
+          shadowOpacity: isDark ? 0.4 : 0.15,
         },
       ]}
     >
@@ -57,22 +62,23 @@ const NotificationScreen = ({ navigation }: any) => {
           {item.symbol} -{" "}
         </Text>
         <Text style={[styles.message, { color: colors.textPrimary }]}>
-          {item.message}
+          {i18n.t(item.message)}
         </Text>
       </View>
 
       <Text style={[styles.time, { color: colors.textSecondary }]}>
-        {item.time}
+        {i18n.t(item.time)}
       </Text>
     </View>
   );
 
   return (
     <SafeAreaView
+      key={reloadKey} // ✅ IMPORTANT FOR LANGUAGE REFRESH
       style={[styles.container, { backgroundColor: colors.background }]}
     >
       <LinearGradient
-        colors={[colors.gradientStart, colors.gradientEnd]} // ✅ SAME HEADER
+        colors={[colors.gradientStart, colors.gradientEnd]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={styles.header}
@@ -81,17 +87,15 @@ const NotificationScreen = ({ navigation }: any) => {
           <Icon name="chevron-left" size={28} color="#FFFFFF" />
         </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>Notifications</Text>
+        {/* ✅ LANGUAGE-AWARE TITLE */}
+        <Text style={styles.headerTitle}>
+          {i18n.t("notifications")}
+        </Text>
 
         <View style={{ width: 28 }} />
       </LinearGradient>
 
-      <View
-        style={[
-          styles.body,
-          { backgroundColor: colors.background },
-        ]}
-      >
+      <View style={[styles.body, { backgroundColor: colors.background }]}>
         <FlatList
           data={notifications}
           keyExtractor={(item) => item.id}

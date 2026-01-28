@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -8,40 +8,56 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/Ionicons";
-import { ThemeContext } from "../context/ThemeContext"; // ✅ Import ThemeContext
+
+import i18n from "../i18n";
+import { LanguageContext } from "../context/LanguageContext";
+import { ThemeContext } from "../context/ThemeContext"; // ThemeContext
 
 export default function Themes({ navigation }: any) {
-  // ✅ Use context instead of local state
-  const { theme, setTheme } = useContext(ThemeContext);
+  const { lang, reloadKey } = useContext(LanguageContext); // Language support
+  const { theme, setTheme } = useContext(ThemeContext); // Theme support
   const isLight = theme === "light";
 
+  const [selectedLang, setSelectedLang] = useState(lang);
+
+  useEffect(() => {
+    setSelectedLang(lang);
+  }, [lang]);
+
+  // Theme colors
+  const colors = {
+    background: isLight ? "#fff" : "#1A1A1A",
+    card: isLight ? "#fff" : "#1a1a1a",
+    text: isLight ? "#1E2A78" : "#E0E0E0",
+    border: isLight ? "#1E2A78" : "#E0E0E0",
+  };
+
+  // Helper for language button colors (optional for future)
+  const getBtnTextColor = (btnLang: string) =>
+    selectedLang === btnLang ? (isLight ? "#1E2A78" : "#E0E0E0") : colors.text;
+
   return (
-    <View style={[styles.container, { backgroundColor: isLight ? "#fff" : "#1A1A1A" }]}>
+    <View key={reloadKey} style={{ flex: 1, backgroundColor: colors.background }}>
       <StatusBar barStyle={isLight ? "dark-content" : "light-content"} />
 
-      {/* Gradient Header */}
       <LinearGradient
         colors={["#FF2E4C", "#1E2A78"]}
         style={styles.gradient}
         start={{ x: 0, y: 0.5 }}
         end={{ x: 1, y: 0.5 }}
       >
+        {/* HEADER */}
         <View style={styles.headerRow}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Icon name="arrow-back" size={26} color="#fff" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Themes</Text>
+          <Text style={styles.headerTitle}>{i18n.t("themes")}</Text>
         </View>
 
-        {/* White Card */}
-        <View
-          style={[
-            styles.card,
-            { backgroundColor: isLight ? "#fff" : "#1a1a1a" },
-          ]}
-        >
-          <Text style={[styles.title, { color: isLight ? "#1E2A78" : "#E0E0E0" }]}>
-            Choose a Theme
+        {/* CARD */}
+        <View style={[styles.card, { backgroundColor: colors.card }]}>
+          <Text style={[styles.title, { color: colors.text }]}>
+            {i18n.t("choose_theme")}
           </Text>
 
           <View style={styles.row}>
@@ -66,13 +82,8 @@ export default function Themes({ navigation }: any) {
                 </View>
               </View>
 
-              <Text
-                style={[
-                  styles.previewLabel,
-                  { color: isLight ? "#1E2A78" : "#E0E0E0" },
-                ]}
-              >
-                Light
+              <Text style={[styles.previewLabel, { color: colors.text }]}>
+                {i18n.t("light")}
               </Text>
 
               <TouchableOpacity onPress={() => setTheme("light")}>
@@ -103,13 +114,8 @@ export default function Themes({ navigation }: any) {
                 </View>
               </View>
 
-              <Text
-                style={[
-                  styles.previewLabel,
-                  { color: isLight ? "#1E2A78" : "#E0E0E0" },
-                ]}
-              >
-                Dark
+              <Text style={[styles.previewLabel, { color: colors.text }]}>
+                {i18n.t("dark")}
               </Text>
 
               <TouchableOpacity onPress={() => setTheme("dark")}>
@@ -120,24 +126,19 @@ export default function Themes({ navigation }: any) {
             </View>
           </View>
 
-          {/* Done Button */}
+          {/* DONE BUTTON */}
           <TouchableOpacity
             style={[
               styles.button,
               {
                 backgroundColor: isLight ? "#fff" : "#1E1E1E",
-                borderColor: isLight ? "#1E2A78" : "#E0E0E0",
+                borderColor: colors.border,
               },
             ]}
             onPress={() => navigation.goBack()}
           >
-            <Text
-              style={[
-                styles.buttonText,
-                { color: isLight ? "#1E2A78" : "#E0E0E0" },
-              ]}
-            >
-              Done
+            <Text style={[styles.buttonText, { color: colors.text }]}>
+              {i18n.t("done")}
             </Text>
           </TouchableOpacity>
         </View>

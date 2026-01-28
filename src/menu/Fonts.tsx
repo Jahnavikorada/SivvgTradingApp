@@ -220,14 +220,22 @@
 
 
 
-import React, { useState, useContext } from "react";
-import { View, Text, StyleSheet, Pressable, TouchableOpacity } from "react-native";
+import React, { useState, useContext, useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/Ionicons";
 
 import { useFont } from "../context/FontContext";
 import { getFontFamily } from "../context/fontHelper";
-import { ThemeContext } from "../context/ThemeContext"; // ✅ Theme
+import { ThemeContext } from "../context/ThemeContext";
+import { LanguageContext } from "../context/LanguageContext";
+import i18n from "../i18n";
 
 const FONT_STYLES = ["Lato", "Poppins", "Arial"];
 const FONT_SIZES = ["Small", "Medium", "Large"];
@@ -239,13 +247,30 @@ const FONT_SIZE_MAP: any = {
 };
 
 export default function Fonts({ navigation }: any) {
+  const { reloadKey } = useContext(LanguageContext); // Language refresh
+  const { theme } = useContext(ThemeContext); // Theme
+  const isLight = theme === "light";
+
+  const { fontFamily, fontSize, setFontFamily, setFontSize } = useFont();
+
   const [openStyle, setOpenStyle] = useState(false);
   const [openSize, setOpenSize] = useState(false);
 
-  const { fontFamily, fontSize, setFontFamily, setFontSize } = useFont();
-  const { theme } = useContext(ThemeContext);
+  // Translations for font sizes
+  const getTranslatedSizeLabel = (sizeKey: string) => {
+    if (sizeKey === "Small") return i18n.t("font_small");
+    if (sizeKey === "Medium") return i18n.t("font_medium");
+    if (sizeKey === "Large") return i18n.t("font_large");
+    return sizeKey;
+  };
 
-  const isLight = theme === "light";
+  // Translations for font styles
+  const getTranslatedFontStyleLabel = (styleKey: string) => {
+    if (styleKey === "Lato") return i18n.t("font_lato");
+    if (styleKey === "Poppins") return i18n.t("font_poppins");
+    if (styleKey === "Arial") return i18n.t("font_arial");
+    return styleKey;
+  };
 
   const renderDropdown = (
     title: string,
@@ -253,7 +278,8 @@ export default function Fonts({ navigation }: any) {
     setOpen: any,
     data: string[],
     selected: string,
-    onSelect: (item: string) => void
+    onSelect: (item: string) => void,
+    type: "style" | "size"
   ) => (
     <View style={styles.dropdownWrapper}>
       <Pressable
@@ -289,112 +315,127 @@ export default function Fonts({ navigation }: any) {
         ]}
         pointerEvents={open ? "auto" : "none"}
       >
-        {data.map((item) => (
-          <Pressable
-            key={item}
-            style={[
-              styles.option,
-              item === selected && styles.selectedOption,
-              item === data[data.length - 1] && styles.lastOption,
-              item === selected &&
-                item === data[data.length - 1] &&
-                styles.lastSelectedOption,
-            ]}
-            onPress={() => {
-              onSelect(item);
-              setOpen(false);
-            }}
-          >
-            <Text
+        {data.map((item) => {
+          const displayText =
+            type === "size"
+              ? getTranslatedSizeLabel(item)
+              : type === "style"
+              ? getTranslatedFontStyleLabel(item)
+              : item;
+
+          return (
+            <Pressable
+              key={item}
               style={[
-                styles.optionText,
-                {
-                  fontFamily: getFontFamily(fontFamily, "bold"),
-                  fontSize,
-                  color:
-                    item === selected
-                      ? "#fff"
-                      : isLight
-                      ? "#1E2A78"
-                      : "#E0E0E0",
-                },
+                styles.option,
+                item === selected && styles.selectedOption,
+                item === data[data.length - 1] && styles.lastOption,
+                item === selected &&
+                  item === data[data.length - 1] &&
+                  styles.lastSelectedOption,
               ]}
+              onPress={() => {
+                onSelect(item);
+                setOpen(false);
+              }}
             >
-              {item}
-            </Text>
-          </Pressable>
-        ))}
+              <Text
+                style={[
+                  styles.optionText,
+                  {
+                    fontFamily: getFontFamily(fontFamily, "bold"),
+                    fontSize,
+                    color:
+                      item === selected
+                        ? "#fff"
+                        : isLight
+                        ? "#1E2A78"
+                        : "#E0E0E0",
+                  },
+                ]}
+              >
+                {displayText}
+              </Text>
+            </Pressable>
+          );
+        })}
       </View>
     </View>
   );
 
   return (
-    <LinearGradient
-      colors={["#FF2E4C", "#1E2A78"]}
-      style={styles.gradient}
-      start={{ x: 0, y: 0.5 }}
-      end={{ x: 1, y: 0.5 }}
-    >
-      {/* Header */}
-      <View style={styles.headerRow}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back" size={26} color="#fff" />
-        </TouchableOpacity>
-        <Text
-          style={[
-            styles.headerTitle,
-            {
-              fontFamily: getFontFamily(fontFamily, "bold"),
-              fontSize: fontSize + 6,
-            },
-          ]}
-        >
-          Fonts
-        </Text>
-      </View>
-
-      {/* Card */}
-      <View
-        style={[
-          styles.card,
-          { backgroundColor: isLight ? "#fff" : "#1a1a1a" },
-        ]}
+    <View key={reloadKey} style={{ flex: 1 }}>
+      <LinearGradient
+        colors={["#FF2E4C", "#1E2A78"]}
+        style={styles.gradient}
+        start={{ x: 0, y: 0.5 }}
+        end={{ x: 1, y: 0.5 }}
       >
-        <Text
+        {/* Header */}
+        <View style={styles.headerRow}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon name="arrow-back" size={26} color="#fff" />
+          </TouchableOpacity>
+
+          <Text
+            style={[
+              styles.headerTitle,
+              {
+                fontFamily: getFontFamily(fontFamily, "bold"),
+                fontSize: fontSize + 6,
+              },
+            ]}
+          >
+            {i18n.t("fonts")}
+          </Text>
+        </View>
+
+        {/* Card */}
+        <View
           style={[
-            styles.title,
-            {
-              fontFamily: getFontFamily(fontFamily, "semibold"),
-              fontSize: fontSize + 2,
-              color: isLight ? "#1E2A78" : "#E0E0E0",
-            },
+            styles.card,
+            { backgroundColor: isLight ? "#fff" : "#1a1a1a" },
           ]}
         >
-          Font Style and Size
-        </Text>
+          <Text
+            style={[
+              styles.title,
+              {
+                fontFamily: getFontFamily(fontFamily, "semibold"),
+                fontSize: fontSize + 2,
+                color: isLight ? "#1E2A78" : "#E0E0E0",
+              },
+            ]}
+          >
+            {i18n.t("font_style_and_size")}
+          </Text>
 
-        {renderDropdown(
-          "Font Style",
-          openStyle,
-          setOpenStyle,
-          FONT_STYLES,
-          fontFamily,
-          (item) =>
-            setFontFamily(item as "Lato" | "Poppins" | "Arial")
-        )}
+          {/* Font Style Dropdown */}
+          {renderDropdown(
+            i18n.t("font_style"),
+            openStyle,
+            setOpenStyle,
+            FONT_STYLES,
+            fontFamily,
+            (item) => setFontFamily(item as "Lato" | "Poppins" | "Arial"),
+            "style"
+          )}
 
-        {renderDropdown(
-          "Font Size",
-          openSize,
-          setOpenSize,
-          FONT_SIZES,
-          Object.keys(FONT_SIZE_MAP).find(
-            (key) => FONT_SIZE_MAP[key] === fontSize
-          ) || "Medium",
-          (item) => setFontSize(FONT_SIZE_MAP[item])
-        )}
-      </View>
-    </LinearGradient>
+          {/* Font Size Dropdown */}
+          {renderDropdown(
+            i18n.t("font_size"),
+            openSize,
+            setOpenSize,
+            FONT_SIZES,
+            Object.keys(FONT_SIZE_MAP).find(
+              (key) => FONT_SIZE_MAP[key] === fontSize
+            ) || "Medium",
+            (item) => setFontSize(FONT_SIZE_MAP[item]),
+            "size"
+          )}
+        </View>
+      </LinearGradient>
+    </View>
   );
 }
 
@@ -493,6 +534,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(30,42,120,0.54)",
   },
 });
+
 
 
 

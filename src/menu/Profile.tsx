@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -9,22 +9,24 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Ionicons from "react-native-vector-icons/Ionicons";
+
+import i18n from "../i18n";
+import { LanguageContext } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
 
 export default function Profile({ navigation }: any) {
+  const { reloadKey } = useContext(LanguageContext); // ✅ refresh texts
   const [showPassword, setShowPassword] = useState(false);
-  const { isDark } = useTheme();
+
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   /* ================= COLORS ================= */
-
-  // Header title → SAME for both themes
-  const headerTitleColor = "#FFFFFF";
-
-  // Header icons (back, edit, profile)
+  const headerTitleColor = "#FFFFFF"; // header title always white
   const headerIconColor = isDark ? "rgba(0,0,0,0.7)" : "#FFFFFF";
 
   return (
-    <>
+    <View key={reloadKey} style={{ flex: 1 }}>
       <StatusBar barStyle={isDark ? "light-content" : "light-content"} />
 
       <LinearGradient
@@ -34,33 +36,21 @@ export default function Profile({ navigation }: any) {
         {/* ================= HEADER ================= */}
         <View style={styles.headerRow}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons
-              name="arrow-back"
-              size={26}
-              color={headerIconColor}
-            />
+            <Ionicons name="arrow-back" size={26} color={headerIconColor} />
           </TouchableOpacity>
 
           <Text style={[styles.headerTitle, { color: headerTitleColor }]}>
-            My Profile
+            {i18n.t("my_profile")}
           </Text>
 
           <TouchableOpacity>
-            <Ionicons
-              name="pencil"
-              size={22}
-              color={headerIconColor}
-            />
+            <Ionicons name="pencil" size={22} color={headerIconColor} />
           </TouchableOpacity>
         </View>
 
         {/* ================= PROFILE ICON ================= */}
         <View style={styles.imageWrapper}>
-          <Ionicons
-            name="person-circle"
-            size={120}
-            color={headerIconColor}
-          />
+          <Ionicons name="person-circle" size={120} color={headerIconColor} />
         </View>
 
         {/* ================= CARD ================= */}
@@ -72,10 +62,7 @@ export default function Profile({ navigation }: any) {
         >
           {/* USER ID */}
           <View
-            style={[
-              styles.inputBox,
-              isDark && { backgroundColor: "rgba(0,0,0,0.55)" },
-            ]}
+            style={[styles.inputBox, isDark && { backgroundColor: "rgba(0,0,0,0.55)" }]}
           >
             <Ionicons
               name="person"
@@ -84,17 +71,15 @@ export default function Profile({ navigation }: any) {
             />
             <TextInput
               style={[styles.input, isDark && { color: "#FFFFFF" }]}
-              placeholder="John_ID77"
+              placeholder={i18n.t("user_id")}
               placeholderTextColor={isDark ? "#94A3B8" : "#777"}
+              defaultValue="John_ID77"
             />
           </View>
 
           {/* PASSWORD */}
           <View
-            style={[
-              styles.inputBox,
-              isDark && { backgroundColor: "rgba(0,0,0,0.55)" },
-            ]}
+            style={[styles.inputBox, isDark && { backgroundColor: "rgba(0,0,0,0.55)" }]}
           >
             <Ionicons
               name="lock-closed"
@@ -103,9 +88,10 @@ export default function Profile({ navigation }: any) {
             />
             <TextInput
               style={[styles.input, isDark && { color: "#FFFFFF" }]}
-              placeholder="********"
+              placeholder={i18n.t("password")}
               placeholderTextColor={isDark ? "#94A3B8" : "#777"}
               secureTextEntry={!showPassword}
+              defaultValue="********"
             />
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
               <Ionicons
@@ -118,10 +104,7 @@ export default function Profile({ navigation }: any) {
 
           {/* EMAIL */}
           <View
-            style={[
-              styles.inputBox,
-              isDark && { backgroundColor: "rgba(0,0,0,0.55)" },
-            ]}
+            style={[styles.inputBox, isDark && { backgroundColor: "rgba(0,0,0,0.55)" }]}
           >
             <Ionicons
               name="mail"
@@ -130,18 +113,16 @@ export default function Profile({ navigation }: any) {
             />
             <TextInput
               style={[styles.input, isDark && { color: "#FFFFFF" }]}
-              placeholder="john420@gmail.com"
+              placeholder={i18n.t("email")}
               placeholderTextColor={isDark ? "#94A3B8" : "#777"}
+              defaultValue="john420@gmail.com"
               keyboardType="email-address"
             />
           </View>
 
           {/* PHONE */}
           <View
-            style={[
-              styles.inputBox,
-              isDark && { backgroundColor: "rgba(0,0,0,0.55)" },
-            ]}
+            style={[styles.inputBox, isDark && { backgroundColor: "rgba(0,0,0,0.55)" }]}
           >
             <Ionicons
               name="call"
@@ -150,8 +131,9 @@ export default function Profile({ navigation }: any) {
             />
             <TextInput
               style={[styles.input, isDark && { color: "#FFFFFF" }]}
-              placeholder="9848321230"
+              placeholder={i18n.t("phone_number")}
               placeholderTextColor={isDark ? "#94A3B8" : "#777"}
+              defaultValue="9848321230"
               keyboardType="phone-pad"
             />
           </View>
@@ -159,35 +141,28 @@ export default function Profile({ navigation }: any) {
           {/* ================= BUTTONS ================= */}
           <View style={styles.btnRow}>
             <TouchableOpacity
-              style={[
-                styles.btn,
-                isDark && { backgroundColor: "rgba(0,0,0,0.60)" },
-              ]}
+              style={[styles.btn, isDark && { backgroundColor: "rgba(0,0,0,0.60)" }]}
             >
               <Text style={[styles.btnText, isDark && { color: "#FFFFFF" }]}>
-                Update
+                {i18n.t("update")}
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[
-                styles.btn,
-                isDark && { backgroundColor: "rgba(0,0,0,0.60) "},
-              ]}
+              style={[styles.btn, isDark && { backgroundColor: "rgba(0,0,0,0.60)" }]}
             >
               <Text style={[styles.btnText, isDark && { color: "#FFFFFF" }]}>
-                Delete
+                {i18n.t("delete")}
               </Text>
             </TouchableOpacity>
           </View>
         </View>
       </LinearGradient>
-    </>
+    </View>
   );
 }
 
 /* ================= STYLES ================= */
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

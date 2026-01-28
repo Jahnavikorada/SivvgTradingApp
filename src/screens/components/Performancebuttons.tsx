@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -8,7 +8,10 @@ import {
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
+
 import { useTheme } from "../../context/ThemeContext";
+import i18n from "../../i18n";
+import { LanguageContext } from "../../context/LanguageContext";
 
 type DurationType = "1D" | "1W" | "1M";
 type TabType = "Equity" | "Futures" | "Options";
@@ -22,7 +25,8 @@ export default function Performancebuttons({
   onTabChange,
   onDurationChange,
 }: Props) {
-  const { isDark } = useTheme();
+  const { isDark } = useTheme(); // ✅ theme untouched
+  const { reloadKey } = useContext(LanguageContext); // ✅ language refresh
 
   const [selectedTab, setSelectedTab] = useState<TabType>("Equity");
   const [selectedDuration, setSelectedDuration] =
@@ -33,6 +37,7 @@ export default function Performancebuttons({
   const [showFromPicker, setShowFromPicker] = useState(false);
   const [showToPicker, setShowToPicker] = useState(false);
 
+  // 📅 FORMAT DATE
   const formatDate = (date: Date) => {
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -51,10 +56,10 @@ export default function Performancebuttons({
   };
 
   return (
-    <View>
+    <View key={reloadKey}>
       {/* ================= TABS ================= */}
       <View style={styles.tabRow}>
-        {["Equity", "Futures", "Options"].map((tab) => {
+        {(["Equity", "Futures", "Options"] as TabType[]).map((tab) => {
           const isActive = selectedTab === tab;
 
           return (
@@ -69,7 +74,7 @@ export default function Performancebuttons({
                     borderColor: "rgba(255,255,255,0.2)",
                   },
               ]}
-              onPress={() => handleTab(tab as TabType)}
+              onPress={() => handleTab(tab)}
             >
               <Text
                 style={[
@@ -77,11 +82,15 @@ export default function Performancebuttons({
                   isActive && styles.tabTextActive,
                   isActive &&
                     isDark && {
-                      color: "#FFFFFF", // ✅ FIXED (Equity heading)
+                      color: "#FFFFFF",
                     },
                 ]}
               >
-                {tab}
+                {tab === "Equity"
+                  ? i18n.t("equity")
+                  : tab === "Futures"
+                  ? i18n.t("futures")
+                  : i18n.t("options")}
               </Text>
             </TouchableOpacity>
           );
@@ -92,7 +101,7 @@ export default function Performancebuttons({
       <View style={styles.filterRow}>
         {/* LEFT : DURATION */}
         <View style={styles.leftRow}>
-          {["1D", "1W", "1M"].map((d) => {
+          {(["1D", "1W", "1M"] as DurationType[]).map((d) => {
             const isActive = selectedDuration === d;
 
             return (
@@ -107,7 +116,7 @@ export default function Performancebuttons({
                       borderColor: "rgba(255,255,255,0.2)",
                     },
                 ]}
-                onPress={() => handleDuration(d as DurationType)}
+                onPress={() => handleDuration(d)}
               >
                 <Text
                   style={[
@@ -115,7 +124,7 @@ export default function Performancebuttons({
                     isActive && styles.durationTextActive,
                     isActive &&
                       isDark && {
-                        color: "#FFFFFF", // ✅ FIXED (1D text)
+                        color: "#FFFFFF",
                       },
                   ]}
                 >
@@ -128,6 +137,7 @@ export default function Performancebuttons({
 
         {/* RIGHT : DATE FILTER */}
         <View style={styles.rightRow}>
+          {/* FROM */}
           <TouchableOpacity
             style={[
               styles.dateBtn,
@@ -144,7 +154,7 @@ export default function Performancebuttons({
                 isDark && { color: "#E5E7EB" },
               ]}
             >
-              {fromDate ? formatDate(fromDate) : "From"}
+              {fromDate ? formatDate(fromDate) : i18n.t("from")}
             </Text>
             <Ionicons
               name="calendar"
@@ -153,6 +163,7 @@ export default function Performancebuttons({
             />
           </TouchableOpacity>
 
+          {/* TO */}
           <TouchableOpacity
             style={[
               styles.dateBtn,
@@ -169,7 +180,7 @@ export default function Performancebuttons({
                 isDark && { color: "#E5E7EB" },
               ]}
             >
-              {toDate ? formatDate(toDate) : "To"}
+              {toDate ? formatDate(toDate) : i18n.t("to")}
             </Text>
             <Ionicons
               name="calendar"
@@ -188,7 +199,7 @@ export default function Performancebuttons({
         </View>
       </View>
 
-      {/* DATE PICKERS */}
+      {/* ================= DATE PICKERS ================= */}
       {showFromPicker && (
         <DateTimePicker
           value={fromDate || new Date()}
