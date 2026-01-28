@@ -150,20 +150,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    justifyContent: "center",
+    paddingTop: 120,          
   },
 
   title: {
-    fontSize: 22,
+    fontSize: 30,
     fontWeight: "700",
-    marginBottom: 5,
+    marginBottom: 10,       
     textAlign: "center",
     fontFamily: "Lato-Bold",
   },
 
   subtitle: {
-    fontSize: 14,
-    marginBottom: 25,
+    fontSize: 20,
+    marginBottom: 50,        
     textAlign: "center",
     fontFamily: "Lato-Semibold",
   },
@@ -175,30 +175,35 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 12,
     paddingHorizontal: 15,
-    marginBottom: 15,
+    marginBottom: 25,
   },
 
   optionCode: {
-    fontSize: 22,
+    fontSize: 24,
     width: 35,
     textAlign: "center",
   },
 
   optionLabel: {
-    fontSize: 18,
+    fontSize: 22,
     marginLeft: 10,
     fontFamily: "Lato-Semibold",
   },
 
   continueBtn: {
-    marginTop: 20,
-    paddingVertical: 15,
-    borderRadius: 25,
-    alignItems: "center",
-  },
+  marginTop: "auto",
+  marginBottom: 100,
+  paddingVertical: 10,
+  borderRadius: 25,
+  alignItems: "center",
+  width: "70%",         
+  alignSelf: "center",  
+},
+
 
   continueText: {
-    fontSize: 20,
+    fontSize: 24,
     fontFamily: "Lato-Semibold",
   },
 });
+
