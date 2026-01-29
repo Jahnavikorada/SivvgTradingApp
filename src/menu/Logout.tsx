@@ -67,7 +67,7 @@ export default function LogoutScreen({ navigation }: any) {
               styles.yes,
               { backgroundColor: isDark ? "#E5E7EB" : "#1E2A78" },
             ]}
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.navigate("SplashScreen")}
           >
             <Text
               style={[
@@ -116,22 +116,23 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    marginTop: 10,
-    fontSize: 20,
+    marginTop: 20,
+    fontSize: 24,
     fontWeight: "600",
   },
 
   user: {
     marginTop: 18,
-    fontWeight: "bold",
-    fontSize: 18,
+    fontWeight: 500,
+    fontSize: 20,
   },
 
   msg: {
     marginTop: 2,
-    fontSize: 14,
+    fontSize: 16,
     opacity: 0.9,
     textAlign: "center",
+    marginBottom:10
   },
 
   row: {
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingVertical: 8,
     marginRight: 10,
-    borderRadius: 6,
+    
   },
 
   yesText: {
@@ -155,7 +156,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 30,
     paddingVertical: 8,
-    borderRadius: 6,
+    
   },
 
   noText: {

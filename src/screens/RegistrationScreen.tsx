@@ -273,12 +273,12 @@ export default function RegisterScreen({ navigation }: any) {
             {errors.gender && <Text style={styles.errorText}>{errors.gender}</Text>}
 
             {/* LOGIN LINK */}
-            {/* <View style={styles.loginTextContainer}>
+             <View style={styles.loginTextContainer}>
               <Text style={styles.accountText}>{i18n.t("already_have_account")} </Text>
               <TouchableOpacity onPress={() => navigation.navigate("Login")}>
                 <Text style={styles.loginLink}>{i18n.t("login")}</Text>
               </TouchableOpacity>
-            </View> */}
+            </View> 
 
             {/* SIGN UP BUTTON */}
             <TouchableOpacity
@@ -298,20 +298,105 @@ export default function RegisterScreen({ navigation }: any) {
 
 /* ---------------- STYLES (UNCHANGED) ---------------- */
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center" },
-  card: { marginHorizontal: 25, padding: 25, borderRadius: 22, borderWidth: 1 },
-  title: { fontSize: 24, fontWeight: "700", textAlign: "center", marginBottom: 20, color: "#fff" },
-  inputBox: { flexDirection: "row", alignItems: "center", borderRadius: 30, paddingHorizontal: 15, marginBottom: 12, height: 50, borderWidth: 2 },
-  input: { flex: 1, marginLeft: 10 },
-  genderBox: { padding: 15, borderRadius: 20, marginTop: 10, borderWidth: 2 },
-  genderLabel: { fontWeight: "700", marginBottom: 8 , color:"#94A3B8"},
-  genderRow: { flexDirection: "row", justifyContent: "space-around" },
-  radioRow: { flexDirection: "row", alignItems: "center", color:"#94A3B8" },
-  radioText: { marginLeft: 5 , color:"#94A3B8"},
-  errorText: { color: "#FACC15", marginLeft: 10, marginBottom: 8 },
-  loginTextContainer: { flexDirection: "row", justifyContent: "center", marginTop: 10 },
-  accountText: { color: "#ffffff" },
-  loginLink: { color: "#38BDF8", fontFamily: "Lato-Bold" },
-  loginBtn: { paddingVertical: 12, borderRadius: 25, alignItems: "center", marginTop: 15 },
-  loginBtnText: { fontSize: 18, fontWeight: "700" },
+  container: { 
+    flex: 1, 
+    justifyContent: "center" 
+  },
+  card: { 
+    marginHorizontal: 25,
+    padding: 25,
+     borderRadius: 22, 
+     borderWidth: 1
+     },
+  title: { 
+    fontSize: 30, 
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 24,
+    marginTop:10,
+    color: "#fff" 
+  },
+  inputBox: { 
+    flexDirection: "row", 
+    alignItems: "center",
+    borderRadius: 30,
+    paddingHorizontal: 15, 
+    marginBottom: 20, 
+    height: 50,
+    borderWidth: 2 
+  },
+  input: {
+    flex: 1,
+    marginLeft: 10,
+    fontSize:18
+
+    },
+  genderBox: {    
+    padding: 15,
+    borderRadius: 20,
+    borderWidth: 2,
+    marginBottom:18,
+      },
+  genderLabel: { 
+    fontSize:18,
+    fontWeight: "700",
+    marginBottom: 8 , 
+    color:"#5A6BA0",
+    bottom:8,
+    },
+  genderRow: { 
+    flexDirection: "row", 
+    justifyContent: "space-around" 
+  },
+  radioRow: { 
+    flexDirection: "row", 
+    alignItems: "center",
+     color:"#5A6BA0" 
+    },
+  radioText: { 
+    fontSize:18,
+    marginLeft: 5 , 
+    color:"#5A6BA0"
+  },
+  errorText: { 
+    color: "#FACC15",
+    marginLeft: 10, 
+    marginBottom: 8,
+    bottom:10, 
+  },
+
+  loginTextContainer: {
+    flexDirection: "row", 
+    justifyContent: "center",
+     marginTop: 10 
+    },
+
+  accountText: {
+    fontSize:18,
+     color: "#ffffff"
+     },
+
+  loginLink: 
+  { 
+    color: "#01d5ff",
+    fontFamily: "Lato-Semibold",
+    fontSize:18,
+    textDecorationLine: "underline", 
+    },
+
+  loginBtn: { 
+    paddingVertical: 10,
+    borderRadius: 40,
+    alignItems: "center", 
+    marginTop: 25, 
+    width:"80%",
+    alignSelf: "center",
+    marginBottom:10,
+    },
+
+  loginBtnText: { 
+    fontSize: 22,
+    fontWeight: "700"
+     },
+
 });

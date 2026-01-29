@@ -128,7 +128,7 @@ export default function OtpScreen({ navigation }: any) {
                 <Text
                   style={[
                     styles.resendText,
-                    { color: isLight ? "#0066FF" : "#60A5FA" },
+                    { color: isLight ? "#01d5ff" : "#60A5FA" },
                   ]}
                 >
                   {i18n.t("resend_otp")}
@@ -183,13 +183,16 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 26,
+    fontSize: 30,
     fontFamily: "Lato-Bold",
     textAlign: "center",
+    marginBottom:8,
+    marginTop:16
   },
 
   subtitle: {
-    fontSize: 14,
+    fontSize: 18,
+    marginBottom:32,
     textAlign: "center",
     marginVertical: 15,
     fontFamily: "Lato-Semibold",
@@ -210,6 +213,7 @@ const styles = StyleSheet.create({
     fontFamily: "Lato-Bold",
     borderWidth: 2,
     borderColor: "transparent",
+    marginBottom:20,
   },
 
   successBorder: {
@@ -229,22 +233,30 @@ const styles = StyleSheet.create({
   },
 
   resendText: {
-    fontFamily: "Lato-Bold",
+    fontSize: 16,
+    textDecorationLine:"underline",
+    fontFamily: "Lato-Semibold",
+    marginBottom: 18,
   },
 
   timerText: {
-    fontSize: 15,
-    fontFamily: "Lato-Bold",
+    fontSize: 16,
+    fontFamily: "Lato-Semibold",
+     marginBottom: 18,
   },
 
   verifyBtn: {
-    paddingVertical: 12,
-    borderRadius: 25,
+    paddingVertical: 10,
+    borderRadius: 40,
     alignItems: "center",
+    width:"80%",
+    alignSelf:"center",
+    marginBottom: 10,
+
   },
 
   verifyText: {
-    fontSize: 18,
+    fontSize: 22,
     fontFamily: "Lato-Bold",
   },
 });

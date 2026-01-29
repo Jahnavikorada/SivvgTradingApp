@@ -131,7 +131,7 @@ export default function ChangePasswordScreen({ navigation }: any) {
             >
               <Ionicons
                 name="lock-closed"
-                size={20}
+                size={22}
                 color={isLight ? "#1E2A78" : "#e4e8ec"}
               />
               <TextInput
@@ -152,7 +152,7 @@ export default function ChangePasswordScreen({ navigation }: any) {
               <TouchableOpacity onPress={() => setShowPass(!showPass)}>
                 <Ionicons
                   name={showPass ? "eye" : "eye-off"}
-                  size={20}
+                  size={22}
                   color={isLight ? "#1E2A78" : "#e4e8ec"}
                 />
               </TouchableOpacity>
@@ -179,7 +179,7 @@ export default function ChangePasswordScreen({ navigation }: any) {
             >
               <Ionicons
                 name="lock-closed"
-                size={20}
+                size={22}
                 color={isLight ? "#1E2A78" : "#e4e8ec"}
               />
               <TextInput
@@ -202,7 +202,7 @@ export default function ChangePasswordScreen({ navigation }: any) {
               >
                 <Ionicons
                   name={showConfirmPass ? "eye" : "eye-off"}
-                  size={20}
+                  size={22}
                   color={isLight ? "#1E2A78" : "#e4e8ec"}
                 />
               </TouchableOpacity>
@@ -253,13 +253,20 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.4)",
   },
 
-  title: { fontSize: 26, textAlign: "center", fontFamily: "Lato-Bold" },
+  title: { 
+    fontSize: 30,
+     textAlign: "center", 
+     fontFamily: "Lato-Bold",
+     marginBottom:8,
+     marginTop:10
+    },
 
   subtitle: {
-    fontSize: 14,
+    fontSize: 18,
     textAlign: "center",
     marginVertical: 20,
     fontFamily: "Lato-Semibold",
+    marginBottom:32,
   },
 
   inputBox: {
@@ -268,24 +275,37 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     paddingHorizontal: 15,
     height: 50,
-    marginBottom: 8,
+    marginBottom: 20,
   },
 
-  textInput: { flex: 1, marginLeft: 10, fontFamily: "Lato-Medium" },
+  textInput: { 
+    flex: 1, 
+    marginLeft: 10,
+    fontFamily: "Lato-Medium" ,
+    fontSize:18,
+    },
 
   errorText: {
     color: "yellow",
     fontSize: 13,
     marginBottom: 12,
     marginLeft: 10,
+    bottom:10
   },
 
   button: {
     marginTop: 25,
-    paddingVertical: 14,
-    borderRadius: 25,
+    paddingVertical: 10,
+    borderRadius: 40,
     alignItems: "center",
+    width:"80%",
+    alignSelf:"center",
+    marginBottom:10,
   },
 
-  buttonText: { fontSize: 16, fontFamily: "Lato-Bold" },
+  buttonText: { 
+    fontSize: 22, 
+    fontFamily: "Lato-Bold" ,
+
+  },
 });

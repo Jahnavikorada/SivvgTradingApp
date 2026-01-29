@@ -172,10 +172,17 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.3)",
   },
 
-  title: { fontSize: 26, fontFamily: "Lato-Bold", textAlign: "center" },
+  title: {
+    fontSize: 30,
+    fontFamily: "Lato-Bold",
+    textAlign: "center",
+    marginBottom:8,
+    marginTop:16
+  },
 
   subtitle: {
-    fontSize: 14,
+    fontSize: 18,
+    marginBottom:32,
     textAlign: "center",
     marginVertical: 15,
     fontFamily: "Lato-Semibold",
@@ -196,11 +203,16 @@ const styles = StyleSheet.create({
     fontFamily: "Lato-Bold",
     borderWidth: 2,
     borderColor: "transparent",
+    marginBottom:20,
   },
 
-  successBorder: { borderColor: "#28A745" },
+  successBorder: {
+    borderColor: "#28A745",
+  },
 
-  errorBorder: { borderColor: "#e66868ff" },
+  errorBorder: {
+    borderColor: "#e66868ff",
+  },
 
   resendRow: {
     flexDirection: "row",
@@ -210,15 +222,31 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 
-  resendText: { fontFamily: "Lato-Bold" },
-
-  timerText: { fontSize: 15, fontFamily: "Lato-Bold" },
-
-  verifyBtn: {
-    paddingVertical: 12,
-    borderRadius: 25,
-    alignItems: "center",
+  resendText: {
+    fontSize: 16,
+    textDecorationLine:"underline",
+    fontFamily: "Lato-Semibold",
+    marginBottom: 18,
   },
 
-  verifyText: { fontSize: 18, fontFamily: "Lato-Bold" },
+  timerText: {
+    fontSize: 16,
+    fontFamily: "Lato-Semibold",
+     marginBottom: 18,
+  },
+
+  verifyBtn: {
+    paddingVertical: 10,
+    borderRadius: 40,
+    alignItems: "center",
+    width:"80%",
+    alignSelf:"center",
+    marginBottom: 10,
+
+  },
+
+  verifyText: {
+    fontSize: 22,
+    fontFamily: "Lato-Bold",
+  },
 });

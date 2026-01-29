@@ -49,7 +49,7 @@ export default function Themes({ navigation }: any) {
         {/* HEADER */}
         <View style={styles.headerRow}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Icon name="arrow-back" size={26} color="#fff" />
+            <Icon name="chevron-back" size={28} color="#fff" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>{i18n.t("themes")}</Text>
         </View>
@@ -159,15 +159,17 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingTop: 40,
+    paddingTop: 60,
     paddingHorizontal: 20,
     gap: 10,
+    top:18
   },
 
   headerTitle: {
     color: "#fff",
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "600",
+    left:30
   },
 
   card: {
@@ -198,7 +200,7 @@ const styles = StyleSheet.create({
   previewOuter: {
     width: 140,
     height: 100,
-    borderRadius: 4,
+    borderRadius: 0,
     borderWidth: 1,
     borderColor: "#B9BCC6",
     padding: 10,
@@ -286,16 +288,18 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 60,
     borderWidth: 1.5,
-    borderRadius: 30,
+    borderRadius: 40,
     transform: [{ translateY: -4 }],
-    paddingHorizontal: 50,
-    paddingVertical: 5,
+    paddingHorizontal: 40,
+    paddingVertical: 6,
     borderColor: "#1E2A78",
     backgroundColor: "#fff",
+  
+    alignSelf:"center"
   },
 
   buttonText: {
     fontWeight: "700",
-    fontSize: 18,
+    fontSize: 22,
   },
 });

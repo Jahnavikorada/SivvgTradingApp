@@ -9,21 +9,21 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { useTheme } from "../context/ThemeContext"; // ✅ Theme (UNCHANGED)
+import { useTheme } from "../context/ThemeContext"; 
 import i18n from "../i18n";
-import { LanguageContext } from "../context/LanguageContext"; // ✅ Language refresh
+import { LanguageContext } from "../context/LanguageContext"; 
 
 export default function ForgotPasswordScreen({ navigation }: any) {
   const { theme } = useTheme();
   const isLight = theme === "light";
 
-  const { reloadKey } = useContext(LanguageContext); // ✅ re-render on language change
+  const { reloadKey } = useContext(LanguageContext); 
 
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
   const [isTouched, setIsTouched] = useState(false);
 
-  // ---------- Validation Function ----------
+ 
   const validateInput = () => {
     setIsTouched(true);
 
@@ -149,7 +149,7 @@ export default function ForgotPasswordScreen({ navigation }: any) {
   );
 }
 
-// ------------------ STYLES (UNCHANGED) ------------------
+// ------------------ STYLES ------------------
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -172,16 +172,19 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 26,
+    fontSize: 30,
     fontFamily: "Lato-Bold",
     textAlign: "center",
+    marginBottom:8,
+    marginTop:10,
   },
 
   subtitle: {
-    fontSize: 14,
+    fontSize: 18,
     marginVertical: 20,
     textAlign: "center",
     fontFamily: "Lato-Semibold",
+    marginBottom:32,
   },
 
   inputBox: {
@@ -189,7 +192,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 30,
     paddingHorizontal: 15,
-    marginBottom: 10,
+    marginBottom: 20,
     height: 50,
   },
 
@@ -197,6 +200,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
     fontFamily: "Lato-Medium",
+    fontSize:18,
   },
 
   errorText: {
@@ -204,17 +208,22 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginBottom: 12,
     marginLeft: 10,
+    bottom:10
   },
 
   sendOtpBtn: {
-    paddingVertical: 12,
-    borderRadius: 25,
+    paddingVertical: 10,
+    borderRadius: 40,
     alignItems: "center",
     marginTop: 10,
+    width:"80%",
+    alignSelf:"center",
+    marginBottom:10,
+   
   },
 
   sendOtpText: {
-    fontSize: 18,
+    fontSize: 22,
     fontFamily: "Lato-Bold",
   },
 });

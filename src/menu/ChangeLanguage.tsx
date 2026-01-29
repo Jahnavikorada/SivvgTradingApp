@@ -55,7 +55,7 @@ export default function ChangeLanguage({ navigation }: any) {
         {/* HEADER */}
         <View style={styles.headerRow}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Icon name="arrow-back" size={26} color="#fff" />
+            <Icon name="chevron-back" size={28}  color="#fff" />
           </TouchableOpacity>
 
           <Text style={styles.headerTitle}>{i18n.t("change_language")}</Text>
@@ -71,6 +71,7 @@ export default function ChangeLanguage({ navigation }: any) {
           <Icon
             name="language-outline"
             size={70}
+            style={{ bottom: 60 }}
             color={isLight ? "#1E2A78" : "#E0E0E0"}
           />
 
@@ -128,12 +129,14 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingHorizontal: 20,
     gap: 10,
+    top:18
   },
 
   headerTitle: {
     color: "#fff",
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "bold",
+    left:30
   },
 
   card: {
@@ -142,33 +145,33 @@ const styles = StyleSheet.create({
     flex: 1,
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
-    marginTop: "10%",
+    marginTop: "20%",
     paddingHorizontal: 10,
   },
 
   title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginTop: 10,
+    fontSize: 24,
+    fontWeight: 500,
+    bottom:30,
+    marginBottom:10
   },
 
   subtitle: {
-    fontSize: 14,
-    marginBottom: 25,
+    fontSize: 16,
+    bottom: 25,
     textAlign: "center",
   },
 
   btn: {
-    width: "70%",
-    paddingVertical: 12,
+    width: "50%",
+    paddingVertical: 10,
     marginVertical: 8,
-    borderRadius: 6,
     borderWidth: 1,
     alignItems: "center",
   },
 
   btnText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "600",
   },
 });

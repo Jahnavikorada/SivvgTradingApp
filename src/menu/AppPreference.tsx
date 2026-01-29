@@ -10,7 +10,7 @@ import i18n from "../i18n";
 import { LanguageContext } from "../context/LanguageContext";
 
 export default function AppPreference({ navigation }: any) {
-  const { fontFamily, fontSize } = useFont();
+  const { fontFamily,  } = useFont();
   const { reloadKey } = useContext(LanguageContext); // ✅ language refresh
   const { colors, isDark } = useTheme(); // ✅ theme
 
@@ -41,7 +41,7 @@ export default function AppPreference({ navigation }: any) {
         {/* HEADER */}
         <View style={styles.headerRow}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Icon name="arrow-back" size={26} color="#fff" />
+            <Icon name="chevron-back" size={28} color="#fff"  style={{ top: 20 }} />
           </TouchableOpacity>
 
           <Text
@@ -49,7 +49,7 @@ export default function AppPreference({ navigation }: any) {
               styles.headerTitle,
               {
                 fontFamily: getFontFamily(fontFamily, "bold"),
-                fontSize: fontSize + 6,
+                //fontSize: fontSize+6,
               },
             ]}
           >
@@ -72,17 +72,17 @@ export default function AppPreference({ navigation }: any) {
               navigation.navigate("ChangeLanguage");
             }}
           >
-            <Icon name="language" size={22} color={iconColor("lang")} />
+            <Icon name="language" size={30} color={iconColor("lang")}  />
             <Text
               style={[
                 styles.rowText,
-                { fontFamily: getFontFamily(fontFamily, "semibold"), fontSize, color: textColor("lang") },
+                { fontFamily: getFontFamily(fontFamily, "semibold"), fontSize: 22, left:14,color: textColor("lang") },
                 selected === "lang" && styles.activeText,
               ]}
             >
               {i18n.t("change_language")}
             </Text>
-            <Icon name="chevron-forward" size={22} color={iconColor("lang")} />
+            <Icon name="chevron-forward" size={26} color={iconColor("lang")} />
           </TouchableOpacity>
 
           {/* Themes */}
@@ -93,17 +93,17 @@ export default function AppPreference({ navigation }: any) {
               navigation.navigate("Themes");
             }}
           >
-            <Icon name="moon" size={22} color={iconColor("theme")} />
+            <Icon name="moon" size={30} color={iconColor("theme")} />
             <Text
               style={[
                 styles.rowText,
-                { fontFamily: getFontFamily(fontFamily, "semibold"), fontSize, color: textColor("theme") },
+                { fontFamily: getFontFamily(fontFamily, "semibold"), fontSize: 22,left:14, color: textColor("theme") },
                 selected === "theme" && styles.activeText,
               ]}
             >
               {i18n.t("themes")}
             </Text>
-            <Icon name="chevron-forward" size={22} color={iconColor("theme")} />
+            <Icon name="chevron-forward" size={26} color={iconColor("theme")} />
           </TouchableOpacity>
 
           {/* Fonts */}
@@ -114,17 +114,17 @@ export default function AppPreference({ navigation }: any) {
               navigation.navigate("Fonts");
             }}
           >
-            <Icon name="text" size={22} color={iconColor("fonts")} />
+            <Icon name="text" size={30} color={iconColor("fonts")} />
             <Text
               style={[
                 styles.rowText,
-                { fontFamily: getFontFamily(fontFamily, "semibold"), fontSize, color: textColor("fonts") },
+                { fontFamily: getFontFamily(fontFamily, "semibold"), fontSize:22, left:14, color: textColor("fonts") },
                 selected === "fonts" && styles.activeText,
               ]}
             >
               {i18n.t("fonts")}
             </Text>
-            <Icon name="chevron-forward" size={22} color={iconColor("fonts")} />
+            <Icon name="chevron-forward" size={26} color={iconColor("fonts")} />
           </TouchableOpacity>
         </View>
       </LinearGradient>
@@ -147,15 +147,17 @@ const styles = StyleSheet.create({
 
   headerTitle: {
     color: "#fff",
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "bold",
+    left:30,
+    top:18
   },
 
   card: {
     flex: 1,
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
-    marginTop: "10%",
+    marginTop: "20%",
     paddingTop: 15,
   },
 
@@ -174,8 +176,9 @@ const styles = StyleSheet.create({
   rowText: {
     flex: 1,
     marginLeft: 15,
-    fontSize: 16,
+    fontSize:28,
     fontWeight: "500",
+    
   },
 
   activeText: {

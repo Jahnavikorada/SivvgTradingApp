@@ -50,6 +50,8 @@ male: "पुरुष",
 female: "महिला",
 others: "अन्य",
 sign_up: "साइन अप",
+already_have_account: "क्या आपके पास पहले से अकाउंट है?",
+  
 
 err_username_required: "यूज़रनेम आवश्यक है",
 err_email_required: "ईमेल आवश्यक है",
@@ -65,7 +67,7 @@ email_or_phone_placeholder: "ईमेल / फोन नंबर",
 send_otp: "ओटीपी भेजें",
 
 err_email_or_phone_required: "ईमेल या फोन नंबर आवश्यक है",
-err_enter_valid_phone: "सही फोन नंबर दर्ज करें: +91 XXXXXXXXXX",
+err_enter_valid_phone: "सही फोन नंबर दर्ज करें",
 
 
 change_password_title: "पासवर्ड बदलें",
@@ -112,14 +114,15 @@ about_us: "हमारे बारे में",
 why_choose_us: "हमें क्यों चुनें?",
 what_we_offer: "हम क्या प्रदान करते हैं",
 
-precision_picks: "सटीक चयन",
-precision_picks_desc: "विशेषज्ञों द्वारा सटीक इंट्राडे टिप्स, स्पष्ट एंट्री और एग्जिट के साथ।",
+precision_picks: "प्रिसीजन पिक्स",
+precision_picks_desc: "विशेषज्ञों द्वारा तैयार सटीक इंट्राडे टिप्स — बिना किसी शोर के, सिर्फ स्पष्ट एंट्री और एग्ज़िट कॉल।",
 
-quick_trigger: "तेज़ ट्रिगर",
-quick_trigger_desc: "तेज़ी से निर्णय लें और सही मार्केट अवसर पकड़ें।",
+quick_trigger: "क्विक ट्रिगर",
+quick_trigger_desc: "आत्मविश्वास के साथ तेज़ी से कार्य करें। हमारी इंट्राडे टिप्स हर बार सही समय पकड़ने में मदद करती हैं।",
 
-strategic_flow: "रणनीतिक योजना",
-strategic_flow_desc: "बिना अनुमान के व्यवस्थित ट्रेडिंग टिप्स।",
+strategic_flow: "स्ट्रैटेजिक फ्लो",
+strategic_flow_desc: "स्मार्ट ट्रेडिंग के लिए संरचित टिप्स। एक सिद्ध और समय-संवेदनशील रणनीति अपनाएँ — बिना किसी अंदाज़े के।",
+
 
 intraday_tips: "इंट्राडे टिप्स",
 intraday_tips_desc: "(इक्विटी, फ्यूचर्स, ऑप्शन्स)",

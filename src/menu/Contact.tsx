@@ -133,7 +133,7 @@ const ContactScreen = ({ navigation }: any) => {
             colors={isDark ? ["#1a1a1a", "#0F172A"] : ["#ff2e4c", "#1e2a78"]}
             style={styles.backGradient}
           >
-            <Icon name="arrow-back" size={22} color="#fff" />
+            <Icon name="chevron-back" size={28} color="#fff" />
           </LinearGradient>
         </TouchableOpacity>
       </View>

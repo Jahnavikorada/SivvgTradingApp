@@ -34,7 +34,7 @@ export default function CustomDrawer(props: any) {
       <View style={styles.itemLeft}>
         <Ionicons
           name={icon}
-          size={20}
+          size={26}
           color={isDark ? "rgba(255,255,255,0.85)" : "#1E2A78"}
         />
         <Text style={[styles.itemText, isDark && styles.textDark]}>
@@ -44,7 +44,7 @@ export default function CustomDrawer(props: any) {
 
       <Ionicons
         name="chevron-forward"
-        size={20}
+        size={24}
         color={isDark ? "rgba(255,255,255,0.6)" : "#1E2A78"}
       />
     </TouchableOpacity>
@@ -64,7 +64,7 @@ export default function CustomDrawer(props: any) {
           <View style={[styles.avatar, isDark && styles.avatarDark]}>
             <Ionicons
               name="person"
-              size={34}
+              size={48}
               color={isDark ? "rgba(255,255,255,0.85)" : "#1E2A78"}
             />
           </View>
@@ -159,6 +159,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     marginTop: "60%",
     elevation: 12,
+    
   },
 
   menuCardDark: {
@@ -166,14 +167,15 @@ const styles = StyleSheet.create({
   },
 
   avatar: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: 84,
+    height: 84,
+    borderRadius: 52,
     backgroundColor: "#FFFFFF",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 10,
     elevation: 6,
+    marginTop:34
   },
 
   avatarDark: {
@@ -182,7 +184,7 @@ const styles = StyleSheet.create({
 
   username: {
     color: "#FFFFFF",
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "700",
     marginTop: 4,
   },
@@ -190,6 +192,8 @@ const styles = StyleSheet.create({
   menu: {
     paddingTop: 20,
     paddingHorizontal: 16,
+    
+
   },
 
   item: {
@@ -200,19 +204,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 12,
     marginBottom: 6,
+    bottom:10
+    
   },
 
   itemLeft: {
     flexDirection: "row",
     alignItems: "center",
+    
   },
 
   itemText: {
-    marginLeft: 12,
-    fontSize: 15,
+    marginLeft: 20,
+    fontSize: 19,
     fontWeight: "600",
     color: "#1E2A78",
+    
   },
+ 
 
   footer: {
     marginTop: 30,
@@ -226,17 +235,19 @@ const styles = StyleSheet.create({
   },
 
   link: {
-    fontSize: 12,
-    color: "#1E2A78",
-    fontWeight: "600",
+    fontSize: 14,
+    color: "#0095ff",
+    textDecorationLine:"underline",
+    top:18
+
   },
 
   version: {
     marginTop: "70%",
     textAlign: "center",
     alignSelf: "center",
-    fontSize: 11,
-    color: "#999",
+    fontSize: 12,
+    color: "#000",
   },
 
   /* 🌙 DARK TEXT HELPERS */

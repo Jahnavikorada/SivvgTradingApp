@@ -36,7 +36,7 @@ export default function Profile({ navigation }: any) {
         {/* ================= HEADER ================= */}
         <View style={styles.headerRow}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back" size={26} color={headerIconColor} />
+            <Ionicons name="chevron-back" size={28} color={headerIconColor} />
           </TouchableOpacity>
 
           <Text style={[styles.headerTitle, { color: headerTitleColor }]}>
@@ -66,7 +66,7 @@ export default function Profile({ navigation }: any) {
           >
             <Ionicons
               name="person"
-              size={20}
+              size={22}
               color={isDark ? "#E4E8EC" : "#1E2A78"}
             />
             <TextInput
@@ -83,7 +83,7 @@ export default function Profile({ navigation }: any) {
           >
             <Ionicons
               name="lock-closed"
-              size={20}
+              size={22}
               color={isDark ? "#E4E8EC" : "#1E2A78"}
             />
             <TextInput
@@ -96,7 +96,7 @@ export default function Profile({ navigation }: any) {
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
               <Ionicons
                 name={showPassword ? "eye" : "eye-off"}
-                size={20}
+                size={22}
                 color={isDark ? "#E4E8EC" : "#1E2A78"}
               />
             </TouchableOpacity>
@@ -108,7 +108,7 @@ export default function Profile({ navigation }: any) {
           >
             <Ionicons
               name="mail"
-              size={20}
+              size={22}
               color={isDark ? "#E4E8EC" : "#1E2A78"}
             />
             <TextInput
@@ -126,7 +126,7 @@ export default function Profile({ navigation }: any) {
           >
             <Ionicons
               name="call"
-              size={20}
+              size={22}
               color={isDark ? "#E4E8EC" : "#1E2A78"}
             />
             <TextInput
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   },
 
   headerTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "600",
   },
 
@@ -204,12 +204,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     height: 50,
     marginBottom: 20,
+    top:10
   },
 
   input: {
     flex: 1,
     marginLeft: 10,
-    fontSize: 15,
+    fontSize: 18,
     color: "#1E2A78",
   },
 
@@ -222,15 +223,17 @@ const styles = StyleSheet.create({
   btn: {
     flex: 1,
     backgroundColor: "#FFFFFF",
-    paddingVertical: 12,
-    borderRadius: 25,
+    paddingVertical: 10,
+    borderRadius: 40,
     alignItems: "center",
     marginHorizontal: 5,
+    marginBottom:30,
+    top:18
   },
 
   btnText: {
     color: "#1E2A78",
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "600",
   },
 });

@@ -220,7 +220,7 @@
 
 
 
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -374,7 +374,7 @@ export default function Fonts({ navigation }: any) {
         {/* Header */}
         <View style={styles.headerRow}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Icon name="arrow-back" size={26} color="#fff" />
+            <Icon name="chevron-back" size={28} color="#fff" />
           </TouchableOpacity>
 
           <Text
@@ -402,7 +402,7 @@ export default function Fonts({ navigation }: any) {
               styles.title,
               {
                 fontFamily: getFontFamily(fontFamily, "semibold"),
-                fontSize: fontSize + 2,
+                fontSize: 24,
                 color: isLight ? "#1E2A78" : "#E0E0E0",
               },
             ]}
@@ -450,29 +450,33 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     paddingHorizontal: 20,
     gap: 10,
+    top:18,
+    
   },
 
   headerTitle: {
     color: "#fff",
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "bold",
+    left:30
   },
 
   card: {
     flex: 1,
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
-    marginTop: "10%",
+    marginTop: "20%",
     padding: 30,
   },
 
   title: {
     textAlign: "center",
-    marginBottom: 25,
+    marginBottom: 35,
+    marginTop:20
   },
 
   dropdownWrapper: {
-    marginBottom: 20,
+    marginBottom: 30,
   },
 
   dropdownHeader: {
@@ -492,6 +496,8 @@ const styles = StyleSheet.create({
     color: "#fff",
     flex: 1,
     textAlign: "center",
+   
+    
   },
 
   dropdownHidden: {

@@ -5,12 +5,12 @@ import i18n from "../i18n";
 import { LanguageContext } from "../context/LanguageContext";
 
 export default function SuccessScreen({ navigation }: any) {
-  const { reloadKey } = useContext(LanguageContext); // ✅ refresh text on language change
+  const { reloadKey } = useContext(LanguageContext); 
 
   useEffect(() => {
     const timer = setTimeout(() => {
       navigation?.replace("Login");
-    }, 2000);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -49,13 +49,13 @@ const styles = StyleSheet.create({
   },
 
   icon: {
-    width: 160,
-    height: 160,
-    marginBottom: 20,
+    width: 220,
+    height: 220,
+    marginBottom: 50,
   },
 
   message: {
-    fontSize: 18,
+    fontSize: 28,
     color: "#FFF",
     textAlign: "center",
     fontFamily: "Lato-Bold",

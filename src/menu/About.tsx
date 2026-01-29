@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/Ionicons";
-
 import { useFont } from "../context/FontContext";
 import { getFontFamily } from "../context/fontHelper";
 import { useTheme } from "../context/ThemeContext"; 
@@ -77,8 +76,8 @@ const InfoBox = ({
 
 /* ---------------- SCREEN ---------------- */
 export default function About({ navigation }: any) {
-  const { fontFamily, fontSize } = useFont();
-  const { colors, isDark } = useTheme(); 
+  const { fontFamily,  } = useFont();
+  const {  isDark } = useTheme(); 
   const { reloadKey } = useContext(LanguageContext); 
 
   const isLight = !isDark;
@@ -97,14 +96,15 @@ export default function About({ navigation }: any) {
         {/* HEADER */}
         <View style={styles.headerRow}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Icon name="arrow-back" size={26} color="#fff" />
+            <Icon name="chevron-back" size={28} color="#fff" />
           </TouchableOpacity>
 
           <Text
             style={{
               fontFamily: getFontFamily(fontFamily, "bold"),
-              fontSize: fontSize + 6,
+              fontSize: 22,
               color: "#fff",
+              left:30
             }}
           >
             {i18n.t("about_us")}
@@ -124,7 +124,8 @@ export default function About({ navigation }: any) {
                 textAlign: "center",
                 marginVertical: 16,
                 fontFamily: getFontFamily(fontFamily, "semibold"),
-                fontSize: fontSize + 4,
+                fontSize: 22,
+                marginBottom:24,
                 color: isDark ? "#E0E0E0" : "#1E2A78",
               }}
             >
@@ -154,7 +155,8 @@ export default function About({ navigation }: any) {
                 textAlign: "center",
                 marginVertical: 16,
                 fontFamily: getFontFamily(fontFamily, "semibold"),
-                fontSize: fontSize + 4,
+                fontSize: 22,
+                marginBottom:24,
                 color: isDark ? "#E0E0E0" : "#1E2A78",
               }}
             >
@@ -191,20 +193,24 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingHorizontal: 20,
     gap: 10,
+    top:18,
   },
 
   card: {
     flex: 1,
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
-    marginTop: "10%",
+    marginTop: "20%",
     padding: 16,
+    paddingHorizontal:24
   },
 
   box: {
-    borderRadius: 12,
+    borderRadius: 10,
     padding: 16,
     marginBottom: 12,
+    paddingVertical:22,
+    
   },
 
   row: {

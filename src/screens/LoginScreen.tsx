@@ -107,7 +107,7 @@ export default function LoginScreen({ navigation }: any) {
             styles.card,
             {
               backgroundColor: isLight
-                ? "rgba(250,250,250,0.2)"
+                ? "rgba(255, 250, 250, 0.2)"
                 : "rgba(30,41,59,0.5)",
               borderColor: isLight
                 ? "rgba(255,255,255,0.4)"
@@ -194,7 +194,7 @@ export default function LoginScreen({ navigation }: any) {
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
               <Ionicons
                 name={showPassword ? "eye" : "eye-off"}
-                size={20}
+                size={22}
                 color={isLight ? "#162F7A" : "#E5E7EB"}
               />
             </TouchableOpacity>
@@ -264,11 +264,22 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
 
-  title: { fontSize: 25, textAlign: "center", fontFamily: "Lato-Bold" },
-  brand: { fontSize: 32, fontFamily: "Lemon-Regular" },
+  title: { 
+    marginTop:10,
+    fontSize: 30, 
+    textAlign: "center",
+    fontFamily: "Lato-Bold" ,
+     marginBottom: 8,
+  },
+
+  brand: { 
+    fontSize: 32, 
+    fontFamily: "Lemon-Regular" 
+  },
+
   subtitle: {
-    fontSize: 14,
-    marginBottom: 25,
+    fontSize: 18,
+    marginBottom: 32,
     textAlign: "center",
     fontFamily: "Lato-Semibold",
   },
@@ -279,12 +290,17 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     paddingHorizontal: 15,
     height: 50,
-    marginBottom: 8,
+    marginBottom: 22,
     borderWidth: 2,
     borderColor: "transparent",
   },
 
-  input: { flex: 1, marginLeft: 10, fontFamily: "Lato-Medium" },
+  input: { 
+    fontSize: 18,
+    flex: 1,
+    marginLeft: 10,
+    fontFamily: "Lato-Medium"
+    },
 
   errorBorder: { borderColor: "#E57373" },
   successBorder: { borderColor: "#22C55E" },
@@ -293,25 +309,46 @@ const styles = StyleSheet.create({
     color: "#FACC15",
     fontSize: 13,
     marginBottom: 12,
+    bottom:10,
     marginLeft: 10,
   },
 
-  forgot: { fontSize: 14, fontFamily: "Lato-Bold" },
+  forgot: { 
+    color: "#01d5ff", 
+    fontSize: 18,
+     fontFamily: "Lato-Semibold",
+    bottom: 12,
+    right:12,
+    textDecorationLine: "underline",
+   },
 
   loginBtn: {
-    paddingVertical: 12,
-    borderRadius: 25,
+    paddingVertical: 10,
+    borderRadius: 40,
     alignItems: "center",
     marginTop: 25,
+    width: "80%",
+    alignSelf: "center",
+    marginBottom:18,
   },
 
-  loginText: { fontSize: 20, fontFamily: "Lato-Bold" },
+  loginText: { 
+    fontSize: 22,
+    fontFamily: "Lato-Bold" 
+  },
 
   footerText: {
+    fontSize:18,
     marginTop: 15,
     textAlign: "center",
     fontFamily: "Lato-Semibold",
+    marginBottom:18,
   },
 
-  signup: { color: "#38BDF8", fontFamily: "Lato-Bold" },
+  signup: { 
+    color: "#01d5ff", 
+    fontFamily: "Lato-Semibold" ,
+    textDecorationLine: "underline",
+    
+  },
 });

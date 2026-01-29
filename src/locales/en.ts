@@ -4,7 +4,7 @@ export default {
   continue: "Continue",
 
 unlock_title: "Unlock Your Potential",
-unlock_subtitle: "20Days of Smart Portfolio Tracking ",
+unlock_subtitle: "20 Days of Smart Portfolio Tracking ",
 start_journey: "START YOUR JOURNEY",
 
 welcome_to: "Welcome to",
@@ -50,6 +50,8 @@ male: "Male",
 female: "Female",
 others: "Others",
 sign_up: "Sign Up",
+already_have_account: "Already have an account?",
+//login: "Login",
 
 err_username_required: "Username is required",
 err_email_required: "Email is required",
@@ -66,7 +68,7 @@ email_or_phone_placeholder: "Email / Phone Number",
 send_otp: "Send OTP",
 
 err_email_or_phone_required: "Email or Phone number is required",
-err_enter_valid_phone: "Enter valid phone number: +91 XXXXXXXXXX",
+err_enter_valid_phone: "Enter valid phone number",
 
 
 change_password_title: "Change Password",
@@ -114,13 +116,13 @@ why_choose_us: "Why choose us?",
 what_we_offer: "What we Offer",
 
 precision_picks: "Precision Picks",
-precision_picks_desc: "Accurate intraday tips by experts with clear entry and exit.",
+precision_picks_desc: "Accurate intraday tips crafted by experts - no noise, just sharp entry and exit calls.",
 
 quick_trigger: "Quick Trigger",
-quick_trigger_desc: "Act fast and catch the right market opportunity.",
+quick_trigger_desc: "Act fast with confidence. Our intraday tips help you catch the right moment every time.",
 
 strategic_flow: "Strategic Flow",
-strategic_flow_desc: "Structured trading tips with no guesswork.",
+strategic_flow_desc: "Structed tips for smart trading. Follow a proven, time - sensitive approach - no guesswork.",
 
 intraday_tips: "Intraday Tips",
 intraday_tips_desc: "(Equity, Futures, Options)",
@@ -135,7 +137,7 @@ themes: "Themes",
 fonts: "Fonts",
 
 
-select_language_start: "Please Select a language to get Started",
+select_language_start: "Please Select a language to get \nstarted",
 
 
 contact_us: "Contact us",

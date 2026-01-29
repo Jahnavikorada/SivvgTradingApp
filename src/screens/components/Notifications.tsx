@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    height: 160,
+    height: 180,
     paddingHorizontal: 16,
     flexDirection: "row",
     alignItems: "center",
@@ -125,9 +125,11 @@ const styles = StyleSheet.create({
 
   headerTitle: {
     color: "#FFFFFF",
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "500",
-    marginRight: 110,
+    //marginRight: 120,
+    right:70
+    
   },
 
   body: {
@@ -135,16 +137,16 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 26,
     borderTopRightRadius: 26,
     marginTop: -20,
-    paddingTop: 24,
+    paddingTop: 44,
+    
   },
 
   card: {
-    borderRadius: 16,
+    borderRadius: 10,
     marginHorizontal: 16,
-    marginBottom: 18,
+    marginBottom: 26,
     padding: 18,
     borderWidth: 1.5,
-
     elevation: 4,
     shadowColor: "#000",
     shadowRadius: 6,
