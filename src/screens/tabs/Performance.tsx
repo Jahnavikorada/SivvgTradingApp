@@ -1,21 +1,18 @@
 import React, { useState, useContext } from "react";
-import { View, StyleSheet, Dimensions, ScrollView } from "react-native";
+import { View, StyleSheet,  ScrollView } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
-
 import CommonHeader from "../components/CommonHeader";
 import Carousel from "../success/Carousel";
 import Performancebuttons from "../components/Performancebuttons";
 import Equity from "../buttontips/Equity";
 import Futures from "../buttontips/Futures";
 import Options from "../buttontips/Options";
-
 import { useTheme } from "../../context/ThemeContext";
 import { LightColors, DarkColors } from "../../theme/colors";
-
 import i18n from "../../i18n";
 import { LanguageContext } from "../../context/LanguageContext";
 
-const { height } = Dimensions.get("window");
+//const { height } = Dimensions.get("window");
 
 type TabType = "Equity" | "Futures" | "Options";
 type DurationType = "1D" | "1W" | "1M";

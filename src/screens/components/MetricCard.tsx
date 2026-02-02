@@ -54,21 +54,25 @@ export default function MetricCard({
 /* ✅ STYLES */
 const styles = StyleSheet.create({
   metricBorder: {
-    width: "47%",
-    borderRadius: 18,
-    padding: 2, // gradient thickness
+    width: "45%",
+    marginLeft:10,
+    marginRight:12,
+    borderRadius: 10,
+    padding: 2.5,
+    top:10
+    
   },
 
   metricCard: {
-    backgroundColor: "#FFFFFF", // ✅ Light theme unchanged
-    borderRadius: 16,
-    height: 100,
+    backgroundColor: "#FFFFFF", 
+    borderRadius: 8,
+    height: 90,
     justifyContent: "center",
     alignItems: "center",
   },
 
   metricTitle: {
-    fontSize: 15,
+    fontSize: 17,
     fontWeight: "700",
     color: "#1E2A78",
     textAlign: "center",
@@ -76,7 +80,7 @@ const styles = StyleSheet.create({
   },
 
   metricValue: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "800",
     textAlign: "center",
   },

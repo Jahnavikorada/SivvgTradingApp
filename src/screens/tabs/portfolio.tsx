@@ -25,8 +25,8 @@ const screenWidth = Dimensions.get("window").width;
 
 export default function PortfolioScreen() {
   const navigation = useNavigation<any>();
-  const { isDark } = useTheme(); // ❌ theme untouched
-  const { reloadKey } = useContext(LanguageContext); // ✅ language refresh
+  const { isDark } = useTheme(); // 
+  const { reloadKey } = useContext(LanguageContext); 
 
   const [view, setView] = useState<"Weekly" | "Monthly">("Weekly");
 
@@ -99,10 +99,10 @@ export default function PortfolioScreen() {
         >
           {/* MAIN CARD */}
           <View
-            style={[
-              styles.mainCard,
-              { backgroundColor: isDark ? "#121212" : "#fff" },
-            ]}
+            // style={[
+            //   styles.mainCard,
+            //   { backgroundColor: isDark ? "#121212" : "#fff" },
+            // ]}
           >
             <View style={styles.row}>
               <MetricCard
@@ -132,7 +132,7 @@ export default function PortfolioScreen() {
                 >
                   <Ionicons
                     name="person"
-                    size={18}
+                    size={20}
                     color={isDark ? "#fff" : "#1E2A78"}
                   />
 
@@ -147,7 +147,7 @@ export default function PortfolioScreen() {
 
                   <Ionicons
                     name="chevron-down"
-                    size={18}
+                    size={20}
                     color={isDark ? "#fff" : "#1E2A78"}
                   />
                 </TouchableOpacity>
@@ -192,7 +192,7 @@ export default function PortfolioScreen() {
                 <Text
                   style={[
                     styles.toggleText,
-                    { color: view === "Weekly" ? "#fff" : isDark ? "#fff" : "#000" },
+                    { color: view === "Weekly" ? "#fff" : isDark ? "#fff" : "#1e2a78" },
                   ]}
                 >
                   {i18n.t("weekly_view")}
@@ -206,7 +206,7 @@ export default function PortfolioScreen() {
                 <Text
                   style={[
                     styles.toggleText,
-                    { color: view === "Monthly" ? "#fff" : isDark ? "#fff" : "#000" },
+                    { color: view === "Monthly" ? "#fff" : isDark ? "#fff" : "#1e2a78" },
                   ]}
                 >
                   {i18n.t("monthly_view")}
@@ -347,47 +347,71 @@ const styles = StyleSheet.create({
 
   card: {
     flex: 1,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    marginTop: 20,
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    marginTop: 10,
     padding: 15,
     paddingHorizontal: 10,
   },
 
-  mainCard: {
-    borderRadius: 30,
-    padding: 20,
-    elevation: 10,
-  },
+  // mainCard: {
+  //   borderRadius: 30,
+  //   padding: 20,
+  //   elevation: 10,
+  // },
 
   row: { flexDirection: "row", justifyContent: "space-between" },
 
-  userSelectorWrapper: { alignItems: "center", marginTop: 18, zIndex: 20 },
+  userSelectorWrapper: { 
+    alignItems: "center",
+    marginTop: 34,
+    zIndex: 20 ,
+    marginBottom:10
+    },
 
-  userGradientBorder: { width: "85%", padding: 1.5, borderRadius: 18 },
+  userGradientBorder: { 
+    width: "75%", 
+    padding: 2.3, 
+    borderRadius: 18 
+  },
 
   userInner: {
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 16,
-    paddingHorizontal: 18,
-    height: 42,
+    borderRadius: 14,
+    paddingHorizontal: 22,
+    height: 40,
   },
 
-  userName: { flex: 1, marginLeft: 10, fontWeight: "700" },
+  userName: { 
+    flex: 1, 
+    marginLeft: 16, 
+    fontWeight: "700",
+    fontSize:18,
 
+   },
+  //dropdown card
   memberDropdown: {
     position: "absolute",
     top: 52,
-    width: "85%",
-    borderRadius: 16,
+    width: "60%",
+    borderRadius: 8,
     elevation: 15,
     zIndex: 30,
+     
   },
 
-  memberItem: { padding: 12, borderBottomWidth: 1, borderBottomColor: "#333" },
+  memberItem: { 
+    width:"100%",
+    padding: 12, 
+    borderBottomWidth: 0.2, 
+    borderBottomColor: "#828282" 
+  },
 
-  memberText: { fontWeight: "600" },
+  memberText: { 
+    fontWeight: "500",
+    alignSelf: "center",
+   },
 
   toggleRow: {
     flexDirection: "row",
@@ -399,16 +423,25 @@ const styles = StyleSheet.create({
   toggleBtn: {
     width: "28%",
     paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: "#ddd",
+    borderWidth: 2,
+    borderColor: "#1e2a78",
     alignItems: "center",
+    marginBottom:10
   },
 
-  activeToggle: { backgroundColor: "#1E2A78", borderColor: "#1E2A78" },
+  activeToggle: { 
+    backgroundColor: "#1E2A78", 
+    borderColor: "#1E2A78" 
+  },
 
-  toggleText: { fontSize: 12, fontWeight: "600" },
+  toggleText: { 
+    fontSize: 14, 
+    fontWeight: "600", 
+  },
 
-  monthWrapper: { width: "30%" },
+  monthWrapper: { 
+    width: "30%" 
+  },
 
   monthBox: {
     flexDirection: "row",
@@ -417,7 +450,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
 
-  monthText: { fontSize: 12, fontWeight: "600" },
+  monthText: { fontSize: 14, fontWeight: "600" },
 
   monthDropdown: { position: "absolute", top: 40, width: "100%", elevation: 15, zIndex: 30 },
 
@@ -425,7 +458,7 @@ const styles = StyleSheet.create({
 
   chartCard: {
     backgroundColor: "#021b2d",
-    borderRadius: 20,
+    borderRadius: 0,
     padding: 15,
     marginTop: 20,
   },

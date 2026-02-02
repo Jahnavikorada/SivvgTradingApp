@@ -186,8 +186,8 @@ delete: "Delete",
 
 tab_home: "Home",
 tab_portfolio: "Portfolio",
-tab_performance: "Past Performance",
-tab_sectoral: "Sectoral Indices",
+tab_performance: "Past\n Performance",
+tab_sectoral: "Sectoral\n Indices",
 
 
 equity: "Equity",
@@ -213,7 +213,7 @@ recommendations_growth: "Recommendations Growth",
 
 portfolio: "Portfolio",
 return_rate: "RETURN RATE",
-diversification_score: "DIVERSIFICATION SCORE",
+diversification_score: "DIVERSIFICATION\n SCORE",
 weekly_view: "Weekly View",
 monthly_view: "Monthly View",
 performance_overview: "20 Days Performance Overview",
@@ -287,6 +287,7 @@ font_lato: "Lato",
 font_poppins: "Poppins",
 font_arial: "Arial",
 
-
+note_text: "Displayed companies are filtered as per our recommendations.",
+note_label: "Note:"
 
 };

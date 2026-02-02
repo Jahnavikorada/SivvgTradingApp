@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { useTheme } from "../../context/ThemeContext";
-
 import { bankData } from "../sectoraldata/bankData";
 import { pharmaData } from "../sectoraldata/pharmaData";
 import { itData } from "../sectoraldata/itData";
@@ -23,10 +22,9 @@ import { LanguageContext } from "../../context/LanguageContext";
 
 export default function SectoralPanel() {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const { isDark } = useTheme(); // ✅ THEME (UNCHANGED)
-  const { reloadKey } = useContext(LanguageContext); // ✅ LANGUAGE REFRESH
+  const { isDark } = useTheme();
+  const { reloadKey } = useContext(LanguageContext);
 
-  // ✅ TRANSLATION KEYS (IMPORTANT)
   const sectorHeadingMap: any = {
     bank: "nifty_bank",
     pharma: "nifty_pharma",
@@ -93,45 +91,59 @@ export default function SectoralPanel() {
         </ScrollView>
       </View>
 
-      {/* RIGHT CARD */}
-      <LinearGradient
-        colors={["rgba(255,46,76,0.30)", "rgba(30,42,120,0.30)"]}
-        style={[
-          styles.rightCard,
-          isDark && { borderColor: "rgba(255,255,255,0.15)" },
-        ]}
-      >
-        {/* ✅ LANGUAGE + THEME */}
-        <Text style={[styles.heading, isDark && { color: "#FFFFFF" }]}>
-          {i18n.t(sectorHeadingMap[activeKey])}
-        </Text>
+      {/* RIGHT SECTION (CARD + NOTE) */}
+      <View style={styles.rightSection}>
+        {/* RIGHT CARD */}
+        <LinearGradient
+          colors={["rgba(255,46,76,0.30)", "rgba(30,42,120,0.30)"]}
+          style={[
+            styles.rightCard,
+            isDark && { borderColor: "rgba(255,255,255,0.15)" },
+          ]}
+        >
+          <Text style={[styles.heading, isDark && { color: "#FFFFFF" }]}>
+            {i18n.t(sectorHeadingMap[activeKey])}
+          </Text>
 
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {activeData.map((item: any, index: number) => (
-            <View
-              key={index}
-              style={[
-                styles.bankWhiteCard,
-                isDark && {
-                  backgroundColor: "#121212",
-                  opacity: 0.8,
-                  borderColor: "rgba(255,255,255,0.15)",
-                },
-              ]}
-            >
-              <Image source={item.img} style={styles.bankLogo} />
-              <Text style={[styles.bankText, isDark && { color: "#E5E7EB" }]}>
-                {item.name}
-              </Text>
-            </View>
-          ))}
-        </ScrollView>
-      </LinearGradient>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            {activeData.map((item: any, index: number) => (
+              <View
+                key={index}
+                style={[
+                  styles.bankWhiteCard,
+                  isDark && {
+                    backgroundColor: "#121212",
+                    opacity: 0.8,
+                    borderColor: "rgba(255,255,255,0.15)",
+                  },
+                ]}
+              >
+                <Image source={item.img} style={styles.bankLogo} />
+                <Text style={[styles.bankText, isDark && { color: "#E5E7EB" }]}>
+                  {item.name}
+                </Text>
+              </View>
+            ))}
+          </ScrollView>
+        </LinearGradient>
+
+        {/* FOOTER NOTE OUTSIDE CARD */}
+  <View style={styles.noteFullWidth}>
+        <Text style={styles.noteLabel}>{i18n.t("note_label")} </Text>
+
+       <Text style={styles.noteText}>
+   {i18n.t("note_text")}
+</Text>
+      </View>
+    
+  
+
+      </View>
     </View>
   );
 }
 
-/* ================= STYLES (UNCHANGED) ================= */
+/* ================= STYLES ================= */
 
 const styles = StyleSheet.create({
   row: {
@@ -142,13 +154,18 @@ const styles = StyleSheet.create({
   },
 
   leftBar: {
-    marginTop: 20,
-    width: "20%",
+    marginTop: 10,
+    width: "26%",
     height: "85%",
     backgroundColor: "#1E3A8A",
     borderRadius: 40,
     alignItems: "center",
     overflow: "hidden",
+  },
+
+  rightSection: {
+    width: "70%",
+    alignItems: "center",
   },
 
   circleBase: {
@@ -160,20 +177,14 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
 
-  activeCircle: {
-    backgroundColor: "#ffffff",
-  },
-
+  activeCircle: { backgroundColor: "#ffffff" },
   inactiveCircle: {
     backgroundColor: "rgba(255,255,255,0.15)",
     borderWidth: 1.5,
     borderColor: "rgba(255,255,255,0.4)",
   },
 
-  activeCircleDark: {
-    backgroundColor: "#1a1a1a",
-  },
-
+  activeCircleDark: { backgroundColor: "#1a1a1a" },
   inactiveCircleDark: {
     backgroundColor: "rgba(0,0,0,0.35)",
     borderWidth: 1.5,
@@ -188,8 +199,8 @@ const styles = StyleSheet.create({
   },
 
   rightCard: {
-    marginTop: 20,
-    width: "75%",
+    marginTop: 10,
+    width: "100%",
     height: "85%",
     borderRadius: 40,
     borderWidth: 1.5,
@@ -201,7 +212,7 @@ const styles = StyleSheet.create({
 
   heading: {
     fontSize: 22,
-    fontWeight: "700",
+    fontWeight: "600",
     color: "#1E2A78",
     marginTop: 10,
     marginBottom: 20,
@@ -232,4 +243,29 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#1E2A78",
   },
+
+
+
+noteFullWidth: {
+    flexDirection: "row",
+    right: "22%", // 👈 EXACT LEFT BAR WIDTH
+    //paddingRight: 10,
+    marginTop: 20,
+    alignItems: "flex-start",
+
+  },
+
+  noteLabel: {
+    color: "red",
+    fontSize: 18,
+    fontWeight: "700",
+  },
+
+  noteText: {
+    color: "#1E40AF",
+    fontSize: 18,
+    
+  },
+
+
 });

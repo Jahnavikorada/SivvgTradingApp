@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {  Text, StyleSheet, TouchableOpacity } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -32,7 +32,7 @@ export default function CommonHeader({ title }: any) {
           onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
           activeOpacity={0.8}
         >
-          <Ionicons name="menu" size={24} color={iconColor} />
+          <Ionicons name="menu" size={30} color={iconColor} />
         </TouchableOpacity>
 
         {/* ✅ TITLE */}
@@ -44,7 +44,7 @@ export default function CommonHeader({ title }: any) {
           activeOpacity={0.8}
           onPress={() => navigation.navigate("Notifications")}
         >
-          <Ionicons name="notifications" size={24} color={iconColor} />
+          <Ionicons name="notifications" size={28} color={iconColor} />
         </TouchableOpacity>
       </SafeAreaView>
     </LinearGradient>
@@ -53,7 +53,8 @@ export default function CommonHeader({ title }: any) {
 
 const styles = StyleSheet.create({
   container: {
-    paddingBottom: 15,
+    paddingBottom: 2,
+   
   },
 
   topBar: {
@@ -65,13 +66,14 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    fontSize: 22,
-    fontWeight: "500",
+    fontSize: 26,
+    fontWeight: "700",
+    alignSelf:"center"
   },
 
   iconCircle: {
-    width: 40,
-    height: 40,
+    width: 50,
+    height: 50,
     borderRadius: 25,
     alignItems: "center",
     justifyContent: "center",

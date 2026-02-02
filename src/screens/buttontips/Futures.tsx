@@ -33,7 +33,7 @@ export default function Futures({ duration }: { duration: DurationType }) {
       <Text
         style={[
           styles.title,
-          { color: isDark ? "#FFFFFF" : "#1a1a1a" },
+          { color: isDark ? "#FFFFFF" : "#1e27a8" },
         ]}
       >
         {i18n.t("futures")} ({duration})
@@ -55,8 +55,10 @@ export default function Futures({ duration }: { duration: DurationType }) {
 
 const styles = StyleSheet.create({
   title: {
+    marginLeft:10,
     fontSize: 16,
-    fontWeight: "700",
+    fontWeight: "600",
     marginBottom: 10,
+    
   },
 });

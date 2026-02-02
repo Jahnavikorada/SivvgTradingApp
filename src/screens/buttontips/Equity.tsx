@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import TipsCard from "../components/TipsCard";
-
 import { useTheme } from "../../context/ThemeContext";
 import i18n from "../../i18n";
 
@@ -35,7 +34,7 @@ export default function Equity({ duration }: { duration: DurationType }) {
       <Text
         style={[
           styles.title,
-          { color: isDark ? "#FFFFFF" : "#1a1a1a" },
+          { color: isDark ? "#FFFFFF" : "#1e27a8" },
         ]}
       >
         {i18n.t("equity")} ({duration})
@@ -57,8 +56,10 @@ export default function Equity({ duration }: { duration: DurationType }) {
 
 const styles = StyleSheet.create({
   title: {
+    marginLeft:10,
     fontSize: 16,
-    fontWeight: "700",
+    fontWeight: "600",
     marginBottom: 10,
+    
   },
 });

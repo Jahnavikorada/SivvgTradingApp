@@ -4,7 +4,6 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useTheme } from "../context/ThemeContext";
-
 import Home from "./tabs/Home";
 import Portfolio from "./tabs/portfolio";
 import Performance from "./tabs/Performance";
@@ -101,7 +100,7 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
                     { backgroundColor: activeBg },
                   ]}
                 >
-                  <Icon name={icon} size={20} color={activeIconColor} />
+                  <Icon name={icon} size={28} color={activeIconColor} />
                   <Text
                     numberOfLines={2}
                     style={[
@@ -120,7 +119,7 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
                 >
                   <Icon
                     name={icon}
-                    size={22}
+                    size={28}
                     color={inactiveIconColor}
                   />
                 </LinearGradient>
@@ -139,7 +138,7 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
 
 const styles = StyleSheet.create({
   outerPinkCard: {
-    paddingVertical: 10,
+    paddingVertical: 12,
     paddingHorizontal: 10,
     alignItems: "center",
   },
@@ -152,7 +151,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
     borderWidth: 1,
-    borderColor: "#c7babaff",
+    borderColor: "#ffffff",
     elevation: 6,
   },
 
@@ -174,7 +173,7 @@ const styles = StyleSheet.create({
 
   activeText: {
     fontWeight: "700",
-    fontSize: 13,
+    fontSize: 18,
     textAlign: "center",
     lineHeight: 17,
   },

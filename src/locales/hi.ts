@@ -4,7 +4,7 @@ export default {
   continue: "जारी रखें",
 
   unlock_title: "अपनी क्षमता को अनलॉक करें",
-unlock_subtitle: "20 दिनों तक स्मार्ट पोर्टफोलियो ट्रैकिंग",
+unlock_subtitle: "20 दिनों तक स्मार्ट पोर्टफोलियो\n ट्रैकिंग",
 start_journey: "अपनी यात्रा शुरू करें",
 
 
@@ -187,8 +187,8 @@ delete: "डिलीट",
 
 tab_home: "होम",
 tab_portfolio: "पोर्टफोलियो",
-tab_performance: "पिछला प्रदर्शन",
-tab_sectoral: "सेक्टोरल इंडेक्स",
+tab_performance: "पिछला\n प्रदर्शन",
+tab_sectoral: "सेक्टोरल\n इंडेक्स",
 
 
 equity: "इक्विटी",
@@ -280,6 +280,8 @@ font_lato: "लाटो",
 font_poppins: "पॉपिन्स",
 font_arial: "एरियल",
 
+note_text: "प्रदर्शित कंपनियाँ हमारी सिफारिशों के अनुसार फ़िल्टर की गई हैं।",
+note_label: "नोट:"
 
 
   };

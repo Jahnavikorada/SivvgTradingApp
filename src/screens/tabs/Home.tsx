@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import {
   View,
   StyleSheet,
-  Dimensions,
+  //Dimensions,
   Text,
   TouchableOpacity,
 } from "react-native";
@@ -18,7 +18,7 @@ import { LightColors, DarkColors } from "../../theme/colors";
 import i18n from "../../i18n";
 import { LanguageContext } from "../../context/LanguageContext";
 
-const { height } = Dimensions.get("window");
+//const { height } = Dimensions.get("window");
 
 export default function Home({ navigation }: any) {
   const [activeTab, setActiveTab] =
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
-    marginTop: 30,
+    marginTop: 10,
     paddingTop: 15,
     paddingHorizontal: 25,
   },
@@ -158,25 +158,26 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     overflow: "hidden",
     width: "100%",
-    marginBottom: 16,
-    marginTop: 20,
+    marginBottom: 24,
+    marginTop: 14,
     height: 45,
-    borderRadius: 10,
+   
   },
 
   tab: {
     flex: 1,
+    
   },
 
   tabText: {
     fontWeight: "600",
-    fontSize: 18,
+    fontSize: 20,
   },
 
   activeTabText: {
     color: "#FFFFFF",
     fontWeight: "600",
-    fontSize: 18,
+    fontSize: 20,
   },
 
   activeGradient: {

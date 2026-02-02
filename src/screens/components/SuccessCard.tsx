@@ -21,8 +21,8 @@ interface Props {
 }
 
 export default function SuccessCard({ title, tipsData }: Props) {
-  const { isDark } = useTheme(); // 🌙 theme (unchanged)
-  const { reloadKey } = useContext(LanguageContext); // 🌐 language refresh
+  const { isDark } = useTheme(); 
+  const { reloadKey } = useContext(LanguageContext); 
 
   const calculateRate = (obj: TipsObj) => {
     if (!obj || obj.total === 0) return 0;
@@ -101,15 +101,15 @@ export default function SuccessCard({ title, tipsData }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#ffffff", // light theme untouched
-    borderBottomLeftRadius: 20,
-    width: "82%",
+    backgroundColor: "#ffffff", 
+    borderBottomLeftRadius: 30,
+    width: "86%",
     alignSelf: "center",
-    marginTop: 20,
+    marginTop: 10,
     borderWidth: 0.7,
-    borderColor: "#7fa3ff",
+    borderColor: "#fff",
     overflow: "hidden",
-    paddingBottom: 10,
+    paddingBottom: 20,
   },
 
   cardDark: {
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   textbg: {
     backgroundColor: "#1E2A78",
     width: "100%",
-    paddingVertical: 10,
+    paddingVertical: 16,
     alignItems: "center",
   },
 
@@ -130,8 +130,8 @@ const styles = StyleSheet.create({
 
   title: {
     color: "#ffffff",
-    fontSize: 16,
-    fontWeight: "bold",
+    fontSize: 20,
+    fontWeight: 500,
   },
 
   chartWrapper: {
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-end",
     height: 110,
-    gap: 20,
+    gap: 24,
     marginLeft: 10,
   },
 
@@ -156,8 +156,8 @@ const styles = StyleSheet.create({
   valueText: {
     color: "#1E2A78",
     marginBottom: 4,
-    fontSize: 11,
-    fontWeight: "bold",
+    fontSize: 14,
+    fontWeight: 600,
   },
 
   bar: {
@@ -184,16 +184,18 @@ const styles = StyleSheet.create({
 
   legendText: {
     color: "#1E2A78",
-    fontSize: 12,
+    fontSize: 15,
     fontWeight: "500",
   },
 
   footer: {
     textAlign: "center",
     color: "#1E2A78",
-    marginTop: 12,
-    fontSize: 13,
-    fontWeight: "600",
+    marginTop: 10,
+    marginBottom:6,
+    top:10,
+    fontSize: 16,
+    fontWeight: "700",
   },
 
   /* 🌙 COMMON DARK TEXT */

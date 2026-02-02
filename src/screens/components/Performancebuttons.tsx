@@ -192,7 +192,7 @@ export default function Performancebuttons({
           <TouchableOpacity>
             <Ionicons
               name="funnel"
-              size={20}
+              size={22}
               color={isDark ? "#E5E7EB" : "#1E2A78"}
             />
           </TouchableOpacity>
@@ -234,14 +234,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     marginTop: 15,
-    marginBottom: 15,
+    marginBottom: 22,
   },
 
   tabBtn: {
-    paddingVertical: 10,
-    paddingHorizontal: 35,
-    borderRadius: 8,
+    paddingVertical: 4,
+    paddingHorizontal: 24,
+    borderRadius: 0,
     backgroundColor: "#1E2A78",
+  
   },
 
   tabActive: {
@@ -251,8 +252,9 @@ const styles = StyleSheet.create({
   },
 
   tabText: {
+    fontSize:18,
     color: "#FFF",
-    fontWeight: "600",
+    fontWeight: "500",
   },
 
   tabTextActive: {
@@ -274,12 +276,13 @@ const styles = StyleSheet.create({
   },
 
   durationBtn: {
-    width: 45,
-    height: 36,
-    borderRadius: 6,
+    width: 36,
+    height: 30,
+    borderRadius: 2,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#1E2A78",
+     marginHorizontal: 2,
   },
 
   durationActive: {
@@ -290,7 +293,7 @@ const styles = StyleSheet.create({
 
   durationText: {
     color: "#FFF",
-    fontWeight: "600",
+    fontWeight: "500",
   },
 
   durationTextActive: {
@@ -308,8 +311,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    width: 120,
-    height: 36,
+    width: 96,
+    height: 30,
     paddingHorizontal: 10,
     borderRadius: 20,
     borderWidth: 1,
