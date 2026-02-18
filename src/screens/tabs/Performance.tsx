@@ -18,11 +18,9 @@ type TabType = "Equity" | "Futures" | "Options";
 type DurationType = "1D" | "1W" | "1M";
 
 export default function Home({ navigation }: any) {
-  const { isDark } = useTheme(); // ✅ theme untouched
+  const { isDark } = useTheme(); 
   const colors = isDark ? DarkColors : LightColors;
-
-  const { reloadKey } = useContext(LanguageContext); // ✅ language refresh
-
+  const { reloadKey } = useContext(LanguageContext); 
   const [selectedTab, setSelectedTab] = useState<TabType>("Equity");
   const [selectedDuration, setSelectedDuration] =
     useState<DurationType>("1D");
@@ -35,7 +33,7 @@ export default function Home({ navigation }: any) {
       end={{ x: 1, y: 0.5 }}
     >
       <View key={reloadKey} style={styles.container}>
-        {/* ✅ TRANSLATED TITLE */}
+
         <CommonHeader
           title={i18n.t("past_performance")}
           navigation={navigation}
@@ -43,7 +41,6 @@ export default function Home({ navigation }: any) {
 
         <Carousel />
 
-        {/* ✅ THEME-AWARE CARD (UNCHANGED) */}
         <View
           style={[
             styles.card,
@@ -57,7 +54,6 @@ export default function Home({ navigation }: any) {
             onDurationChange={(d) => setSelectedDuration(d)}
           />
 
-          {/* ✅ DATA AREA */}
           <ScrollView showsVerticalScrollIndicator={false}>
             {selectedTab === "Equity" && (
               <Equity duration={selectedDuration} />
@@ -79,7 +75,7 @@ export default function Home({ navigation }: any) {
 
 const styles = StyleSheet.create({
   gradient: {
-    flex: 1, // ✅ FULL SCREEN
+    flex: 1,
   },
 
   container: {

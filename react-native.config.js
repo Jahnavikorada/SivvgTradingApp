@@ -17,3 +17,6 @@ module.exports = {
   },
   assets: ['./assets/fonts'], // Adjust the path as necessary
 };
+module.exports = {
+  assets: ["./node_modules/react-native-vector-icons/Fonts"],
+};

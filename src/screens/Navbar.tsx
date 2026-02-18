@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, Platform } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -8,14 +8,17 @@ import Home from "./tabs/Home";
 import Portfolio from "./tabs/portfolio";
 import Performance from "./tabs/Performance";
 import Sectoral from "./tabs/Sectoral";
+import i18n from "../i18n"; 
+import { LanguageContext } from "../context/LanguageContext"; 
+import { androidStyles } from "./Navbar.android.styles";
+import { iosStyles } from "./Navbar.ios.styles";
 
-import i18n from "../i18n"; // ✅ Language
-import { LanguageContext } from "../context/LanguageContext"; // ✅ Reload
+const styles = Platform.OS === "ios"? iosStyles : androidStyles;
 
 const Tab = createBottomTabNavigator();
 
 export default function Navbar() {
-  const { reloadKey } = useContext(LanguageContext); // ✅ language refresh
+  const { reloadKey } = useContext(LanguageContext); 
 
   return (
     <View key={reloadKey} style={{ flex: 1 }}>
@@ -54,14 +57,10 @@ export default function Navbar() {
   );
 }
 
-// ------------------------------------------------------------
-// CUSTOM TAB BAR (THEME + LANGUAGE)
-// ------------------------------------------------------------
+
 
 function CustomTabBar({ state, descriptors, navigation }: any) {
   const { isDark } = useTheme();
-
-  // 🎨 THEME COLORS (UNCHANGED)
   const outerBg = "#122A7C";
   const tabBg = "#122A7C";
 
@@ -93,7 +92,7 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
               activeOpacity={0.8}
             >
               {isFocused ? (
-                // ✅ ACTIVE TAB
+               
                 <View
                   style={[
                     styles.activeTab,
@@ -112,7 +111,7 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
                   </Text>
                 </View>
               ) : (
-                // ❌ INACTIVE TAB
+              
                 <LinearGradient
                   colors={inactiveGradient}
                   style={styles.inactiveCircle}
@@ -131,58 +130,3 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
     </View>
   );
 }
-
-// ------------------------------------------------------------
-// STYLES (UNCHANGED)
-// ------------------------------------------------------------
-
-const styles = StyleSheet.create({
-  outerPinkCard: {
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    alignItems: "center",
-  },
-
-  tabContainer: {
-    flexDirection: "row",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 45,
-    justifyContent: "space-between",
-    width: "100%",
-    borderWidth: 1,
-    borderColor: "#ffffff",
-    elevation: 6,
-  },
-
-  tabButton: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  activeTab: {
-    flexDirection: "row",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 30,
-    alignItems: "center",
-    justifyContent: "center",
-    minWidth: 100,
-    gap: 6,
-  },
-
-  activeText: {
-    fontWeight: "700",
-    fontSize: 18,
-    textAlign: "center",
-    lineHeight: 17,
-  },
-
-  inactiveCircle: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});

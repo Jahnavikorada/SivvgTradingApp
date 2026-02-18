@@ -1,13 +1,16 @@
 import React, { useState, useContext } from "react";
-import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { View,  TouchableOpacity, Text, Platform } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/Ionicons";
-
 import { useFont } from "../context/FontContext";
 import { getFontFamily } from "../context/fontHelper";
 import { useTheme } from "../context/ThemeContext";
 import i18n from "../i18n";
 import { LanguageContext } from "../context/LanguageContext";
+import { androidStyles } from "./AppPreference.android.styles";
+import { iosStyles } from "./AppPreference.ios.styles";
+
+const styles = Platform.OS === "ios" ? iosStyles : androidStyles;
 
 export default function AppPreference({ navigation }: any) {
   const { fontFamily,  } = useFont();
@@ -132,56 +135,3 @@ export default function AppPreference({ navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
-  gradient: {
-    flex: 1,
-  },
-
-  headerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingTop: 60,
-    paddingHorizontal: 20,
-    gap: 10,
-  },
-
-  headerTitle: {
-    color: "#fff",
-    fontSize: 22,
-    fontWeight: "bold",
-    left:30,
-    top:18
-  },
-
-  card: {
-    flex: 1,
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
-    marginTop: "20%",
-    paddingTop: 15,
-  },
-
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 18,
-    paddingHorizontal: 15,
-    marginTop: 15,
-  },
-
-  activeRow: {
-    backgroundColor: "#1E2A78",
-  },
-
-  rowText: {
-    flex: 1,
-    marginLeft: 15,
-    fontSize:28,
-    fontWeight: "500",
-    
-  },
-
-  activeText: {
-    color: "#fff",
-  },
-});

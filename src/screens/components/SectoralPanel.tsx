@@ -1,14 +1,18 @@
 import React, { useState, useContext } from "react";
 import {
   View,
-  StyleSheet,
   ScrollView,
   TouchableOpacity,
   Image,
   Text,
+  Platform,
 } from "react-native";
+
+import { SafeAreaView } from "react-native-safe-area-context";
 import LinearGradient from "react-native-linear-gradient";
+
 import { useTheme } from "../../context/ThemeContext";
+
 import { bankData } from "../sectoraldata/bankData";
 import { pharmaData } from "../sectoraldata/pharmaData";
 import { itData } from "../sectoraldata/itData";
@@ -19,6 +23,11 @@ import { fmcgData } from "../sectoraldata/fmcData";
 
 import i18n from "../../i18n";
 import { LanguageContext } from "../../context/LanguageContext";
+
+import { androidStyles } from "./SectoralPanel.android.styles";
+import { iosStyles } from "./SectoralPanel.ios.styles";
+
+const styles = Platform.OS === "ios" ? iosStyles : androidStyles;
 
 export default function SectoralPanel() {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -59,213 +68,76 @@ export default function SectoralPanel() {
   const activeData = sectorMap[activeKey];
 
   return (
-    <View key={reloadKey} style={styles.row}>
-      {/* LEFT BAR */}
-      <View style={styles.leftBar}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ alignItems: "center", paddingVertical: 20 }}
-        >
-          {icons.map((item, index) => {
-            const isActive = selectedIndex === index;
+    <SafeAreaView style={{ flex: 1 }}>
+      <View key={reloadKey} style={styles.row}>
+        {/* LEFT BAR */}
+        <View style={styles.leftBar}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ alignItems: "center", paddingVertical: 20 }}
+          >
+            {icons.map((item, index) => {
+              const isActive = selectedIndex === index;
 
-            return (
-              <TouchableOpacity
-                key={index}
-                onPress={() => setSelectedIndex(index)}
-                style={[
-                  styles.circleBase,
-                  isActive
-                    ? isDark
-                      ? styles.activeCircleDark
-                      : styles.activeCircle
-                    : isDark
-                    ? styles.inactiveCircleDark
-                    : styles.inactiveCircle,
-                ]}
-              >
-                <Image source={item.img} style={styles.icon} />
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-      </View>
-
-      {/* RIGHT SECTION (CARD + NOTE) */}
-      <View style={styles.rightSection}>
-        {/* RIGHT CARD */}
-        <LinearGradient
-          colors={["rgba(255,46,76,0.30)", "rgba(30,42,120,0.30)"]}
-          style={[
-            styles.rightCard,
-            isDark && { borderColor: "rgba(255,255,255,0.15)" },
-          ]}
-        >
-          <Text style={[styles.heading, isDark && { color: "#FFFFFF" }]}>
-            {i18n.t(sectorHeadingMap[activeKey])}
-          </Text>
-
-          <ScrollView showsVerticalScrollIndicator={false}>
-            {activeData.map((item: any, index: number) => (
-              <View
-                key={index}
-                style={[
-                  styles.bankWhiteCard,
-                  isDark && {
-                    backgroundColor: "#121212",
-                    opacity: 0.8,
-                    borderColor: "rgba(255,255,255,0.15)",
-                  },
-                ]}
-              >
-                <Image source={item.img} style={styles.bankLogo} />
-                <Text style={[styles.bankText, isDark && { color: "#E5E7EB" }]}>
-                  {item.name}
-                </Text>
-              </View>
-            ))}
+              return (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => setSelectedIndex(index)}
+                  style={[
+                    styles.circleBase,
+                    isActive
+                      ? isDark
+                        ? styles.activeCircleDark
+                        : styles.activeCircle
+                      : isDark
+                      ? styles.inactiveCircleDark
+                      : styles.inactiveCircle,
+                  ]}
+                >
+                  <Image source={item.img} style={styles.icon} />
+                </TouchableOpacity>
+              );
+            })}
           </ScrollView>
-        </LinearGradient>
+        </View>
 
-        {/* FOOTER NOTE OUTSIDE CARD */}
-  <View style={styles.noteFullWidth}>
-        <Text style={styles.noteLabel}>{i18n.t("note_label")} </Text>
+        {/* RIGHT PANEL */}
+        <View style={styles.rightSection}>
+          <LinearGradient
+            colors={["rgba(255,46,76,0.30)", "rgba(30,42,120,0.30)"]}
+            style={styles.rightCard}
+          >
+            <Text style={[styles.heading, isDark && { color: "#fff" }]}>
+              {i18n.t(sectorHeadingMap[activeKey])}
+            </Text>
 
-       <Text style={styles.noteText}>
-   {i18n.t("note_text")}
-</Text>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              {activeData.map((item: any, index: number) => (
+                <View
+                  key={index}
+                  style={[
+                    styles.bankWhiteCard,
+                    isDark && {
+                      backgroundColor: "#121212",
+                      borderColor: "rgba(255,255,255,0.15)",
+                    },
+                  ]}
+                >
+                  <Image source={item.img} style={styles.bankLogo} />
+                  <Text style={[styles.bankText, isDark && { color: "#E5E7EB" }]}>
+                    {item.name}
+                  </Text>
+                </View>
+              ))}
+            </ScrollView>
+          </LinearGradient>
+
+          <View style={styles.noteFullWidth}>
+            <Text style={styles.noteLabel}>{i18n.t("note_label")} </Text>
+            <Text style={styles.noteText}>{i18n.t("note_text")}</Text>
+          </View>
+        </View>
       </View>
-    
-  
-
-      </View>
-    </View>
+    </SafeAreaView>
   );
 }
-
-/* ================= STYLES ================= */
-
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: "row",
-    flex: 1,
-    marginTop: 10,
-    justifyContent: "space-between",
-  },
-
-  leftBar: {
-    marginTop: 10,
-    width: "26%",
-    height: "85%",
-    backgroundColor: "#1E3A8A",
-    borderRadius: 40,
-    alignItems: "center",
-    overflow: "hidden",
-  },
-
-  rightSection: {
-    width: "70%",
-    alignItems: "center",
-  },
-
-  circleBase: {
-    height: 70,
-    width: 70,
-    borderRadius: 60,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 30,
-  },
-
-  activeCircle: { backgroundColor: "#ffffff" },
-  inactiveCircle: {
-    backgroundColor: "rgba(255,255,255,0.15)",
-    borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.4)",
-  },
-
-  activeCircleDark: { backgroundColor: "#1a1a1a" },
-  inactiveCircleDark: {
-    backgroundColor: "rgba(0,0,0,0.35)",
-    borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.15)",
-  },
-
-  icon: {
-    height: 50,
-    width: 50,
-    resizeMode: "contain",
-    opacity: 0.95,
-  },
-
-  rightCard: {
-    marginTop: 10,
-    width: "100%",
-    height: "85%",
-    borderRadius: 40,
-    borderWidth: 1.5,
-    borderColor: "#1E3A8A",
-    paddingHorizontal: 15,
-    paddingVertical: 18,
-    overflow: "hidden",
-  },
-
-  heading: {
-    fontSize: 22,
-    fontWeight: "600",
-    color: "#1E2A78",
-    marginTop: 10,
-    marginBottom: 20,
-    marginLeft: 20,
-  },
-
-  bankWhiteCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#ffffff",
-    borderRadius: 30,
-    paddingVertical: 20,
-    paddingHorizontal: 18,
-    marginBottom: 16,
-    borderWidth: 1.2,
-    borderColor: "#1E2A78",
-  },
-
-  bankLogo: {
-    width: 30,
-    height: 35,
-    resizeMode: "contain",
-    marginRight: 12,
-  },
-
-  bankText: {
-    fontSize: 20,
-    fontWeight: "600",
-    color: "#1E2A78",
-  },
-
-
-
-noteFullWidth: {
-    flexDirection: "row",
-    right: "22%", // 👈 EXACT LEFT BAR WIDTH
-    //paddingRight: 10,
-    marginTop: 20,
-    alignItems: "flex-start",
-
-  },
-
-  noteLabel: {
-    color: "red",
-    fontSize: 18,
-    fontWeight: "700",
-  },
-
-  noteText: {
-    color: "#1E40AF",
-    fontSize: 18,
-    
-  },
-
-
-});

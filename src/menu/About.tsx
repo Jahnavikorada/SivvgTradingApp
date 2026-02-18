@@ -2,20 +2,24 @@ import React, { useContext } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
 } from "react-native";
+
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/Ionicons";
+
+import styles from "./About.styles"
+ // ⭐ bridge file import
+
 import { useFont } from "../context/FontContext";
 import { getFontFamily } from "../context/fontHelper";
-import { useTheme } from "../context/ThemeContext"; 
+import { useTheme } from "../context/ThemeContext";
 import i18n from "../i18n";
-import { LanguageContext } from "../context/LanguageContext"; 
+import { LanguageContext } from "../context/LanguageContext";
 
-/* ---------------- INFO BOX ---------------- */
+/* ---------- Info Box ---------- */
 const InfoBox = ({
   icon,
   title,
@@ -28,32 +32,23 @@ const InfoBox = ({
   const { fontFamily, fontSize } = useFont();
   const { isDark } = useTheme();
 
-  const boxColor = isDark ? "#121212" : "#1E2A78"; // Dark blue shades
-  const titleColor = "#FFFFFF"; // always white
-  const descColor = "#E0E0E0"; // lighter gray
-
   return (
     <View
       style={[
         styles.box,
-        {
-          backgroundColor: boxColor,
-          shadowColor: "#000",
-          shadowOpacity: 0.25,
-          shadowRadius: 6,
-          shadowOffset: { width: 0, height: 4 },
-        },
+         { backgroundColor: isDark ? "#121212" : "#1E2A78" },
       ]}
     >
       <View style={styles.row}>
-        <Icon name={icon} size={24} color={titleColor} style={{ marginTop: 2 }} />
+        <Icon name={icon} size={22} color="#fff" />
+
         <View style={styles.textContainer}>
           <Text
             style={{
               fontFamily: getFontFamily(fontFamily, "semibold"),
               fontSize: fontSize + 2,
-              color: titleColor,
-              marginBottom: 2,
+              color: "#fff",
+              marginBottom: 4,
             }}
           >
             {title}
@@ -63,7 +58,7 @@ const InfoBox = ({
             style={{
               fontFamily: getFontFamily(fontFamily, "regular"),
               fontSize,
-              color: descColor,
+              color: "#E0E0E0",
             }}
           >
             {desc}
@@ -74,61 +69,52 @@ const InfoBox = ({
   );
 };
 
-/* ---------------- SCREEN ---------------- */
+/* ---------- Screen ---------- */
 export default function About({ navigation }: any) {
-  const { fontFamily,  } = useFont();
-  const {  isDark } = useTheme(); 
-  const { reloadKey } = useContext(LanguageContext); 
-
-  const isLight = !isDark;
+  const { fontFamily } = useFont();
+  const { isDark } = useTheme();
+  const { reloadKey } = useContext(LanguageContext);
 
   return (
-    <SafeAreaView
-      key={reloadKey} 
-      style={{ flex: 1, backgroundColor: isLight ? "#fff" : "#121212" }}
-    >
+    <View key={reloadKey} style={{ flex: 1 }}>
+      {/* Gradient background */}
       <LinearGradient
-        colors={isLight ? ["#FF2E4C", "#1E2A78"] : ["#FF2E4C", "#1E2A78"]} 
-        style={styles.gradient}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-      >
-        {/* HEADER */}
+        colors={["#FF2E4C", "#1E2A78"]}
+        style={{ position: "absolute", inset: 0 }}
+      />
+
+      <SafeAreaView style={{ flex: 1 }}>
+        {/* Header */}
         <View style={styles.headerRow}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Icon name="chevron-back" size={28} color="#fff" />
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backIconWrapper}
+          >
+            <Icon name="chevron-back" size={26} color="#fff" />
           </TouchableOpacity>
 
           <Text
-            style={{
-              fontFamily: getFontFamily(fontFamily, "bold"),
-              fontSize: 22,
-              color: "#fff",
-              left:30
-            }}
+            style={[
+              styles.headerTitle,
+              { fontFamily: getFontFamily(fontFamily, "bold") },
+            ]}
           >
             {i18n.t("about_us")}
           </Text>
         </View>
 
-        {/* CARD */}
+        {/* Card */}
         <View
           style={[
             styles.card,
-            { backgroundColor: isLight ? "#fff" : "#1a1a1a" },
+            { backgroundColor: isDark ? "#1a1a1a" : "#fff" },
           ]}
         >
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <Text
-              style={{
-                textAlign: "center",
-                marginVertical: 16,
-                fontFamily: getFontFamily(fontFamily, "semibold"),
-                fontSize: 22,
-                marginBottom:24,
-                color: isDark ? "#E0E0E0" : "#1E2A78",
-              }}
-            >
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.scrollContent}
+          >
+            <Text style={styles.sectionTitle}>
               {i18n.t("why_choose_us")}
             </Text>
 
@@ -150,16 +136,7 @@ export default function About({ navigation }: any) {
               desc={i18n.t("strategic_flow_desc")}
             />
 
-            <Text
-              style={{
-                textAlign: "center",
-                marginVertical: 16,
-                fontFamily: getFontFamily(fontFamily, "semibold"),
-                fontSize: 22,
-                marginBottom:24,
-                color: isDark ? "#E0E0E0" : "#1E2A78",
-              }}
-            >
+            <Text style={styles.sectionTitle}>
               {i18n.t("what_we_offer")}
             </Text>
 
@@ -176,50 +153,7 @@ export default function About({ navigation }: any) {
             />
           </ScrollView>
         </View>
-      </LinearGradient>
-    </SafeAreaView>
+      </SafeAreaView>
+    </View>
   );
 }
-
-/* ---------------- STYLES ---------------- */
-const styles = StyleSheet.create({
-  gradient: {
-    flex: 1,
-  },
-
-  headerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingTop: 60,
-    paddingHorizontal: 20,
-    gap: 10,
-    top:18,
-  },
-
-  card: {
-    flex: 1,
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
-    marginTop: "20%",
-    padding: 16,
-    paddingHorizontal:24
-  },
-
-  box: {
-    borderRadius: 10,
-    padding: 16,
-    marginBottom: 12,
-    paddingVertical:22,
-    
-  },
-
-  row: {
-    flexDirection: "row",
-    gap: 10,
-    alignItems: "flex-start",
-  },
-
-  textContainer: {
-    flex: 1,
-  },
-});

@@ -4,13 +4,22 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
   ImageBackground,
+  SafeAreaView,
+  Platform,
 } from "react-native";
+
 import LinearGradient from "react-native-linear-gradient";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { useTheme } from "../context/ThemeContext"; // ✅ Theme
-import i18n from "../i18n"; // ✅ Language
+
+import { useTheme } from "../context/ThemeContext";
+import i18n from "../i18n";
+
+import { androidStyles } from "./LoginScreen.android.styles";
+import { iosStyles } from "./LoginScreen.ios.styles";
+
+const styles =
+  Platform.OS === "ios" ? iosStyles : androidStyles;
 
 export default function LoginScreen({ navigation }: any) {
   const { theme } = useTheme();
@@ -24,12 +33,11 @@ export default function LoginScreen({ navigation }: any) {
   const [isUserIdValid, setIsUserIdValid] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
 
-  // =================== VALIDATION ===================
   const handleLogin = () => {
     let valid = true;
     let newErrors: any = { userId: "", password: "" };
 
-    // USER ID
+   
     if (!userId.trim()) {
       newErrors.userId = i18n.t("err_userid_required");
       valid = false;
@@ -42,11 +50,9 @@ export default function LoginScreen({ navigation }: any) {
       newErrors.userId = i18n.t("err_userid_min_5");
       valid = false;
       setIsUserIdValid(false);
-    } else {
-      setIsUserIdValid(true);
-    }
+    } else setIsUserIdValid(true);
 
-    // PASSWORD
+
     const regex = {
       uppercase: /[A-Z]/,
       lowercase: /[a-z]/,
@@ -83,9 +89,7 @@ export default function LoginScreen({ navigation }: any) {
       newErrors.password = i18n.t("err_special_required");
       valid = false;
       setIsPasswordValid(false);
-    } else {
-      setIsPasswordValid(true);
-    }
+    } else setIsPasswordValid(true);
 
     setErrors(newErrors);
 
@@ -98,257 +102,179 @@ export default function LoginScreen({ navigation }: any) {
       style={{ flex: 1 }}
       resizeMode="cover"
     >
+   
       <LinearGradient
         colors={["rgba(255,46,76,0.75)", "rgba(30,42,120,0.75)"]}
-        style={styles.container}
+        style={{ flex: 1 }}
       >
-        <View
-          style={[
-            styles.card,
-            {
-              backgroundColor: isLight
-                ? "rgba(255, 250, 250, 0.2)"
-                : "rgba(30,41,59,0.5)",
-              borderColor: isLight
-                ? "rgba(255,255,255,0.4)"
-                : "rgba(148,163,184,0.4)",
-            },
-          ]}
-        >
-          {/* TITLE */}
-          <Text style={[styles.title, { color: "#fff" }]}>
-            {i18n.t("welcome_to")}{" "}
-            <Text style={[styles.brand, { color: "#fff" }]}>SIVVG</Text>
-          </Text>
-
-          <Text style={[styles.subtitle, { color: "#E5E7EB" }]}>
-            {i18n.t("login_subtitle")}
-          </Text>
-
-          {/* USER ID */}
-          <View
-            style={[
-              styles.inputBox,
-              {
-                backgroundColor: isLight ? "#FAFAFA" : "rgba(0,0,0,0.55)",
-              },
-              errors.userId && styles.errorBorder,
-              isUserIdValid && styles.successBorder,
-            ]}
-          >
-            <Ionicons
-              name="person"
-              size={22}
-              color={isLight ? "#162F7A" : "#E5E7EB"}
-            />
-            <TextInput
-              placeholder={i18n.t("user_id")}
-              placeholderTextColor={isLight ? "#5A6BA0" : "#94A3B8"}
+       
+        <SafeAreaView style={{ flex: 1 }}>
+          <View style={styles.container}>
+            <View
               style={[
-                styles.input,
-                { color: isLight ? "#1E2A78" : "#F8FAFC" },
+                styles.card,
+                {
+                  backgroundColor: isLight
+                    ? "rgba(255,250,250,0.2)"
+                    : "rgba(30,41,59,0.5)",
+                  borderColor: isLight
+                    ? "rgba(255,255,255,0.4)"
+                    : "rgba(148,163,184,0.4)",
+                },
               ]}
-              value={userId}
-              onChangeText={(t) => {
-                setUserId(t);
-                setErrors((p) => ({ ...p, userId: "" }));
-                setIsUserIdValid(false);
-              }}
-            />
+            >
+            
+              <Text style={[styles.title, { color: "#fff" }]}>
+                {i18n.t("welcome_to")}{" "}
+                <Text style={styles.brand}>SIVVG</Text>
+              </Text>
+
+              <Text style={[styles.subtitle, { color: "#E5E7EB" }]}>
+                {i18n.t("login_subtitle")}
+              </Text>
+
+            
+              <View
+                style={[
+                  styles.inputBox,
+                  {
+                    backgroundColor: isLight
+                      ? "#FAFAFA"
+                      : "rgba(0,0,0,0.55)",
+                  },
+                  errors.userId && styles.errorBorder,
+                  isUserIdValid && styles.successBorder,
+                ]}
+              >
+                <Ionicons
+                  name="person"
+                  size={22}
+                  color={isLight ? "#162F7A" : "#E5E7EB"}
+                />
+                <TextInput
+                  placeholder={i18n.t("user_id")}
+                  placeholderTextColor={
+                    isLight ? "#5A6BA0" : "#94A3B8"
+                  }
+                  style={[
+                    styles.input,
+                    { color: isLight ? "#1E2A78" : "#F8FAFC" },
+                  ]}
+                  value={userId}
+                  onChangeText={(t) => {
+                    setUserId(t);
+                    setErrors((p) => ({ ...p, userId: "" }));
+                    setIsUserIdValid(false);
+                  }}
+                />
+              </View>
+
+              {errors.userId && (
+                <Text style={styles.errorText}>{errors.userId}</Text>
+              )}
+
+            
+              <View
+                style={[
+                  styles.inputBox,
+                  {
+                    backgroundColor: isLight
+                      ? "#FAFAFA"
+                      : "rgba(0,0,0,0.55)",
+                  },
+                  errors.password && styles.errorBorder,
+                  isPasswordValid && styles.successBorder,
+                ]}
+              >
+                <Ionicons
+                  name="lock-closed"
+                  size={22}
+                  color={isLight ? "#162F7A" : "#E5E7EB"}
+                />
+                <TextInput
+                  placeholder={i18n.t("password")}
+                  secureTextEntry={!showPassword}
+                  placeholderTextColor={
+                    isLight ? "#5A6BA0" : "#94A3B8"
+                  }
+                  style={[
+                    styles.input,
+                    { color: isLight ? "#1E2A78" : "#F8FAFC" },
+                  ]}
+                  value={password}
+                  onChangeText={(t) => {
+                    setPassword(t);
+                    setErrors((p) => ({ ...p, password: "" }));
+                    setIsPasswordValid(false);
+                  }}
+                />
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
+                >
+                  <Ionicons
+                    name={showPassword ? "eye" : "eye-off"}
+                    size={22}
+                    color={isLight ? "#162F7A" : "#E5E7EB"}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              {errors.password && (
+                <Text style={styles.errorText}>{errors.password}</Text>
+              )}
+
+         
+              <TouchableOpacity
+                style={{ alignSelf: "flex-end" }}
+                onPress={() => navigation.navigate("ForgotPassword")}
+              >
+                <Text
+                  style={[
+                    styles.forgot,
+                    { color: isLight ? "#01D5FF" : "#38BDF8" },
+                  ]}
+                >
+                  {i18n.t("forgot_password")}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.loginBtn,
+                  {
+                    backgroundColor: isLight
+                      ? "#F5F5F5"
+                      : "#1a1a1a",
+                  },
+                ]}
+                onPress={handleLogin}
+              >
+                <Text
+                  style={[
+                    styles.loginText,
+                    { color: isLight ? "#162F7A" : "#fff" },
+                  ]}
+                >
+                  {i18n.t("login")}
+                </Text>
+              </TouchableOpacity>
+
+              <Text style={[styles.footerText, { color: "#fff" }]}>
+                {i18n.t("dont_have_account")}{" "}
+                <Text
+                  style={[
+                    styles.signup,
+                    { color: isLight ? "#01D5FF" : "#38BDF8" },
+                  ]}
+                  onPress={() => navigation.navigate("Register")}
+                >
+                  {i18n.t("signup")}
+                </Text>
+              </Text>
+            </View>
           </View>
-          {errors.userId && (
-            <Text style={styles.errorText}>{errors.userId}</Text>
-          )}
-
-          {/* PASSWORD */}
-          <View
-            style={[
-              styles.inputBox,
-              {
-                backgroundColor: isLight ? "#FAFAFA" : "rgba(0,0,0,0.55)",
-              },
-              errors.password && styles.errorBorder,
-              isPasswordValid && styles.successBorder,
-            ]}
-          >
-            <Ionicons
-              name="lock-closed"
-              size={22}
-              color={isLight ? "#162F7A" : "#E5E7EB"}
-            />
-            <TextInput
-              placeholder={i18n.t("password")}
-              placeholderTextColor={isLight ? "#5A6BA0" : "#94A3B8"}
-              secureTextEntry={!showPassword}
-              style={[
-                styles.input,
-                { color: isLight ? "#1E2A78" : "#F8FAFC" },
-              ]}
-              value={password}
-              onChangeText={(t) => {
-                setPassword(t);
-                setErrors((p) => ({ ...p, password: "" }));
-                setIsPasswordValid(false);
-              }}
-            />
-            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-              <Ionicons
-                name={showPassword ? "eye" : "eye-off"}
-                size={22}
-                color={isLight ? "#162F7A" : "#E5E7EB"}
-              />
-            </TouchableOpacity>
-          </View>
-
-          {errors.password && (
-            <Text style={styles.errorText}>{errors.password}</Text>
-          )}
-
-          {/* FORGOT */}
-          <TouchableOpacity style={{ alignSelf: "flex-end" }}>
-            <Text
-              style={[
-                styles.forgot,
-                { color: isLight ? "#01D5FF" : "#38BDF8" },
-              ]}
-              onPress={() => navigation.navigate("ForgotPassword")}
-            >
-              {i18n.t("forgot_password")}
-            </Text>
-          </TouchableOpacity>
-
-          {/* LOGIN */}
-          <TouchableOpacity
-            style={[
-              styles.loginBtn,
-              {
-                backgroundColor: isLight ? "#F5F5F5" : "#1a1a1a",
-                opacity: 0.9,
-              },
-            ]}
-            onPress={handleLogin}
-          >
-            <Text
-              style={[
-                styles.loginText,
-                { color: isLight ? "#162F7A" : "#fff" },
-              ]}
-            >
-              {i18n.t("login")}
-            </Text>
-          </TouchableOpacity>
-
-          {/* FOOTER */}
-          <Text style={[styles.footerText, { color: "#fff" }]}>
-            {i18n.t("dont_have_account")}{" "}
-            <Text
-              style={styles.signup}
-              onPress={() => navigation.navigate("Register")}
-            >
-              {i18n.t("signup")}
-            </Text>
-          </Text>
-        </View>
+        </SafeAreaView>
       </LinearGradient>
     </ImageBackground>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center" },
-
-  card: {
-    marginHorizontal: 25,
-    padding: 25,
-    borderRadius: 22,
-    borderWidth: 1,
-  },
-
-  title: { 
-    marginTop:10,
-    fontSize: 30, 
-    textAlign: "center",
-    fontFamily: "Lato-Bold" ,
-     marginBottom: 8,
-  },
-
-  brand: { 
-    fontSize: 32, 
-    fontFamily: "Lemon-Regular" 
-  },
-
-  subtitle: {
-    fontSize: 18,
-    marginBottom: 32,
-    textAlign: "center",
-    fontFamily: "Lato-Semibold",
-  },
-
-  inputBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 30,
-    paddingHorizontal: 15,
-    height: 50,
-    marginBottom: 22,
-    borderWidth: 2,
-    borderColor: "transparent",
-  },
-
-  input: { 
-    fontSize: 18,
-    flex: 1,
-    marginLeft: 10,
-    fontFamily: "Lato-Medium"
-    },
-
-  errorBorder: { borderColor: "#E57373" },
-  successBorder: { borderColor: "#22C55E" },
-
-  errorText: {
-    color: "#FACC15",
-    fontSize: 13,
-    marginBottom: 12,
-    bottom:10,
-    marginLeft: 10,
-  },
-
-  forgot: { 
-    color: "#01d5ff", 
-    fontSize: 18,
-     fontFamily: "Lato-Semibold",
-    bottom: 12,
-    right:12,
-    textDecorationLine: "underline",
-   },
-
-  loginBtn: {
-    paddingVertical: 10,
-    borderRadius: 40,
-    alignItems: "center",
-    marginTop: 25,
-    width: "80%",
-    alignSelf: "center",
-    marginBottom:18,
-  },
-
-  loginText: { 
-    fontSize: 22,
-    fontFamily: "Lato-Bold" 
-  },
-
-  footerText: {
-    fontSize:18,
-    marginTop: 15,
-    textAlign: "center",
-    fontFamily: "Lato-Semibold",
-    marginBottom:18,
-  },
-
-  signup: { 
-    color: "#01d5ff", 
-    fontFamily: "Lato-Semibold" ,
-    textDecorationLine: "underline",
-    
-  },
-});

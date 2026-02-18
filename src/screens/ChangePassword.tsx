@@ -4,20 +4,29 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
   ImageBackground,
+  Platform,
 } from "react-native";
+
 import LinearGradient from "react-native-linear-gradient";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { useTheme } from "../context/ThemeContext"; // ✅ Theme
-import i18n from "../i18n"; // ✅ Language
-import { LanguageContext } from "../context/LanguageContext"; // ✅ Language reload
 
-export default function ChangePasswordScreen({ navigation }: any) {
+import { useTheme } from "../context/ThemeContext";
+import i18n from "../i18n";
+import { LanguageContext } from "../context/LanguageContext";
+
+import { androidStyles } from "./ChangePassword.android.styles";
+import { iosStyles } from "./ChangePassword.ios.styles";
+
+export default function ChangePassword({ navigation }: any) {
+  // ✅ Hooks — always first
   const { theme } = useTheme();
-  const { reloadKey } = useContext(LanguageContext); // ✅ re-render on language change
+  useContext(LanguageContext);
+
+  const styles = Platform.OS === "ios" ? iosStyles : androidStyles;
   const isLight = theme === "light";
 
+  // ---------------- STATE ----------------
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
 
@@ -57,14 +66,23 @@ export default function ChangePasswordScreen({ navigation }: any) {
     }
 
     const missingRules: string[] = [];
-    if (!/[A-Z]/.test(password)) missingRules.push(i18n.t("rule_uppercase"));
-    if (!/[a-z]/.test(password)) missingRules.push(i18n.t("rule_lowercase"));
-    if (!/\d/.test(password)) missingRules.push(i18n.t("rule_number"));
+
+    if (!/[A-Z]/.test(password))
+      missingRules.push(i18n.t("rule_uppercase"));
+
+    if (!/[a-z]/.test(password))
+      missingRules.push(i18n.t("rule_lowercase"));
+
+    if (!/\d/.test(password))
+      missingRules.push(i18n.t("rule_number"));
+
     if (!/[@$!%*?&]/.test(password))
       missingRules.push(i18n.t("rule_special_character"));
 
     if (missingRules.length > 0) {
-      setPassError(i18n.t("err_must_include") + " " + missingRules.join(", "));
+      setPassError(
+        i18n.t("err_must_include") + " " + missingRules.join(", ")
+      );
       return;
     }
 
@@ -76,8 +94,9 @@ export default function ChangePasswordScreen({ navigation }: any) {
     navigation.navigate("Success");
   };
 
+  // ---------------- UI ----------------
   return (
-    <View key={reloadKey} style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <ImageBackground
         source={require("../../assets/images/change.png")}
         style={{ flex: 1 }}
@@ -95,7 +114,7 @@ export default function ChangePasswordScreen({ navigation }: any) {
             <Ionicons name="chevron-back" size={28} color="#FFF" />
           </TouchableOpacity>
 
-          {/* CARD */}
+          {/* Card */}
           <View
             style={[
               styles.card,
@@ -114,13 +133,13 @@ export default function ChangePasswordScreen({ navigation }: any) {
               {i18n.t("change_password_subtitle")}
             </Text>
 
-            {/* PASSWORD FIELD */}
+            {/* PASSWORD */}
             <View
               style={[
                 styles.inputBox,
                 isPassTouched && {
                   borderWidth: 2,
-                  borderColor: passError ? "#e66868ff" : "green",
+                  borderColor: passError ? "#e66868" : "green",
                 },
                 {
                   backgroundColor: isLight
@@ -134,6 +153,7 @@ export default function ChangePasswordScreen({ navigation }: any) {
                 size={22}
                 color={isLight ? "#1E2A78" : "#e4e8ec"}
               />
+
               <TextInput
                 placeholder={i18n.t("new_password")}
                 placeholderTextColor={isLight ? "#1E2A78" : "#94A3B8"}
@@ -149,6 +169,7 @@ export default function ChangePasswordScreen({ navigation }: any) {
                   setIsPassTouched(false);
                 }}
               />
+
               <TouchableOpacity onPress={() => setShowPass(!showPass)}>
                 <Ionicons
                   name={showPass ? "eye" : "eye-off"}
@@ -162,13 +183,13 @@ export default function ChangePasswordScreen({ navigation }: any) {
               <Text style={styles.errorText}>{passError}</Text>
             ) : null}
 
-            {/* CONFIRM PASSWORD FIELD */}
+            {/* CONFIRM PASSWORD */}
             <View
               style={[
                 styles.inputBox,
                 isConfirmTouched && {
                   borderWidth: 2,
-                  borderColor: confirmError ? "#e66868ff" : "green",
+                  borderColor: confirmError ? "#e66868" : "green",
                 },
                 {
                   backgroundColor: isLight
@@ -182,6 +203,7 @@ export default function ChangePasswordScreen({ navigation }: any) {
                 size={22}
                 color={isLight ? "#1E2A78" : "#e4e8ec"}
               />
+
               <TextInput
                 placeholder={i18n.t("confirm_password")}
                 placeholderTextColor={isLight ? "#1E2A78" : "#94A3B8"}
@@ -197,6 +219,7 @@ export default function ChangePasswordScreen({ navigation }: any) {
                   setIsConfirmTouched(false);
                 }}
               />
+
               <TouchableOpacity
                 onPress={() => setShowConfirmPass(!showConfirmPass)}
               >
@@ -218,7 +241,6 @@ export default function ChangePasswordScreen({ navigation }: any) {
                 styles.button,
                 {
                   backgroundColor: isLight ? "#FFF" : "#1a1a1a",
-                  opacity: 0.9,
                 },
               ]}
               onPress={validateAndSubmit}
@@ -238,74 +260,3 @@ export default function ChangePasswordScreen({ navigation }: any) {
     </View>
   );
 }
-
-// ------------------- STYLES (UNCHANGED) -------------------
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center" },
-
-  backButton: { position: "absolute", top: 40, left: 20 },
-
-  card: {
-    width: "85%",
-    padding: 25,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.4)",
-  },
-
-  title: { 
-    fontSize: 30,
-     textAlign: "center", 
-     fontFamily: "Lato-Bold",
-     marginBottom:8,
-     marginTop:10
-    },
-
-  subtitle: {
-    fontSize: 18,
-    textAlign: "center",
-    marginVertical: 20,
-    fontFamily: "Lato-Semibold",
-    marginBottom:32,
-  },
-
-  inputBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 30,
-    paddingHorizontal: 15,
-    height: 50,
-    marginBottom: 20,
-  },
-
-  textInput: { 
-    flex: 1, 
-    marginLeft: 10,
-    fontFamily: "Lato-Medium" ,
-    fontSize:18,
-    },
-
-  errorText: {
-    color: "yellow",
-    fontSize: 13,
-    marginBottom: 12,
-    marginLeft: 10,
-    bottom:10
-  },
-
-  button: {
-    marginTop: 25,
-    paddingVertical: 10,
-    borderRadius: 40,
-    alignItems: "center",
-    width:"80%",
-    alignSelf:"center",
-    marginBottom:10,
-  },
-
-  buttonText: { 
-    fontSize: 22, 
-    fontFamily: "Lato-Bold" ,
-
-  },
-});

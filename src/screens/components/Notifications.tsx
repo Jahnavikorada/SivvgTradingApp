@@ -2,56 +2,43 @@ import React, { useContext } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   FlatList,
   TouchableOpacity,
-  SafeAreaView,
+  Platform,
 } from "react-native";
-import LinearGradient from "react-native-linear-gradient";
-import Icon from "react-native-vector-icons/Feather";
 
-import { useTheme } from "../../context/ThemeContext"; // ✅ THEME
-import { LanguageContext } from "../../context/LanguageContext"; // ✅ LANGUAGE RELOAD
+import LinearGradient from "react-native-linear-gradient";
+import Icon from "react-native-vector-icons/Ionicons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTheme } from "../../context/ThemeContext";
+import { LanguageContext } from "../../context/LanguageContext";
 import i18n from "../../i18n";
 
-// ✅ USE TRANSLATION KEYS (NOT TEXT)
+/* platform styles */
+const styles =
+  Platform.OS === "ios"
+    ? require("./Notification.styles.ios").default
+    : require("./Notification.styles.android").default;
+
+const HEADER_HEIGHT = 150;
+
 const notifications = [
-  {
-    id: "1",
-    symbol: "GODREJCP",
-    message: "notification_target_reached",
-    time: "notification_1_min_ago",
-  },
-  {
-    id: "2",
-    symbol: "ADANIENT",
-    message: "notification_target_reached",
-    time: "notification_7_mins_ago",
-  },
-  {
-    id: "3",
-    symbol: "COLPAL",
-    message: "notification_target_reached",
-    time: "notification_45_mins_ago",
-  },
-  {
-    id: "4",
-    symbol: "ANGELONE",
-    message: "notification_target_reached",
-    time: "notification_1_hr_ago",
-  },
+  { id: "1", symbol: "GODREJCP", message: "notification_target_reached", time: "notification_1_min_ago" },
+  { id: "2", symbol: "ADANIENT", message: "notification_target_reached", time: "notification_7_mins_ago" },
+  { id: "3", symbol: "COLPAL", message: "notification_target_reached", time: "notification_45_mins_ago" },
+  { id: "4", symbol: "ANGELONE", message: "notification_target_reached", time: "notification_1_hr_ago" },
 ];
 
-const NotificationScreen = ({ navigation }: any) => {
-  const { colors, isDark } = useTheme(); // ✅ THEME (UNCHANGED)
-  const { reloadKey } = useContext(LanguageContext); // ✅ FORCE RE-RENDER ON LANGUAGE CHANGE
+export default function NotificationScreen({ navigation }: any) {
+  const { colors, isDark } = useTheme();
+  const { reloadKey } = useContext(LanguageContext);
+  const insets = useSafeAreaInsets();
 
   const renderItem = ({ item }: any) => (
     <View
       style={[
         styles.card,
         {
-          backgroundColor: colors.card,
           borderColor: colors.border,
           shadowOpacity: isDark ? 0.4 : 0.15,
         },
@@ -73,29 +60,48 @@ const NotificationScreen = ({ navigation }: any) => {
   );
 
   return (
-    <SafeAreaView
-      key={reloadKey} // ✅ IMPORTANT FOR LANGUAGE REFRESH
+    <View
+      key={reloadKey}
       style={[styles.container, { backgroundColor: colors.background }]}
     >
+      {/* HEADER */}
       <LinearGradient
         colors={[colors.gradientStart, colors.gradientEnd]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.header}
+        style={[styles.header, { height: HEADER_HEIGHT + insets.top }]}
       >
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="chevron-left" size={28} color="#FFFFFF" />
-        </TouchableOpacity>
+        <View
+          style={{
+            paddingTop: insets.top,
+            flex: 1,
+          }}
+        >
+          <View style={styles.headerRow}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.backIconWrapper}
+            >
+              <Icon name="chevron-back" size={26} color="#fff" />
+            </TouchableOpacity>
 
-        {/* ✅ LANGUAGE-AWARE TITLE */}
-        <Text style={styles.headerTitle}>
-          {i18n.t("notifications")}
-        </Text>
+            <Text style={styles.headerTitle}>
+              {i18n.t("notifications")}
+            </Text>
 
-        <View style={{ width: 28 }} />
+            <View style={{ width: 26 }} />
+          </View>
+        </View>
       </LinearGradient>
 
-      <View style={[styles.body, { backgroundColor: colors.background }]}>
+      {/* BODY */}
+      <View
+        style={[
+          styles.body,
+          {
+            backgroundColor: colors.background,
+            marginTop: HEADER_HEIGHT + insets.top,
+          },
+        ]}
+      >
         <FlatList
           data={notifications}
           keyExtractor={(item) => item.id}
@@ -104,74 +110,6 @@ const NotificationScreen = ({ navigation }: any) => {
           contentContainerStyle={{ paddingBottom: 20 }}
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
-};
-
-export default NotificationScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-
-  header: {
-    height: 180,
-    paddingHorizontal: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-
-  headerTitle: {
-    color: "#FFFFFF",
-    fontSize: 22,
-    fontWeight: "500",
-    //marginRight: 120,
-    right:70
-    
-  },
-
-  body: {
-    flex: 1,
-    borderTopLeftRadius: 26,
-    borderTopRightRadius: 26,
-    marginTop: -20,
-    paddingTop: 44,
-    
-  },
-
-  card: {
-    borderRadius: 10,
-    marginHorizontal: 16,
-    marginBottom: 26,
-    padding: 18,
-    borderWidth: 1.5,
-    elevation: 4,
-    shadowColor: "#000",
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 4 },
-  },
-
-  cardContent: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-
-  symbol: {
-    fontSize: 16,
-    fontWeight: "500",
-  },
-
-  message: {
-    fontSize: 15,
-    fontWeight: "400",
-  },
-
-  time: {
-    textAlign: "right",
-    marginTop: 10,
-    fontSize: 14,
-    fontWeight: "500",
-  },
-});
+}

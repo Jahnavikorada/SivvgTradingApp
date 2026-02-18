@@ -4,7 +4,7 @@ export default {
   continue: "Continue",
 
 unlock_title: "Unlock Your Potential",
-unlock_subtitle: "20 Days of Smart Portfolio Tracking ",
+unlock_subtitle: "20 Days of Smart Portfolio\n Tracking ",
 start_journey: "START YOUR JOURNEY",
 
 welcome_to: "Welcome to",

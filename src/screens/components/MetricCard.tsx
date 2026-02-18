@@ -1,7 +1,12 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, Platform } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { useTheme } from "../../context/ThemeContext";
+
+import { androidStyles } from "./MetricCard.android.styles";
+import { iosStyles } from "./MetricCard.ios.styles";
+
+const styles = Platform.OS === "ios" ? iosStyles : androidStyles;
 
 interface MetricCardProps {
   title: string;
@@ -24,15 +29,13 @@ export default function MetricCard({
       <View
         style={[
           styles.metricCard,
-          isDark && {
-            backgroundColor: "#121212", // ✅ Dark card
-          },
+          isDark && { backgroundColor: "#121212" },
         ]}
       >
         <Text
           style={[
             styles.metricTitle,
-            isDark && { color: "#E5E7EB" }, // ✅ Soft white text
+            isDark && { color: "#E5E7EB" },
           ]}
         >
           {title}
@@ -41,7 +44,7 @@ export default function MetricCard({
         <Text
           style={[
             styles.metricValue,
-            { color: valueColor }, // value color stays SAME
+            { color: valueColor },
           ]}
         >
           {value}
@@ -50,38 +53,3 @@ export default function MetricCard({
     </LinearGradient>
   );
 }
-
-/* ✅ STYLES */
-const styles = StyleSheet.create({
-  metricBorder: {
-    width: "45%",
-    marginLeft:10,
-    marginRight:12,
-    borderRadius: 10,
-    padding: 2.5,
-    top:10
-    
-  },
-
-  metricCard: {
-    backgroundColor: "#FFFFFF", 
-    borderRadius: 8,
-    height: 90,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  metricTitle: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: "#1E2A78",
-    textAlign: "center",
-    marginBottom: 6,
-  },
-
-  metricValue: {
-    fontSize: 20,
-    fontWeight: "800",
-    textAlign: "center",
-  },
-});

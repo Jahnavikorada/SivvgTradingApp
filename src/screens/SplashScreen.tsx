@@ -1,48 +1,59 @@
 import React, { useEffect } from "react";
-import { View, Image, StyleSheet } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  Dimensions,
+  StatusBar,
+  View,
+} from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 
-export default function SplashScreen({ navigation }: any) {
+const { width } = Dimensions.get("window");
 
+export default function SplashScreen({ navigation }: any) {
   useEffect(() => {
-    setTimeout(() => {
-      navigation.replace("LanguageScreen"); // Auto navigate after 2 sec
+    const timer = setTimeout(() => {
+      navigation.replace("LanguageScreen");
     }, 3000);
-  }, []);
+
+    return () => clearTimeout(timer); 
+  }, [navigation]);
 
   return (
-    // <View style={styles.container}>
-    //   <Image
-    //     source={require("../../assets/images/logo.png")}
-    //     style={styles.logo}
-    //     resizeMode="contain"
-    //   />
-    // </View>
-    <LinearGradient
-      colors={["#FF2E4C", "#1E2A78"]}
-      style={styles.container}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
-    >
-      <Image
-        source={require("../../assets/images/logo.png")}
-        style={styles.logo}
-        resizeMode="contain"
+    <View style={styles.root}>
+      <StatusBar
+        barStyle="light-content"
+        translucent
+        backgroundColor="transparent"
       />
-     
-    </LinearGradient>
+
+      <LinearGradient
+        colors={["#FF2E4C", "#1E2A78"]}
+        style={styles.container}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+      >
+        <Image
+          source={require("../../assets/images/logo.png")}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+      </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    //backgroundColor: "#ffffff",
     alignItems: "center",
     justifyContent: "center",
   },
   logo: {
-    width: 250,
-    height: 250,
+    width: width * 0.55,  
+    height: width * 0.55,  
   },
 });

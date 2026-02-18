@@ -3,11 +3,15 @@ import {
   View,
   Text,
   TouchableOpacity,
-  StyleSheet,
+  Platform,
 } from "react-native";
 import i18n from "../i18n";
 import { LanguageContext } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
+import { androidStyles } from "./LanguageScreen.android.styles";
+import { iosStyles } from "./LanguageScreen.ios.styles";
+
+const styles = Platform.OS === "ios" ? iosStyles : androidStyles;
 
 type Props = {
   navigation: any;
@@ -32,7 +36,7 @@ const LanguageScreen: React.FC<Props> = ({ navigation }) => {
 
   const selectLanguage = async (newLang: string) => {
     setSelected(newLang);
-    await changeLang(newLang); // updates i18n + AsyncStorage
+    await changeLang(newLang); 
   };
 
   return (
@@ -42,7 +46,7 @@ const LanguageScreen: React.FC<Props> = ({ navigation }) => {
         { backgroundColor: isLight ? "#FFFFFF" : "#1a1a1a" },
       ]}
     >
-      {/* TITLE */}
+
       <Text
         style={[
           styles.title,
@@ -52,7 +56,6 @@ const LanguageScreen: React.FC<Props> = ({ navigation }) => {
         {i18n.t("choose_language")}
       </Text>
 
-      {/* SUBTITLE */}
       <Text
         style={[
           styles.subtitle,
@@ -62,7 +65,7 @@ const LanguageScreen: React.FC<Props> = ({ navigation }) => {
         {i18n.t("subtitle_language")}
       </Text>
 
-      {/* LANGUAGE OPTIONS */}
+
       {languages.map((item) => {
         const isSelected = selected === item.value;
 
@@ -118,7 +121,6 @@ const LanguageScreen: React.FC<Props> = ({ navigation }) => {
         );
       })}
 
-      {/* CONTINUE BUTTON */}
       <TouchableOpacity
         style={[
           styles.continueBtn,
@@ -145,65 +147,4 @@ const LanguageScreen: React.FC<Props> = ({ navigation }) => {
 };
 
 export default LanguageScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 120,          
-  },
-
-  title: {
-    fontSize: 30,
-    fontWeight: "700",
-    marginBottom: 10,       
-    textAlign: "center",
-    fontFamily: "Lato-Bold",
-  },
-
-  subtitle: {
-    fontSize: 20,
-    marginBottom: 50,        
-    textAlign: "center",
-    fontFamily: "Lato-Semibold",
-  },
-
-  option: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderWidth: 1.6,
-    borderRadius: 10,
-    paddingVertical: 12,
-    paddingHorizontal: 15,
-    marginBottom: 25,
-  },
-
-  optionCode: {
-    fontSize: 24,
-    width: 35,
-    textAlign: "center",
-  },
-
-  optionLabel: {
-    fontSize: 22,
-    marginLeft: 10,
-    fontFamily: "Lato-Semibold",
-  },
-
-  continueBtn: {
-  marginTop: "auto",
-  marginBottom: 100,
-  paddingVertical: 10,
-  borderRadius: 25,
-  alignItems: "center",
-  width: "80%",         
-  alignSelf: "center",  
-},
-
-
-  continueText: {
-    fontSize: 24,
-    fontFamily: "Lato-Semibold",
-  },
-});
 

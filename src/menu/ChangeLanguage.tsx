@@ -1,11 +1,15 @@
 import React, { useState, useContext, useEffect } from "react";
-import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { View, TouchableOpacity, Text, Platform } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/Ionicons";
 
 import i18n from "../i18n";
 import { LanguageContext } from "../context/LanguageContext";
-import { useTheme } from "../context/ThemeContext"; // ✅ theme
+import { useTheme } from "../context/ThemeContext"; 
+import { androidStyles } from "./ChangeLanguage.android.styles";
+import { iosStyles } from "./ChangeLanguage.ios.styles";
+
+const styles = Platform.OS === "ios" ? iosStyles : androidStyles;
 
 export default function ChangeLanguage({ navigation }: any) {
   const { lang, changeLang, reloadKey } = useContext(LanguageContext); // ✅ language
@@ -118,60 +122,3 @@ export default function ChangeLanguage({ navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
-  gradient: {
-    flex: 1,
-  },
-
-  headerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingTop: 60,
-    paddingHorizontal: 20,
-    gap: 10,
-    top:18
-  },
-
-  headerTitle: {
-    color: "#fff",
-    fontSize: 22,
-    fontWeight: "bold",
-    left:30
-  },
-
-  card: {
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
-    marginTop: "20%",
-    paddingHorizontal: 10,
-  },
-
-  title: {
-    fontSize: 24,
-    fontWeight: 500,
-    bottom:30,
-    marginBottom:10
-  },
-
-  subtitle: {
-    fontSize: 16,
-    bottom: 25,
-    textAlign: "center",
-  },
-
-  btn: {
-    width: "50%",
-    paddingVertical: 10,
-    marginVertical: 8,
-    borderWidth: 1,
-    alignItems: "center",
-  },
-
-  btnText: {
-    fontSize: 18,
-    fontWeight: "600",
-  },
-});

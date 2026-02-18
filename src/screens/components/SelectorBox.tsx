@@ -11,7 +11,7 @@ export default function SelectorBox({ value }: { value: string }) {
       style={[
         styles.box,
         isDark && {
-          backgroundColor: "rgba(0,0,0,0.55)", // ✅ dark theme background
+          backgroundColor: "rgba(0,0,0,0.55)", 
         },
       ]}
     >
@@ -24,7 +24,7 @@ export default function SelectorBox({ value }: { value: string }) {
       <Text
         style={[
           styles.text,
-          isDark && { color: "#E5E7EB" }, // ✅ soft white text
+          isDark && { color: "#E5E7EB" }, 
         ]}
       >
         {value}
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     marginTop: 18,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f3d6e5", // ✅ light theme unchanged
+    backgroundColor: "#f3d6e5", 
     borderRadius: 22,
     paddingHorizontal: 18,
     paddingVertical: 12,

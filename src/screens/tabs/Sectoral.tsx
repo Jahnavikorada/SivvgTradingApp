@@ -1,13 +1,10 @@
 import React, { useContext } from "react";
 import { View, StyleSheet,  } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
-
 import CommonHeader from "../components/CommonHeader";
 import SectoralPanel from "../components/SectoralPanel";
-
 import { useTheme } from "../../context/ThemeContext";
 import { LightColors, DarkColors } from "../../theme/colors";
-
 import i18n from "../../i18n";
 import { LanguageContext } from "../../context/LanguageContext";
 
